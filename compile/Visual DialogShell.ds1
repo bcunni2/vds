@@ -1,0 +1,6 @@
+if ($args[0] -ne $null)
+{$script = get-content $args[0] | Out-String
+invoke-expression $script}
+#run-gui.exe is for simulating scripts compiled with the -noconsole switch.
+#This will contain the entire VDS engine upon compiling. Scripts ran from this file will not require the module declaration (but it's ok if they have it.)
+#Files will execute without the console ~ avoid using console or commands with unwanted output | Out-Null

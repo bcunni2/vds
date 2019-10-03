@@ -1,0 +1,1 @@
+..\compile\compile.exe .\vds-ide.ds1 .\vds-ide.exe -sta -version 0.2.4.9 -iconfile ..\res\icon.ico -company "vds/pwsh community" -product "DialogShell" -description "DialogShell" -title "DialogShell"
