@@ -1,0 +1,1 @@
+This is an icon file, a copy of .\res\icon.ico and subject to the same license.
