@@ -16,7 +16,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                dialog property $PictureBox3 backcolor "lightblue" 
                $Button1 = dialog add $MyForm Button 280 565 75 23 "Finish"  
                $Button2 = dialog add $MyForm Button 280 13 75 23 "Change"  
-               $Label2 = dialog add $MyForm Label 285 103 500 23 "C:\Program Files\Visual DialogShell"
+               $Label2 = dialog add $MyForm Label 285 103 500 23 "C:\Visual DialogShell"
         $Label3 = dialog add $MyForm Label 70 235 500 50 "Where DialogScript meets PowerShell"
         $Label4 = dialog add $MyForm Label 5 217 (676-227) 200 "Ipsum lorum"
         if ($(string $(curdir)) -ne 'c:\windows\system32'){
@@ -109,7 +109,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "c:\windows\installer\dialogshell\setup.exe -uninstall"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "Publisher" String "vds/pwsh community"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" String $(datetime).ToString('yyyyMMdd')
-                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.5.1"
+                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.5.2"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayIcon" String "$(string $Label2.Text)\res\icon.ico"
                   #  Uncomment these lines if unhappy with scaling blur. I'm leaving these commented at release, because devs need to be aware of the scaling issues.
                   #  There is a future task scheduled to fix this in the .manifest within the compiler, but it's at least 90 days out unless not-me works on it. 
