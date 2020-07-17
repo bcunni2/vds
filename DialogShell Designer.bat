@@ -1,2 +1,2 @@
 cd compile
-compile.exe "..\DialogShell Designer.ds1" "..\DialogShell Designer.exe" -version 0.2.5.2 -noconsole -sta -iconfile ..\res\icon.ico -company "vds/pwsh community" -product "DialogShell Designer" -description "DialogShell Designer" -title "DialogShell Designer"
+compile.exe "..\DialogShell Designer.ds1" "..\DialogShell Designer.exe" -version 0.2.5.3 -noconsole -sta -iconfile ..\res\icon.ico -company "vds/pwsh community" -product "DialogShell Designer" -description "DialogShell Designer" -title "DialogShell Designer"

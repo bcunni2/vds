@@ -1,9 +1,12 @@
 directory change (path $host.ui.RawUI.WindowTitle)
+
+<#
 $host.ui.RawUI.Backgroundcolor = 1
 cls
 console "DialogShell $(sysinfo dsver)"
 console "Open Source - vds/pwsh community."
 $host.ui.RawUI.WindowTitle = "DialogShell $(sysinfo dsver)"
+#>
 
 if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     directory create ("c:\users\$env:username\documents\DialogShell")
@@ -14,7 +17,7 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\elements\*") ("c:\users\$env:username\documents\DialogShell\elements")
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\*.ds1") ("c:\users\$env:username\documents\DialogShell\examples")
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\*.mdb") ("c:\users\$env:username\documents\DialogShell\examples")
-    $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples")
+    $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples\*.ds1")
     foreach ($item in $items) {
         if ($item.Attributes -ne "Directory") {
            $item.FullName | Out-File "c:\users\$env:username\documents\DialogShell\$(name $item.FullName).dsproj" 
@@ -345,9 +348,10 @@ function global:menuitemclick ($menu) {
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
-            $inv = "'$curdir\..\compile\dialogshell.exe' '$(string $FastTab.SelectedTab.Text)'"       
+            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(string $FastTab.SelectedTab.Text)'"       
             $StatusStrip1.items[0].Text = "DEBUGGING...."
             run "& $inv"
+            #shell open $(string $FastTab.SelectedTab.Text)
             directory change $curdir
             $StatusStrip1.items[0].Text = ""
         }

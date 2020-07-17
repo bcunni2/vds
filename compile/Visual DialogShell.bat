@@ -1,1 +1,1 @@
-.\compile.exe ".\Visual DialogShell.ds1" ".\Visual DialogShell.exe" -version 0.2.5.2 -iconfile ..\res\application.ico -noconsole -sta -company "vds/pwsh community" -product "Visual DialogShell" -description "Visual DialogShell" -title "Visual DialogShell"
+.\compile.exe ".\Visual DialogShell.ds1" ".\Visual DialogShell.exe" -version 0.2.5.3 -iconfile ..\res\application.ico -noconsole -sta -company "vds/pwsh community" -product "Visual DialogShell" -description "Visual DialogShell" -title "Visual DialogShell"
