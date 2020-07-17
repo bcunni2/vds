@@ -17,9 +17,9 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\elements\*") ("c:\users\$env:username\documents\DialogShell\elements")
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\*.ds1") ("c:\users\$env:username\documents\DialogShell\examples")
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\*.mdb") ("c:\users\$env:username\documents\DialogShell\examples")
-    $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples\*.ds1")
+    $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples")
     foreach ($item in $items) {
-        if ($item.Attributes -ne "Directory") {
+        if ($(trim $(ext $(string $item))) -eq 'ds1') {
            $item.FullName | Out-File "c:\users\$env:username\documents\DialogShell\$(name $item.FullName).dsproj" 
         }
     }
