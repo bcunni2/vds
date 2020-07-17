@@ -620,6 +620,81 @@ function directory($a,$b,$c) {
     https://dialogshell.com/vds/help/index.php/Directory
 #>  
 }
+
+function eternium($a,$b,$c,$d,$e){ 
+	switch($a){
+		open {
+			$global:ie = new-object -ComObject "InternetExplorer.Application"
+			$global:ie.visible = $true
+			$global:ie.navigate($b)
+			while($global:ie.Busy) {
+				Start-Sleep -Milliseconds 100
+			}
+		}
+		get {
+			try{ 
+				$global:ie.document.getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						 return $_ 
+					}
+				}
+			}
+			catch{
+				$global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						 return $_ 
+					}
+				}
+			}
+		}
+		set {
+			try{
+				$global:ie.document.getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						$_.$d = $e
+					}
+				}
+			}
+			catch{
+	            $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						 $_.$d = $e
+					}
+                } 
+			}
+        }
+		click {
+			try{ 
+				$global:ie.document.getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						$_.click()
+					}
+				}
+			}
+			catch{
+				$global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
+					if ($_.getAttributeNode($b).Value -eq $c) {
+						 $_.click()
+					}
+				}
+			}
+		}
+	}
+<#
+    .SYNOPSIS
+    Automates Internet Explorer.
+     
+    .DESCRIPTION
+     VDS
+	eternium open 'http://google.com'
+	$value = $(eternium get 'id' 'Text1').value
+	eternium set 'class' 'Text1' 'value' 'new value'
+	eternium click 'name' 'button1'
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/eternium
+#>	
+}
 function exit ($a) {
 exit $a
 <#
@@ -1454,6 +1529,52 @@ function rem {
     https://dialogshell.com/vds/help/index.php/rem
 #>
 } #This is done.
+
+function selenium ($a,$b,$c,$d) {
+	switch ($a){
+		reference {
+			$env:PATH += ";$b"
+			Add-Type -Path ($b + 'WebDriver.dll')
+			$ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
+			$ChromeOptions.AddAdditionalCapability("useAutomationExtension", $false)
+			$global:selenium = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
+		}
+		open {
+			$global:selenium.Navigate().GoToURL($b) 
+		}
+		get {
+			return $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]")
+		}
+		set {
+			$global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").SendKeys($d)
+		}
+		click {
+			$global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").Click()
+		}
+		stop {
+			$global:selenium.Close()
+			$global:selenium.Quit()
+			Get-Process -Name chromedriver -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
+		}
+	}
+<#
+    .SYNOPSIS
+    Requires webdriver.dll and chromedriver.exe for qa of google chrome
+     
+    .DESCRIPTION
+     VDS
+	selenium reference 'c:\temp\psl\'
+	selenium open 'http://google.com'
+	$value = $(selenium get 'id' 'Text1')
+	selenium set 'id' 'Text1' 'new value'
+	selenium click 'id' 'button1'
+	selenium stop
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/selenium
+#>
+}
+
 function server ($a,$b,$c){
 	switch ($a) {
 		start {
@@ -2731,10 +2852,10 @@ function mousedown {
 function mousepos($a) {
     switch ($a) {
         x {
-            return [System.Windows.Forms.Cursor]::Position.X | Out-String
+            return [System.Windows.Forms.Cursor]::Position.X
         }
         y {
-            return [System.Windows.Forms.Cursor]::Position.Y | Out-String
+            return [System.Windows.Forms.Cursor]::Position.Y
         }
         xy {
         $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
@@ -3255,7 +3376,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.4.9'
+        return '0.2.5.0'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -3582,3 +3703,4 @@ function zero($a) {
     https://dialogshell.com/vds/help/index.php/zero
 #>
 }
+
