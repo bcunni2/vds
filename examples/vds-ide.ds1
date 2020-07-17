@@ -1,3 +1,4 @@
+$ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
 
 <#
@@ -348,7 +349,7 @@ function global:menuitemclick ($menu) {
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
-            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(string $FastTab.SelectedTab.Text)'"       
+            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"       
             $StatusStrip1.items[0].Text = "DEBUGGING...."
             run "& $inv"
             #shell open $(string $FastTab.SelectedTab.Text)
@@ -516,9 +517,9 @@ function global:menuitemclick ($menu) {
             else {
                 $ascii = new-object System.Text.ASCIIEncoding
                 $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-                console $FastTab.SelectedTab.Text
+                # console $FastTab.SelectedTab.Text
                 $FastTab.SelectedTab.Controls[0].SaveToFile($FastTab.SelectedTab.Text,$ascii)
-                console $FastTab.SelectedTab.Text
+                # console $FastTab.SelectedTab.Text
                 $FastTab.SelectedTab.Controls[0].IsChanged = $false
             }
             $init.enabled = $true
@@ -610,13 +611,13 @@ function global:menuitemclick ($menu) {
         }
         "$localestatusbar" {
             if (equal $statusstripvisible $true) {
-            console "Hide"
+           # console "Hide"
                 $script:statusstripvisible = $false
                 window hide (winexists $StatusStrip1)
                 $init.enabled = $true
             }
             else {
-            console "Normal"
+                # console "Normal"
             $script:statusstripvisible = $true
                 window normal (winexists $StatusStrip1)    
                 $init.enabled = $true
