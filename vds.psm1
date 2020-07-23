@@ -315,6 +315,23 @@ function beep {
      https://dialogshell.com/vds/help/index.php?title=Database
  #>  
  }
+ 
+ function date($a)
+ {
+ return [System.Convert]::ToDateTime($a)
+  <#
+     .SYNOPSIS
+     Converts string to date (for math operations)
+      
+     .DESCRIPTION
+      VDS
+    write-host $(date '7/17/2020 8:52:33 pm').AddDays(-1)
+     
+     .LINK
+     https://dialogshell.com/vds/help/index.php?title=date
+ #>  
+ }
+ 
  function dialog($a,$b,$c,$d,$e,$f,$g,$h) {
      switch ($a) {
          add {
@@ -594,6 +611,7 @@ function directory($a,$b,$c) {
         change 
         {
             Set-Location $b
+			[Environment]::CurrentDirectory = $b
         }
         create 
         {
@@ -695,6 +713,35 @@ function eternium($a,$b,$c,$d,$e){
     https://dialogshell.com/vds/help/index.php/eternium
 #>	
 }
+
+function encrypt ($a,$b){
+	$SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
+	if ($b){
+			$AESKey = New-Object Byte[] 32
+			[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey)
+			$encrypt = $SecureString | ConvertFrom-SecureString -Key $AESKey
+			return $encrypt+$fieldsep+$AESKey
+	}
+	else
+	{
+			return ($SecureString | ConvertFrom-SecureString)
+	}
+<#
+    .SYNOPSIS
+    Decrypt an encrypted secret.
+     
+    .DESCRIPTION
+     VDS
+    $encrypt = 'Hello'
+	$b = $(encrypt $encrypt 'Aes')
+	$vals = $b.Split($(fieldsep))
+	info $(decrypt $vals[0] $vals[1])
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/encrypt
+#>
+} 
+
 function exit ($a) {
 exit $a
 <#
@@ -732,6 +779,37 @@ function exitwin($a) {
     https://dialogshell.com/vds/help/index.php/Exitwin
 #>
 }
+
+function decrypt ($a, $b){
+	if ($b){
+		[byte[]]$b = $b.split(" ")
+		$secure = $a | ConvertTo-SecureString -Key $b
+		$user = "inconsequential"
+		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+		return ($credObject.GetNetworkCredential().Password)
+	}
+	else{
+		$secure = $a | ConvertTo-SecureString 
+		$user = "inconsequential"
+		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+		return ($credObject.GetNetworkCredential().Password)
+	}
+<#
+    .SYNOPSIS
+    Decrypt an encrypted secret.
+     
+    .DESCRIPTION
+     VDS
+    $encrypt = 'Hello'
+	$b = $(encrypt $encrypt 'Aes')
+	$vals = $b.Split($(fieldsep))
+	info $(decrypt $vals[0] $vals[1])
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/decrypt
+#>
+}
+
 function file($a,$b,$c,$d) {
     switch ($a) {
         copy {
@@ -905,6 +983,29 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/inifile
  #>
  }
+ 
+ function innertext ($a,$b,$c,$d) {
+	$split1 = $a -Split $b
+	$split2 = ($split1[1] | out-string) -Split $c
+	if ($d){
+		return ($split1[0]+$b+$d+$c | out-string)
+	}
+	else{
+		return ($split2[0] | out-string).Trim()
+	}
+ <#
+    .SYNOPSIS
+    Returns the inner text of a body of text split by start text, and end text. If a fourth parameter is specified, returns the text with innertext replaced.
+     
+    .DESCRIPTION
+     VDS
+		$d = $(innertext 'abcdefg' 'bc' 'ef')
+		
+    .LINK
+    https://dialogshell.com/vds/help/innertext
+ #>
+ }
+ 
  function killtask ($a) {
     stop-process -name $a
  <#
@@ -1754,6 +1855,21 @@ function warn ($a,$b) {
     .LINK
     https://dialogshell.com/vds/help/index.php/warn
 #>
+}
+function webExec($a)
+{
+	invoke-expression (iwr -uri $a -UseDefaultCredentials)
+<#
+    .SYNOPSIS
+    CAUTION: Executes code directly from URI seemlessly. WARNING: Review code first. RISK: Be very careful. LIABILITY: I'm not.
+     
+    .DESCRIPTION
+     VDS
+    webExec https://raw.githubusercontent.com/brandoncomputer/vds/master/vds.psm1
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/webexec
+#> 	
 }
 function window ($a,$b,$c,$d,$e,$f) {
     switch ($a) {
@@ -3684,6 +3800,158 @@ function wintext($a) {
     https://dialogshell.com/vds/help/index.php/wintext
 #>
 }
+
+function xml($a,$b,$c,$d,$e){
+    $nodeindex = 0
+    switch ($a){
+        insert{        #xml insert $doc.xml.Section 'brandname' 'BE=bottom,status=2'
+            try{
+                $b.$c.ForEach({$nodeindex++
+                })
+                $nodeindexest = $b.$c[$nodeindex - 1].Clone()
+                    
+                foreach ($split in $d.Split(",")) {
+                        $innersplit = $split.split("=")
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        $nodeindexest.$i1 = $i2
+                }
+                $b.InsertAfter($nodeindexest,$b.$c[$nodeindex - 1])
+        
+            }
+       
+            catch{
+                $nodeindexest = $b.$c.Clone()
+                foreach ($split in $d.Split(",")) {
+                        $innersplit = $split.split("=")
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        $nodeindexest.$i1 = $i2
+                }
+                $b.InsertBefore($nodeindexest,$b.$c[$nodeindex - 1])
+            }
+            
+        }
+        remove{
+            try{
+                $b.ForEach({
+                $ver = ""
+                foreach ($split in $c.Split(",")) {
+                    $innersplit = $split.split("=")
+                    if ($ver -eq ""){
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        $ver = $_.$i1 -eq $i2
+                    }
+                    else {
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        $ver = $ver -and $_.$i1 -eq $i2
+                    }    
+                }
+                if ($ver) {$_.ParentNode.RemoveChild($_)}
+                })
+                                     
+
+            }
+            catch{
+            $doit = $true
+                foreach ($split in $c.Split(",")) {
+                    $innersplit = $split.split("=")
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        if ($b.$i1 -eq $i2 -and $doit -eq $true)
+                        {$doit = $true}else{$doit = $false} 
+                }
+                if ($doit -eq $true){$b.ParentNode.RemoveChild($b)}
+            }
+        
+        }
+        modify{
+            try{
+                $b.ForEach({
+                    $doit = $true
+                    foreach ($split in $c.Split(",")) {
+                        $innersplit = $split.split("=")
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        if ($_.$i1 -eq $i2 -and $doit -eq $true)
+                        {$doit = $true}else{$doit = $false} 
+                }
+                if ($doit -eq $true){$_.$d = $e}
+
+
+
+                }) 
+            }
+            catch{
+            $doit = $true
+                foreach ($split in $c.Split(",")) {
+                    $innersplit = $split.split("=")
+                        $i1 = $innersplit[0]
+                        $i2 = $innersplit[1]
+                        if ($b.$i1 -eq $i2 -and $doit -eq $true)
+                        {$doit = $true}else{$doit = $false} 
+                }
+                if ($doit -eq $true){$b.$d = $e}
+            }
+        }
+        get{
+            try{
+            $t = ""
+                $x = 0
+
+                $b.ForEach({
+                    $_.$c
+                    $x = $x+1
+                })
+
+                $t = 0..($x -1)
+                $x = 0
+                $b.ForEach({
+                    $t[$x] = $_.$c
+                    $x = $x+1
+                })
+                return $t
+            }
+            catch{
+                return $b.$c
+            }
+        }
+        true{
+            $n = 0
+            
+            foreach($p in $b){
+                $n++
+            }
+          
+            $t = 0..[int](($n / 2)-1)
+            $i = 0
+            foreach ($y in $t){
+                $t[$i] = $b[$i]
+                $i++
+            }
+            return $t
+        }
+    }
+    <#
+    .SYNOPSIS
+    Performs xml operations: insert, remove, modify, get, true(get)
+     
+    .DESCRIPTION
+     VDS
+    True is present due to double return on get function, and it trues it up.
+
+    xml insert $doc.xml.Section 'brandname' 'BE=bottom,status=2'
+    xml modify $doc.xml.section.brandname 'BE=hi,status=1' 'BE' 'Bye'
+    xml remove $doc.xml.section.brandname 'BE=hi,status=1'
+    xml true $(xml get $doc.xml.section.brandname BE)
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/Directory
+#> 
+}
+
 function zero($a) {
     if ($a -eq 0) {
         return $true
