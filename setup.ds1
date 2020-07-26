@@ -109,7 +109,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "c:\windows\installer\dialogshell\setup.exe -uninstall"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "Publisher" String "vds/pwsh community"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" String $(datetime).ToString('yyyyMMdd')
-                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.5.6"
+                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.5.7"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayIcon" String "$(string $Label2.Text)\res\icon.ico"
                   #  Uncomment these lines if unhappy with scaling blur. I'm leaving these commented at release, because devs need to be aware of the scaling issues.
                   #  There is a future task scheduled to fix this in the .manifest within the compiler, but it's at least 90 days out unless not-me works on it. 
