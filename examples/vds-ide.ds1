@@ -1,5 +1,6 @@
 $ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
+#info $(curdir)
 
 <#
 $host.ui.RawUI.Backgroundcolor = 1
@@ -80,6 +81,7 @@ $localezoom         = (iniread locale Zoom)
 $localehelp         = (iniread locale Help)
 $localeabout        = (iniread locale About)
 $localeaboutdialog  = (iniread locale AboutDialog)
+$localedialogshell = "DialogShell"
 
 #lgplv3 - fork located at https://github.com/brandoncomputer/FastColoredTextBox
 [Reflection.Assembly]::LoadFile("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\FastColoredTextBox.dll") | Out-Null
@@ -90,11 +92,11 @@ $FastTextForm.icon = (curdir)+"\..\dialogshell designer.dll"
 $FastTextForm.MinimumSize = new-object System.Drawing.Size(480,360)
 $StatusStrip1       = dialog add $FastTextForm StatusStrip 
 $closetab           = dialog add $FastTextForm button 0 0 0 0
-$toolstrip1         = dialog add $FastTextForm toolstrip ("$localenew|$(curdir)\..\res\page_add.png,$localeopen|$(curdir)\..\res\folder_page_white.png,$localesave|$(curdir)\..\res\disk.png,-,$localeprint|$(curdir)\..\res\printer.png,-,$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,-,$localerecord|$(curdir)\..\res\record.png,$localeplay|$(curdir)\..\res\control_play_blue.png,-,$localedesigner|$(curdir)\..\res\icon.ico,$localedebug|$(curdir)\..\res\bug_go.png,$localecompile|$(curdir)\..\res\compile.ico")
+$toolstrip1         = dialog add $FastTextForm toolstrip ("$localenew|$(curdir)\..\res\page_add.png,$localeopen|$(curdir)\..\res\folder_page_white.png,$localesave|$(curdir)\..\res\disk.png,-,$localeprint|$(curdir)\..\res\printer.png,-,$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,-,$localerecord|$(curdir)\..\res\record.png,$localeplay|$(curdir)\..\res\control_play_blue.png,-,$localedialogshell|$(curdir)\..\res\terminal.ico,$localedesigner|$(curdir)\..\res\icon.ico,$localedebug|$(curdir)\..\res\bug_go.png,$localecompile|$(curdir)\..\res\compile.ico")
 $file               = dialog add $FastTextForm menustrip "$localefile" ("$localenew|Ctrl+N|$(curdir)\..\res\page_add.png,$localeopen|Ctrl+O|$(curdir)\..\res\folder_page_white.png,$localesave|Ctrl+S|$(curdir)\..\res\disk.png,$localesaveas,-,$localeprint|Ctrl+P|$(curdir)\..\res\printer.png,-,E&xit")
 $edit               = dialog add $FastTextForm menustrip "$localeedit" ("$localeundo|Ctrl+Z|$(curdir)\..\res\arrow_undo.png,-,$localecut|Ctrl+X|$(curdir)\..\res\cut.png,$localecopy|Ctrl+C|$(curdir)\..\res\page_copy.png,$localepaste|Ctrl+V|$(curdir)\..\res\paste_plain.png,-,$localefind|Ctrl+F|$(curdir)\..\res\page_find.png,$localereplace|Ctrl+H,&Go To...|Ctrl+G,$localeselectall|Ctrl+A,$localetimedate|F5")
 $view               = dialog add $FastTextForm menustrip "$localeview" "$localestatusbar,-,50%|Ctrl+5,100%|Ctrl+0,200%|Ctrl+2" 
-$build              = dialog add $FastTextForm menustrip "$localebuild" ("$localedesigner|F2|$(curdir)\..\res\icon.ico,$localedebug|F8|$(curdir)\..\res\bug_go.png,$localecompile|F9|$(curdir)\..\res\compile.ico")
+$build              = dialog add $FastTextForm menustrip "$localebuild" ("$localedialogshell|F3|$(curdir)\..\res\terminal.ico,$localedesigner|F2|$(curdir)\..\res\icon.ico,$localedebug|F8|$(curdir)\..\res\bug_go.png,$localecompile|F9|$(curdir)\..\res\compile.ico")
 $examples           = dialog add $FastTextForm menustrip "$localeexamples" ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
 $help               = dialog add $FastTextForm menustrip "$localehelp" ("$localehelp|F1|$(curdir)\..\res\help.png,$localeabout")               
 $FastTab            = dialog add $FastTextForm TabControl 50 0 480 360
@@ -119,7 +121,7 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 $FastTextForm.add_Closing({
     while ($FastTab.TabPages.Count -gt 0) {
         if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
-            $ask = (ask "$localeprint Changes?" $FastTab.SelectedTab.Text)
+            $ask = (ask "$localesave Changes?" $FastTab.SelectedTab.Text)
             if ($ask -eq "Yes") {
                 if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
                 $saveFile = (savedlg "$localedialog")
@@ -317,33 +319,55 @@ function global:menuitemclick ($menu) {
         }
         "200%" {
             $FastTab.SelectedTab.Controls[0].Zoom = 200
+            
         }
+        "$localedialogshell" {
+  
+        $curdir = $(curdir)
+              if ($(file $(string $FastTab.SelectedTab.Text)))
+                {
+                    directory change $(path $(string $FastTab.SelectedTab.Text))
+                }
+            $inv = "'start' '$curdir\..\compile\dialogshell.exe'"
+   #   info       "$curdir\..\compile\dialogshell.exe"
+             run "& $inv"
+             directory change $curdir
+    }
         "$localedebug" {
             if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
+              #  info 1
                 $ask = (ask "$localesavechanges" $FastTab.SelectedTab.Text)
                 if ($ask -eq "Yes") {
+              #  info 2
                     if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
+                  #  info 3
                     $saveFile = (savedlg "$localedialog")
                         if ($saveFile) {
+                          #  info 4
                             if (equal (ext $saveFile) "dsproj") {
+                          #  info 5
                                 if (not (file $SaveFile)) {
                                     $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
                                     $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
                                 }
                                 else {
+                             #       info 5e
                                     $saveFile = (get-content $saveFile)
                                 }
                             }
                                 $ascii = new-object System.Text.ASCIIEncoding
                                 $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                                 $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                                 $FastTab.SelectedTab.Text = $saveFile
                         }
                     }
                     else {
+                        # info 2e
                         $ascii = new-object System.Text.ASCIIEncoding
                         $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                         $FastTab.SelectedTab.Controls[0].SaveToFile($FastTab.SelectedTab.Text,$ascii)
                         $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                        $FastTab.SelectedTab.Text = $saveFile
                     }
                 } 
             }
