@@ -420,7 +420,7 @@ function beep {
 								$item.image = $(streamimage $isplit[1])
 							}
 							else {
-								$item.image = $(fileimage isplit[1])
+								$item.image = $(fileimage $isplit[1])
 							}
                              $item.text = $isplit[2]
                              $item.Add_Click({&toolstripitemclick $this})
