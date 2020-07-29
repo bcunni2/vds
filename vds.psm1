@@ -383,7 +383,12 @@ function beep {
                              $split = $innersplit[0]
                              $item = new-object System.Windows.Forms.ToolStripMenuItem
                              if ($innersplit[2]) {
-                             $item.image = [System.Drawing.Image]::FromFile($innersplit[2])
+								if ($(substr $innersplit[2] 0 2) -eq 'ht') {
+									$item.image = $(streamimage $innersplit[2])
+								}
+								else {
+								$item.image = $(fileimage $innersplit[2])
+								}
                              }
                              if ($innersplit[1]) {
                                  $item.ShortCutKeys = $innersplit[1]
@@ -411,7 +416,12 @@ function beep {
                              $item = new-object System.Windows.Forms.ToolStripButton
                              $isplit = $split.split("|")
                              $item.name = $isplit[0]
-                             $item.image = [System.Drawing.Image]::FromFile($isplit[1])
+							if ($(substr $isplit[1] 0 2) -eq 'ht') {
+								$item.image = $(streamimage $isplit[1])
+							}
+							else {
+								$item.image = $(fileimage isplit[1])
+							}
                              $item.text = $isplit[2]
                              $item.Add_Click({&toolstripitemclick $this})
                          }
@@ -427,11 +437,21 @@ function beep {
                  }
              }
          }
-         image { 
-             $b.Image = [System.Drawing.Image]::FromFile($c)
+         image {
+				if ($(substr $c 0 2) -eq 'ht') {
+					$b.image = $(streamimage $c)
+				}
+				else {
+					$b.image = $(fileimage $c)
+				}
          } 
  		backgroundimage { 
- 		 	$b.backgroundimage = [System.Drawing.Image]::FromFile($c)
+				if ($(substr $c 0 2) -eq 'ht') {
+					$b.backgroundimage = $(streamimage $c)
+				}
+				else {
+					$b.backgroundimage = $(fileimage $c)
+				}
          }
          clear {
              $b.Text = ""
@@ -479,7 +499,13 @@ function beep {
                              $item.name = $isplit[0] 
  							if ($isplit[1])
  							{
-                             $item.image = [System.Drawing.Image]::FromFile($isplit[1])}
+								if ($(substr $isplit[1] 0 2) -eq 'ht') {
+									$item.image = $(streamimage $isplit[1])
+								}
+								else {
+									$item.image = $(fileimage isplit[1])
+								}
+							}
                              $item.text = $isplit[0]
                              $item.Add_Click({&menuitemclick $this})
                          }
@@ -1107,6 +1133,20 @@ $global:errpref = $ErrorActionPreference
 #>	
 }
 
+function fileimage ($a){
+return [System.Drawing.Image]::FromFile($a)
+<#
+    .SYNOPSIS
+     Creates a image from a file.
+     
+    .DESCRIPTION
+     VDS
+    $PictureBox1.image = $(fileimage 'c:\temp\eternium.png')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/streamimage
+#>	
+}
 function encrypt ($a,$b){
 	$SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
 	if ($b){
@@ -3772,6 +3812,55 @@ function strdel($a,$b,$c) {
     https://dialogshell.com/vds/help/index.php/strdel
 #>
 }
+
+function streamimage ($a){
+                $s = iwr $a
+                
+                $r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
+                $r.Write($s.content, 0, $s.content.Length)
+                
+                return [System.Drawing.Image]::FromStream($r, $true)
+<#
+    .SYNOPSIS
+     Creates a image from a web url stream
+     
+    .DESCRIPTION
+     VDS
+    $PictureBox1.image = $(streamimage 'https://dialogshell.com/eternium.png')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/streamimage
+#>			
+
+}
+
+function vdsdll ($a){
+				if ($(substr $a 0 2) -eq 'ht') {
+				
+                $s = iwr $a
+                
+            #    $r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
+            #    $r.Write($s.content, 0, $s.content.Length)
+                
+                return [Reflection.Assembly]::Load($s.content) | out-null
+				}
+				else {
+				[Reflection.Assembly]::LoadFile($a) | Out-Null
+				}
+<#
+    .SYNOPSIS
+     Creates a image from a web url stream
+     
+    .DESCRIPTION
+     VDS
+    $PictureBox1.image = $(streamimage 'https://dialogshell.com/eternium.png')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/streamimage
+#>			
+
+}
+
 function string($a) {
 return ($a | Out-String).trim()
 #Proper form for dialogshell philosophy if splitting hairs: return $(trim $(Out-String -inputobject $a)) . Were it written before the trim function, ($(Out-String -inputobject $a)).Trim() . I don't feel we as a community should care, and this code is written and produces the expected output - so the point is moot. No one should touch this.
@@ -3885,7 +3974,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.5.8'
+        return '0.2.5.9'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -3915,6 +4004,7 @@ function sysinfo($a) {
 	https://dialogshell.com/vds/help/index.php/sysinfo
 #>
 } 
+
 
 function tab {
     return "`t" 
