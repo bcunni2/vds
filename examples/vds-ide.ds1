@@ -30,6 +30,8 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
 }
 
 $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
+$wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
+$docpath = "C:\Users\$env:username\Documents\DialogShell"
 
 if (file ".\$(Get-WinSystemLocale)\vds-ide.mui") {
     inifile open ".\$(Get-WinSystemLocale)\vds-ide.mui"
@@ -90,7 +92,7 @@ $localedialogshell = "DialogShell"
 $script:lastfind = ""
 $script:curdoc = ""
 $FastTextForm       = dialog create "Visual DialogShell" 0 0 600 480
-$FastTextForm.icon = (curdir)+"\..\dialogshell designer.dll"
+$FastTextForm.icon = (curdir)+"\..\res\icon.ico"
 $FastTextForm.MinimumSize = new-object System.Drawing.Size(480,360)
 $StatusStrip1       = dialog add $FastTextForm StatusStrip 
 $closetab           = dialog add $FastTextForm button 0 0 0 0
@@ -99,7 +101,8 @@ $file               = dialog add $FastTextForm menustrip "$localefile" ("$locale
 $edit               = dialog add $FastTextForm menustrip "$localeedit" ("$localeundo|Ctrl+Z|$(curdir)\..\res\arrow_undo.png,-,$localecut|Ctrl+X|$(curdir)\..\res\cut.png,$localecopy|Ctrl+C|$(curdir)\..\res\page_copy.png,$localepaste|Ctrl+V|$(curdir)\..\res\paste_plain.png,-,$localefind|Ctrl+F|$(curdir)\..\res\page_find.png,$localereplace|Ctrl+H,&Go To...|Ctrl+G,$localeselectall|Ctrl+A,$localetimedate|F5")
 $view               = dialog add $FastTextForm menustrip "$localeview" "$localestatusbar,-,50%|Ctrl+5,100%|Ctrl+0,200%|Ctrl+2" 
 $build              = dialog add $FastTextForm menustrip "$localebuild" ("$localedialogshell|F3|$(curdir)\..\res\terminal.ico,$localedesigner|F2|$(curdir)\..\res\icon.ico,$localedebug|F8|$(curdir)\..\res\bug_go.png,$localecompile|F9|$(curdir)\..\res\compile.ico")
-$examples           = dialog add $FastTextForm menustrip "$localeexamples" ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
+$examples           = dialog add $FastTextForm menustrip "$localeexamples" # ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
+$testmenu           = dialog add $FastTextForm menustrip "&Wizards"
 $help               = dialog add $FastTextForm menustrip "$localehelp" ("$localehelp|F1|$(curdir)\..\res\help.png,$localeabout")               
 $FastTab            = dialog add $FastTextForm TabControl 50 0 480 360
 dialog image $closetab ((curdir)+'\..\res\tab_delete.png')
@@ -119,11 +122,41 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedesigner"] tooltiptext "$localedesignertt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
+
+    
+$testmenu.add_Click({
+    $curdir = $(curdir)
+    $fileOpenvds = (filedlg "DialogShell Script|*.ds1" "$wizardpath")
+    if ($fileOpenvds) {
+        iex (get-content $fileOpenvds | out-string)
+        }
+})
+
+$examples.add_Click({
+    $curdir = $(curdir)
+    $fileOpen = (filedlg "$localedialog" "$docpath")
+    if ($fileOpen) {
+                if (equal (ext $fileOpen) "dsproj"){
+                    $fileOpen = (trim (get-content $fileOpen | Out-String))
+                }
+                $FastTab.TabPages.Add("$fileOpen")
+                $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+                $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+                dialog property $FastText language "DialogShell"
+                dialog property $FastText dock "Fill"
+                $FastTab.SelectedTab.Controls.Add($FastText)    
+                $FastText.OpenFile($fileOpen)
+                $script:curdoc = (string $fileOpen)
+            }
+            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+            $init.enabled = $true
+})
+
                 
 $FastTextForm.add_Closing({
     while ($FastTab.TabPages.Count -gt 0) {
         if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
-            $ask = (ask "$localesave Changes?" $FastTab.SelectedTab.Text)
+            $ask = (ask "$localesavechanges" $FastTab.SelectedTab.Text)
             if ($ask -eq "Yes") {
                 if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
                 $saveFile = (savedlg "$localedialog")
@@ -266,11 +299,11 @@ $FastTextForm.add_Resize({
 
 function global:toolstripitemclick ($name) {
     switch (dlgname $name) {
-        '$localerecord' {
-            window send (winexists $FastTab.SelectedTab.Controls[0]) (ctrl 'm') 
+        "$localerecord" {
+            window send $FastTab.SelectedTab.Controls[0].handle (ctrl 'm') 
         }
-        '&Play' {
-            window send (winexists $FastTab.SelectedTab.Controls[0]) (ctrl 'e') 
+        "$localeplay" {
+            window send $FastTab.SelectedTab.Controls[0].handle (ctrl 'e') 
         }
         default {
             menuitemclick $name
@@ -288,8 +321,13 @@ function global:menuitemclick ($menu) {
             run 'start https://dialogshell.com/vds/help'
         }
         "$localedesigner" {
-            $inv = "'$(curdir)\..\DialogShell Designer.exe'"
-            run "& $inv"
+      <#   run (get-content "'$(curdir)\..\DialogShell Designer.ds1'") | out-string
+          $inv = "'$(curdir)\..\DialogShell Designer.exe'"
+        run "&" $inv" #>
+$global:eleOK = "true"
+DesignWindow
+elementswindow
+$mForm.Show()
         }
         "$localecompile" {
             if (file ((path $FastTab.SelectedTab.Text)+'\'+$(name $FastTab.SelectedTab.Text)+'.pil'))
@@ -393,7 +431,7 @@ function global:menuitemclick ($menu) {
             $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
             dialog property $FastText language "DialogShell"
             dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
+            $FastTab.SelectedTab.Controls.Add($FastText)
             $init.enabled = $true
         }
         "Template" {
@@ -505,7 +543,7 @@ function global:menuitemclick ($menu) {
             $init.enabled = $true
         }
         "$localeopen" {
-            $fileOpen = (filedlg "$localedialog")
+        $fileOpen = (filedlg "$localedialog" $docpath)
             if ($fileOpen) {
                 if (equal (ext $fileOpen) "dsproj"){
                     $fileOpen = (trim (get-content $fileOpen | Out-String))
@@ -525,7 +563,7 @@ function global:menuitemclick ($menu) {
         
         "$localesave" {
             if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
-                $saveFile = (savedlg "$localedialog")
+            $saveFile = (savedlg "$localedialog" $docpath)
                 if ($saveFile) {
                     if (equal (ext $saveFile) "dsproj") {
                         if (not (file $saveFile)) {
@@ -625,7 +663,9 @@ function global:menuitemclick ($menu) {
         "$localecut" {$FastTab.SelectedTab.Controls[0].Cut()}
         "$localecopy" {$FastTab.SelectedTab.Controls[0].Copy()}
         "$localepaste" {$FastTab.SelectedTab.Controls[0].Paste()}
-        "$localefind" {$FastTab.SelectedTab.Controls[0].ShowFindDialog()}
+        "$localefind" {$FastTab.SelectedTab.Controls[0].ShowFindDialog()
+        [vds]::SetWindowPos($(winexists "Find"), 0, $(winpos $(winexists "Find") T), $(winpos $(winexists "Find") L), $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H), 0x0040)
+            }
         "$localereplace" {$FastTab.SelectedTab.Controls[0].ShowReplaceDialog()}
         "&Go To..." { $FastTab.SelectedTab.Controls[0].ShowGotoDialog()}
         "$localeselectall" {$FastTab.SelectedTab.Controls[0].SelectAll()}
@@ -708,6 +748,772 @@ function aboutbox {
     dialog showmodal $AboutForm
 }
     
+#Adapted from Z.Alex https://gallery.technet.microsoft.com/scriptcenter/Powershell-Form-Builder-3bcaf2c7 MIT License
+
+function mouseDown {
+ 
+    $Global:mCurFirstX = $(mousepos x)
+    $Global:mCurFirstY = $(mousepos y)
+ 
+} 
+ 
+function mouseMove ($mControlName) { 
+ 
+    $mCurMoveX = $(mousepos x) 
+    $mCurMoveY = $(mousepos y) 
+
+   if (($(not $(equal $Global:mCurFirstX 0))) -and ($(not $(equal $Global:mCurFirstY 0)))){ 
+  
+        $mDifX = $(differ $Global:mCurFirstX $mCurMoveX)  
+        $mDifY = $(differ $Global:mCurFirstY $mCurMoveY) 
+          
+        dialog setpos $this $(differ $this.top $mDifY) $(differ $this.left $mDifX) $this.width $this.height
+  
+         $Global:mCurFirstX = $mCurMoveX  
+        $Global:mCurFirstY = $mCurMoveY  
+ 
+    } 
+ 
+} 
+ 
+function mouseUP ($mControlObj) { 
+ 
+    $mCurUpX = $(mousepos x) 
+    $mCurUpY = $(mousepos y) 
+ 
+    $Global:mCurFirstX = 0 
+    $Global:mCurFirstY = 0 
+ 
+ 
+    Foreach ($mElement In $(the Elements $Global:mFormObj)) { 
+ 
+       
+        if ($(equal $mElement.name $this.name)) {
+
+            foreach($mProp in $(the Properties $mElement)){ 
+              
+                Switch($mProp.name) { 
+ 
+                    'Top'{ $mProp.Value = $this.top} 
+                    'Left'{$mProp.Value = $this.left} 
+ 
+                } 
+            } 
+        } 
+    } 
+     
+    renewGrids $this.name
+} 
+ 
+Function renewGrids ($a){ 
+
+
+ 
+    $mList = New-Object System.Collections.ArrayList 
+    [array]$mElementsArr = $mFormObj.Elements | select Name,Type 
+    $mList.AddRange($mElementsArr) 
+    $mElemetnsGrid.DataSource =  $mList 
+    $mElemetnsGrid.Columns[1].ReadOnly = $true 
+    $mElemetnsGrid.Columns[0].Width = '140'
+    $mElemetnsGrid.Columns[1].Width = '140'
+ 
+     $mList2 = New-Object System.Collections.ArrayList 
+
+    [array]$mPropertyArr = $mFormObj.Elements[$mElemetnsGrid.CurrentRow.Index].Properties
+
+    $mList2.AddRange($mPropertyArr) 
+    $mPropertiesGrid.DataSource = $mList2 
+    $mPropertiesGrid.Columns[0].ReadOnly=$true
+    $mPropertiesGrid.Columns[0].Width = '140'
+    $mPropertiesGrid.Columns[1].Width = '140'
+    
+
+         $mElemetnsGrid.CurrentCell = $null
+$i = -1
+    foreach($row in $(the Rows $mElemetnsGrid))
+{
+    $i++
+    if($(equal $row.Cells[0].Value.ToString() $a))
+    {
+
+ $mElemetnsGrid.CurrentCell = $mElemetnsGrid[0,$i]
+       $row.selected = $true
+  }
+ ElementsChanged
+}
+
+
+ 
+} 
+ 
+Function DeleteElement { 
+    $ev = $mFormObj.Elements[$mElemetnsGrid.CurrentRow.Index].Name
+    if ($(greater $mFormObj.Elements.Count 1)){
+        $Global:mFormObj.Elements = $mFormObj.Elements | where{$(not $(equal $(the Name $_) $ev))}
+    }
+    else{
+        $Global:mFormObj.Elements = @()
+    }
+    
+    $fc = $mFormGroupBox.Controls
+
+    $fc[$ev].Dispose()
+    
+    renewGrids $mFormGroupBox.Controls[0]
+}     
+   
+
+ 
+Function AddProperty ($mName,$mValue){ 
+ 
+    $mPropertyObj = New-Object PSCustomObject 
+    $mPropertyObj | Add-Member -Name 'Name' -MemberType NoteProperty -Value $mName 
+    $mPropertyObj | Add-Member -Name 'Value' -MemberType NoteProperty -Value $mValue 
+    return $mPropertyObj 
+ 
+} 
+ 
+Function ElementsChanged{ 
+
+ $mSameType = ($mFormObj.Elements | where{$(like $_.Type $mControlType.SelectedItem)})
+
+    if ($mElemetnsGrid.CurrentRow.Index)
+    {
+    $mList2 = New-Object System.Collections.ArrayList 
+    [array]$mPropertyArr =  $mFormObj.Elements[$mElemetnsGrid.CurrentRow.Index].Properties
+    $mList2.AddRange($mPropertyArr) 
+    $mPropertiesGrid.DataSource = $mList2 
+    }
+
+ 
+} 
+ 
+function ElementsEndEdit { 
+ 
+    $Global:mFormObj.Elements[$mElemetnsGrid.CurrentRow.Index].Name =  $mElemetnsGrid.CurrentCell.FormattedValue 
+    repaintForm 
+ 
+} 
+ 
+ 
+ 
+Function AddElement { 
+    $mPropertiesArr =@() 
+    
+    $mSameType = ($mFormObj.Elements | ?{$(like $_.Type $mControlType.SelectedItem)}) 
+ 
+    if($(the count $mSameType) -ne $NUll -and $(not $(null $mSameType))) { #compare to below [fun with linguistic semantics]
+ $tr = $true
+        $mControlName=''+$mControlType.SelectedItem+($mSameType.count+1) 
+ 
+     }elseif($(null $mSameType.Count) -and $(not $(equal $mSameType $null))) {  #compare to above
+ $tr = $true
+        $mControlName=''+$mControlType.SelectedItem+'2' 
+ 
+     }else{ 
+      $tr = $true
+        $mControlName=''+$mControlType.SelectedItem+'1' 
+      
+     } 
+
+     $d1 = $mControlType.SelectedItem | Out-String
+        
+        $d1 = $d1.trim()
+        
+     $dummy = New-Object System.Windows.Forms.$d1
+     $mForm.controls.Add($dummy)
+
+  #  $mPropertiesArr+= AddProperty 'Text' $mControlName 
+    $mPropertiesArr+= AddProperty 'Width' $dummy.width 
+    $mPropertiesArr+= AddProperty 'Height' $dummy.height 
+    $mPropertiesArr+= AddProperty 'Top' $(Get-Random -Minimum 20 -Maximum ($mFormGroupBox.Height - $dummy.Height))
+    $mPropertiesArr+= AddProperty 'Left' $(Get-Random -Minimum 20 -Maximum ($mFormGroupBox.width - $dummy.Width))
+    $mForm.controls.remove($dummy)
+
+ 
+    $mElementsObj = New-Object PSCustomObject 
+    $mElementsObj |Add-Member -Name 'Name' -MemberType NoteProperty -Value $mControlName  
+    $mElementsObj |Add-Member -Name 'Type' -MemberType NoteProperty -Value ($mControlType.SelectedItem) 
+    $mElementsObj |Add-Member -Name 'Properties' -MemberType NoteProperty -Value $mPropertiesArr 
+    $Global:mFormObj.Elements += $mElementsObj 
+ 
+    renewGrids 
+ 
+    repaintForm 
+ 
+} 
+
+Function AddElement2 ($a, $filename) { 
+    $mPropertiesArr =@() 
+    $a = $a.trim()
+ 
+    $mSameType = ($mFormObj.Elements | ?{$_.Type -like $a}) 
+
+    #Strange hybrid language powers activate! Form of DialogShell! Form of Powershell!
+ 
+    if($(the count $mSameType) -ne $NUll -and $(not $(null $mSameType))) { #compare to below [fun with linguistic semantics]
+ $tr = $true
+        $mControlName=''+$a+($mSameType.count+1) 
+ 
+     }elseif($(null $mSameType.Count) -and $(not $(equal $mSameType $null))) {  #compare to above
+      
+ $tr = $true
+        $mControlName=''+$a+'2' 
+ 
+     }else{ 
+      $tr = $true
+        $mControlName=''+$a+'1' 
+      
+     } 
+
+     $d1 = $a | Out-String
+     
+     $d1 = $d1.trim()
+
+    $dummy = dialog add $mForm $d1
+
+ 
+    $mPropertiesArr+= AddProperty 'Text' $mControlName 
+    $mPropertiesArr+= AddProperty 'Width' $dummy.width 
+    $mPropertiesArr+= AddProperty 'Height' $dummy.height 
+    $x = $(mousepos x) - $mFormGroupBox.Left
+    $y = $(mousepos y) - $mFormGroupBox.Top
+    $mPropertiesArr+= AddProperty 'Top' "$([Math]::Round(($y - ($dummy.height/2)),0))"
+    $mPropertiesArr+= AddProperty 'Left' "$([Math]::Round(($x - ($dummy.width/2)),0))"
+    
+    
+    
+ 
+foreach ($object in ($dummy | get-member)){
+    if ($object.membertype.toString() -eq "Property"){
+        switch ($object.name){
+            'Text' {}
+            'Width' {}
+            'Height' {}
+            'Top' {}
+            'Left' {}
+'AccessibilityObject' {}
+'CanFocus' {}
+'CanSelect' {}
+'CompanyName' {}
+'Container' {}
+'ContainsFocus' {}
+'Controls' {}
+'Created' {}
+'DataBindings' {}
+'DeviceDpi' {}
+'DisplayRectangle' {}
+'Disposing' {}
+'Focused' {}
+'Handle' {}
+'HasChildren' {}
+'InvokeRequired' {}
+'IsDisposed' {}
+'IsHandleCreated' {}
+'IsMirrored' {}
+'LayoutEngine' {}
+'PreferredHeight' {}
+'PreferredSize' {}
+'ProductName' {}
+'ProductVersion' {}
+'RecreatingHandle' {}
+'Right' {}
+'AccessibleName' {}
+'AccessibleDefaultActionDescription' {}
+'AccessibleDescription' {}
+'AccessibleRole' {}
+'ImeMode' {}
+'IsAccessible' {}
+'Location' {}
+'Name' {}
+'Parent' {}
+'Region' {}
+'Site' {}
+'WindowTarget' {}
+            default{
+            $mPropertiesArr+= AddProperty $object.name $object.value
+            }
+        }
+    }
+}
+    
+    
+    dialog remove $dummy
+
+  <#  
+    $gate = $false
+        if ($filename)
+    {
+    $content = get-content $filename
+if ($content) {
+
+try{
+    $Items = New-Object System.Collections.Generic.List[System.Object]
+     $Items.AddRange($content) 
+    foreach ($Item in $Items)
+    {
+        if ($(equal $Item "[InternetShortcut]"))
+        {$gate = $true}
+        if ($(equal $gate $false))
+        {
+            $entry = $Item.split("=")[0]
+            if ($(equal $entry "Text"))
+                {$value = $mControlName}
+            else
+            {
+                $value = $item.split("=")[1]
+            }
+            $mPropertiesArr+= AddProperty $entry $value
+        }               
+    }   
+}
+
+catch { $entry = $content.split("=")[0]
+        if ($(equal $entry "Text"))
+        {$value = $mControlName}
+        else
+        {
+       $value = $content.split("=")[1]
+       }
+        $mPropertiesArr+= AddProperty $entry $value
+}
+}
+} #>
+
+ 
+    $mElementsObj = New-Object PSCustomObject 
+    $mElementsObj |Add-Member -Name 'Name' -MemberType NoteProperty -Value $mControlName  
+    $mElementsObj |Add-Member -Name 'Type' -MemberType NoteProperty -Value ($a)
+    $mElementsObj |Add-Member -Name 'Properties' -MemberType NoteProperty -Value $mPropertiesArr 
+
+  $Global:mFormObj.Elements = @($Global:mFormObj.Elements)
+  $Global:mFormObj.Elements += $mElementsObj
+
+    renewGrids 
+ 
+    repaintForm 
+ 
+} 
+ 
+function AddControl ($mControl) { 
+ 
+    $mReturnControl = $null 
+ 
+    $ctrol = $mControl.Type | Out-String 
+    
+    $ctrol = $ctrol.trim()
+
+    $mReturnControl = New-Object System.Windows.Forms.$ctrol
+
+ 
+    $mReturnControl.Name = $mControl.Name 
+ 
+    $mSizeX=$null 
+    $mSizeY=$null 
+ 
+    foreach ($mProperty in $mControl.Properties){ 
+ 
+       switch ($mProperty.Name){ 
+#            'Top'   {$mReturnControl.Top=$mProperty.Value} 
+#            'Left'  {$mReturnControl.Left=$mProperty.Value}  
+            'Width' {$mSizeX=$mProperty.Value} 
+            'Height' {$mSizeY=$mProperty.Value} 
+#             'Text'  {$mReturnControl.Text=$mProperty.Value}
+
+'AccessibilityObject' {}
+'CanFocus' {}
+'CanSelect' {}
+'CompanyName' {}
+'Container' {}
+'ContainsFocus' {}
+'Controls' {}
+'Created' {}
+'DataBindings' {}
+'DeviceDpi' {}
+'DisplayRectangle' {}
+'Disposing' {}
+'Focused' {}
+'Handle' {}
+'HasChildren' {}
+'InvokeRequired' {}
+'IsDisposed' {}
+'IsHandleCreated' {}
+'IsMirrored' {}
+'LayoutEngine' {}
+'PreferredHeight' {}
+'PreferredSize' {}
+'ProductName' {}
+'ProductVersion' {}
+'RecreatingHandle' {}
+'Right' {}
+'AccessibleName' {}
+'AccessibleDefaultActionDescription' {}
+'AccessibleDescription' {}
+'AccessibleRole' {}
+'ImeMode' {}
+'IsAccessible' {}
+'Location' {}
+'Name' {}
+'Parent' {}
+'Region' {}
+'Site' {}
+'WindowTarget' {}
+
+            default{ 
+            $prop = $mProperty.Name
+ $val = $mProperty.Value
+ 
+# $attributeCollection = New-Object System.Collections.ObjectModel.Collection[System.Attribute]
+# $attributeCollection = [System.ComponentModel.TypeDescriptor]::GetProperties($mReturnControl)[$prop].Attributes
+ 
+ #[System.ComponentModel.TypeDescriptor]::GetProperties($mReturnControl)[$prop].Attributes | get-member | out-string
+
+#$cheese = $mProperty | Get-Member -MemberType Property -Static | out-file c:\temp\test.txt
+
+
+ 
+  if ($mProperty.value -ne $null){
+  $mReturnControl.$prop = $val}
+  
+  <#
+  else
+ {
+        if ($mReturnControl -ne $null){
+      $mProperty.value = $mReturnControl.$prop}
+ 
+ }
+    #>
+ 
+ }
+ 
+
+ }
+ 
+
+ 
+
+
+ 
+
+
+ 
+ 
+    } 
+ 
+    $mReturnControl.Size = New-Object System.Drawing.Size($mSizeX,$mSizeY) 
+    $mReturnControl.Add_MouseDown({MouseDown}) 
+    $mReturnControl.Add_MouseMove({MouseMove ($mControl.Name)}) 
+    $mReturnControl.Add_MouseUP({MouseUP})
+   
+   ######THIS IS A GOOD SPOT TO BOUNCE BACK PROPERTIES INTO LIST##### 
+ 
+    Return $mReturnControl 
+ 
+} 
+ 
+function PropertiesEndEdit{ 
+ 
+    foreach ($mProperty in $Global:mFormObj.Elements[$mElemetnsGrid.CurrentRow.Index].Properties){ 
+ 
+        if ($mProperty.Name -eq $mPropertiesGrid.currentrow.Cells[0].FormattedValue){ 
+ 
+            $mProperty.Value = $mPropertiesGrid.currentrow.Cells[1].FormattedValue 
+ 
+        } 
+ 
+    } 
+ 
+    repaintForm 
+ 
+} 
+ 
+ 
+Function repaintForm { 
+ 
+    $mFormGroupBox.controls.clear() 
+ 
+    Foreach ($mElement in $mFormObj.Elements){ 
+
+
+      $mFormGroupBox.controls.add((AddControl $mElement)) 
+               
+    } 
+ 
+} 
+ 
+Function EditFormSize ($x,$y){ 
+ 
+    $Global:mFormObj.SizeX = $X 
+    $Global:mFormObj.SizeY = $Y 
+ 
+    repaintForm 
+ 
+} 
+ 
+ 
+function ExportForm { 
+ 
+    $mFormObj  
+    $mExportString = ''
+    $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
+    ' 
+    foreach ($mElement in $mFormObj.Elements){ 
+       
+        
+       $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type
+        
+    
+        foreach ($mProperty in $mElement.Properties){
+                   If ($mProperty.Name -eq 'Top'){ 
+                 $mExportString+=' '+$mProperty.Value 
+             }
+             } 
+
+                     foreach ($mProperty in $mElement.Properties){
+                   If ($mProperty.Name -eq 'Left'){ 
+                 $mExportString+=' '+$mProperty.Value 
+             }
+             } 
+
+                     foreach ($mProperty in $mElement.Properties){
+                   If ($mProperty.Name -eq 'Width'){ 
+                 $mExportString+=' '+$mProperty.Value 
+             }
+             } 
+
+                     foreach ($mProperty in $mElement.Properties){
+                   If ($mProperty.Name -eq 'Height'){ 
+                 $mExportString+=' '+$mProperty.Value 
+             }
+             } 
+
+                     foreach ($mProperty in $mElement.Properties){
+                   If ($mProperty.Name -eq 'Text'){ 
+                 $mExportString+=' "'+$mProperty.Value+'"'
+             }
+             } 
+
+        $mPrSizeX='' 
+        $mPrSizeY='' 
+ 
+        foreach ($mProperty in $mElement.Properties){ 
+ 
+    switch ($mProperty.Name)
+    {
+           Top {}
+            Left {}
+            Width {}
+            Height {}
+            Text {}
+
+            default { 
+                if ($mProperty.Value -ne $null){
+                $mExportString+=' 
+            dialog property $'+$mElement.Name+' '+$mProperty.Name +' "'+$mProperty.Value+'"' }
+ 
+            }
+           } 
+ 
+        } 
+ 
+        $mExportString+='  
+        ' 
+ 
+    } 
+ 
+    $mExportString+= 'dialog show '+$mFormXTextBox2.Text 
+   
+$FastTab.SelectedTab.Controls[0].InsertText($mExportString)
+
+$mFormGroupBox.Dispose()
+$eleOK = "false"
+$elements.Dispose()
+window close $(winexists "Dialog Elements")
+$mForm.Hide()
+
+} 
+ 
+
+    $global:mform = dialog create "DialogShell Designer"
+    $mform.controlbox = $false
+if ($args[0])
+
+
+{$mform.icon = $args[0]+'\res\icon.ico'
+}
+else{
+    $dir = string $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell" "InstallLocation")
+    $mform.icon = "$dir\res\icon.ico"
+}
+$mForm.AutoSize = $true 
+
+#------not sure why I'm hanging on to this.-------------
+$mControlType = New-Object System.Windows.Forms.ComboBoX 
+$mControlType.Anchor = 'Left,Top' 
+$mControlType.Size = New-Object System.Drawing.Size(100,23) 
+$mControlType.Left = 5 
+$mControlType.Top = 5 
+
+$controls = 'BindingNavigator
+BindingSource
+Button
+CheckBox
+CheckedListBox
+ComboBox
+DataGrid
+DataGridView
+DateTimePicker
+DomainUpDown
+ErrorProvider
+FlowLayoutPanel
+GroupBox
+HScrollBar
+VScrollBar
+Label
+LinkLabel
+ListBox
+MaskedTextBox
+MenuStrip
+MonthCalendar
+NotifyIcon
+NumericUpDown
+Panel
+PictureBox
+ProgressBar
+RadioButton
+RichTextBox
+SplitContainer
+StatusStrip
+TabControl
+TabLayoutControlPanel
+TextBox
+ToolStrip
+ToolStripPanel
+ToolStripProgessBar
+ToolStripStatusLabel
+ToolTip
+TrackBar
+TreeView
+WebBrowser'
+
+$mControlType.items.addrange($controls.Split([char][byte]10))
+
+$mControlType.SelectedIndex = 2
+
+#$mForm.Controls.Add($mControlType) 
+#$mControlType.Visible = $false
+
+$mAddButton = New-Object System.Windows.Forms.Button 
+$mAddButton.Text = 'Add' 
+$mAddButton.Left = 110 
+$mAddButton.Top = 5 
+$mAddButton.Size = New-Object System.Drawing.Size(50,23) 
+$mAddButton.Add_Click({AddElement}) 
+
+#$mForm.Controls.Add($mAddButton) 
+ 
+$mFormLabel = dialog add $mform label 5 5 40 " " 'Title:'
+$mFormLabel.TextAlign='MiddleRight' 
+ 
+$mFormXTextBox = dialog add $mform textbox 5 50 90 100 'My Form'
+$mFormXTextBox.add_KeyUp({$mFormGroupBox.Text = $mFormXTextBox.text})
+
+$mFormLabel2 = dialog add $mform label 5 100 80 23 'Name:' 
+$mFormLabel2.TextAlign='MiddleRight' 
+ 
+$mFormXTextBox2 = dialog add $mform textbox 5 190 90 ' ' '$MyForm'
+$mFormXTextBox2.add_KeyUp({$mFormGroupBox.Text = $mFormXTextBox.text})
+ 
+$mElemetnsGrid = dialog add $mform datagridview 33 5 300 600
+
+$mElemetnsGrid.RowHeadersVisible =$false 
+$mElementsGrid.Font = ",8"
+$mElemetnsGrid.Add_CellContentClick({ElementsChanged}) 
+$mElemetnsGrid.Add_CellEndEdit({ElementsEndEdit}) 
+ 
+$mPropertiesGrid = dialog add $mform datagridview 33 335 300 600 
+$mPropertiesGrid.ColumnHeadersVisible=$true 
+$mPropertiesGrid.RowHeadersVisible =$false 
+$mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit}) 
+ 
+$mDeleteButton = dialog add $mform button 638 5 300 33 'Delete'
+$mDeleteButton.Add_Click({DeleteElement}) 
+ 
+$mExportButton = dialog add $mform button 638 335 300 33 'Create Form'
+$mExportButton.Add_Click({ExportForm}) 
+ 
+$Global:mFormObj = new-object PSCustomObject 
+
+$Global:mFormObj | Add-Member -Name 'Elements' -MemberType NoteProperty -Value @() 
+
+$Global:mCurFirstX =0  
+$Global:mCurFirstY =0 
+
+
+$mForm.add_Closed({
+$mFormGroupBox.Dispose()
+$eleOK = "false"
+$elements.Dispose()
+window close $(winexists "Dialog Elements")
+
+})
+
+ function DesignWindow{
+$Global:mFormGroupBox = dialog create $mFormXTextBox.text 0 0 $global:mfgbx $global:mfgby
+
+$mFormGroupBox.icon = $mform.icon
+
+$mFormGroupBox.AllowDrop = $true
+$mFormGroupBox.add_DragEnter({
+if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
+            foreach ($filename in $_.Data.GetData([Windows.Forms.DataFormats]::FileDrop))  {
+                AddElement2 $(name $filename) $filename
+            }
+            }
+})
+
+$mFormGroupBox.add_Resize({
+$global:mfgby = $mFormGroupBox.height
+$global:mfgbx = $mFormGroupBox.width
+})
+
+$mFormGroupBox.add_Closed({DesignWindow
+repaintForm})
+
+$mFormGroupBox.Show()
+$mFormGroupBox.left = 500
+repaintForm
+}
+
+function elementswindow{
+    $global:elements = dialog create "Dialog Elements" 0 0 300 500
+
+    $elements.icon = $mform.icon
+
+        $mWebBrowser1 = dialog add $elements WebBrowser 0 0 300 500  
+                $mWebBrowser1.Dock = "Fill"
+                $dir = string $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell" "InstallLocation")
+                 $psr = -join($dir,"\Elements")
+                $mWebBrowser1.Navigate($psr)
+        $elements.add_Closed({
+            if ($eleOK -eq "true")
+            {elementswindow}})
+        $elements.Show() 
+        }
+
+$global:mfgby = 480
+$global:mfgbx = 600
+
+#DesignWindow
+
+
+
+#elementswindow
+
+#[System.Windows.Forms.Application]::Run($mForm)
+
+
+
 dialog show $FastTextForm
 
 

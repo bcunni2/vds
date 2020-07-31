@@ -63,7 +63,6 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                         New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
                     #   See comments on these entries in the install section.
                     #   registry deleteitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(regread HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\ InstallLocation)\examples\vds-ide.exe"
-                    #   registry deleteitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(regread HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\ InstallLocation)\DialogShell Designer.exe"
                     #   registry deleteitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(regread HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\ InstallLocation)\compile-gue.exe"                       
                         registry deletekey "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"
                         registry deletekey "HKCR:\.ds1"
@@ -88,6 +87,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     directory create ("c:\users\$env:username\documents\DialogShell")
                     directory create ("c:\users\$env:username\documents\DialogShell\examples")
                     directory create ("c:\users\$env:username\documents\DialogShell\examples\en-US")
+					directory create ("c:\users\$env:username\documents\DialogShell\wizards")
                     directory create ("c:\users\$env:username\documents\DialogShell\res")
                     directory create ("c:\users\$env:username\documents\DialogShell\elements")
                     file copy ("$(string $Label2.Text)\res\*") ("c:\users\$env:username\documents\DialogShell\res")
@@ -95,6 +95,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     file copy ("$(string $Label2.Text)\examples\*.ds1") ("c:\users\$env:username\documents\DialogShell\examples")
                     file copy ("$(string $Label2.Text)\examples\*.mdb") ("c:\users\$env:username\documents\DialogShell\examples")
                     file copy ("$(string $Label2.Text)\examples\en-us\*") ("c:\users\$env:username\documents\DialogShell\examples\en-us")
+                    file copy ("$(string $Label2.Text)\wizards") ("c:\users\$env:username\documents\DialogShell\wizards")
                     
                     $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples")
                     foreach ($item in $items) {
@@ -110,13 +111,12 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "c:\windows\installer\dialogshell\setup.exe -uninstall"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "Publisher" String "vds/pwsh community"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" String $(datetime).ToString('yyyyMMdd')
-                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.5.9"
+                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.6.0"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayIcon" String "$(string $Label2.Text)\res\icon.ico"
                   #  Uncomment these lines if unhappy with scaling blur. I'm leaving these commented at release, because devs need to be aware of the scaling issues.
                   #  There is a future task scheduled to fix this in the .manifest within the compiler, but it's at least 90 days out unless not-me works on it. 
                   #  See future.txt for a 'fun' project ~ which may or may not work. ~make sure to use it as a switch, and to update compile-gui accordingly.
                   #  registry newitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(string $Label2.Text)\examples\vds-ide.exe" String "~ HIGHDPIAWARE"
-                  #  registry newitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(string $Label2.Text)\DialogShell Designer.exe" String "~ HIGHDPIAWARE"
                   #  registry newitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(string $Label2.Text)\compile-gue.exe" String "~ HIGHDPIAWARE"
                     registry newkey  "HKCR:\" .ds1
                     registry newitem "HKCR:\.ds1\" "(Default)" String "DialogShell.Script"

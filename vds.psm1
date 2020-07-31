@@ -503,7 +503,7 @@ function beep {
 									$item.image = $(streamimage $isplit[1])
 								}
 								else {
-									$item.image = $(fileimage isplit[1])
+									$item.image = $(fileimage $isplit[1])
 								}
 							}
                              $item.text = $isplit[0]
@@ -2348,6 +2348,9 @@ function window ($a,$b,$c,$d,$e,$f) {
         ontop {
             [vds]::SetWindowPos($b, -1, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
         }
+		notontop {
+            [vds]::SetWindowPos($b, -2, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
+        }
         send {
             window activate $b
             $wshell = New-Object -ComObject wscript.shell
@@ -3974,7 +3977,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.5.9'
+        return '0.2.6.0'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
