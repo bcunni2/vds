@@ -1,7 +1,7 @@
 switch ($lex)
 {
 	"if"{
-	$popupr = dialog popup $FastTextForm ("if,if else,if elseif else")
+	$popupr = dialog popup $FastTextForm ("if,if else,if elseif else,else,elseif,elseif else")
 	}
 	"add_"{
 	$popupr = dialog popup $FastTextForm ("add_Click")
