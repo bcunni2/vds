@@ -35,6 +35,8 @@ $lexiconpath = "C:\Users\$env:username\Documents\DialogShell\context\lexicon.ds1
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
 $docpath = "C:\Users\$env:username\Documents\DialogShell"
 
+$global:dd = "false"
+
 if (file ".\$(Get-WinSystemLocale)\vds-ide.mui") {
     inifile open ".\$(Get-WinSystemLocale)\vds-ide.mui"
 }
@@ -329,9 +331,17 @@ function global:menuitemclick ($menu) {
           $inv = "'$(curdir)\..\DialogShell Designer.exe'"
         run "&" $inv" #>
 $global:eleOK = "true"
+
+if ($global:dd -eq "false")
+{
+$global:dd = "true"
 DesignWindow
 elementswindow
 $mForm.Show()
+[vds]::SetWindowPos($(winexists "DialogShell Designer"), -1, $(winpos $(winexists "DialogShell Designer") L), $(winpos $(winexists "DialogShell Designer") T), $(winpos $(winexists "DialogShell Designer") W), $(winpos $(winexists "DialogShell Designer") H), 0x0040)
+[vds]::SetWindowPos($(winexists "Dialog Elements"), -1, $(winpos $(winexists "Dialog Elements") L), $(winpos $(winexists "Dialog Elements") T), $(winpos $(winexists "Dialog Elements") W), $(winpos $(winexists "Dialog Elements") H), 0x0040)
+[vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
+}
         }
         "$localecompile" {
             if (file ((path $FastTab.SelectedTab.Text)+'\'+$(name $FastTab.SelectedTab.Text)+'.pil'))
@@ -605,8 +615,8 @@ $mForm.Show()
                     $ascii = new-object System.Text.ASCIIEncoding
                     $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                     $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                                $FastTab.SelectedTab.Text = $saveFile
                 }
-            $FastTab.SelectedTab.Text = $saveFile
             }
                     
     
@@ -684,16 +694,20 @@ $mForm.Show()
             }
             dialog close $FastTextForm
         }
-        
         "$localeundo" {$FastTab.SelectedTab.Controls[0].Undo()}
         "$localecut" {$FastTab.SelectedTab.Controls[0].Cut()}
         "$localecopy" {$FastTab.SelectedTab.Controls[0].Copy()}
         "$localepaste" {$FastTab.SelectedTab.Controls[0].Paste()}
         "$localefind" {$FastTab.SelectedTab.Controls[0].ShowFindDialog()
-        [vds]::SetWindowPos($(winexists "Find"), 0, $(winpos $(winexists "Find") T), $(winpos $(winexists "Find") L), $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H), 0x0040)
+        [vds]::SetWindowPos($(winexists "Find"), -2, $(winpos $(winexists "Find") L), $(winpos $(winexists "Find") T), $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H), 0x0040)
             }
-        "$localereplace" {$FastTab.SelectedTab.Controls[0].ShowReplaceDialog()}
-        "&Go To..." { $FastTab.SelectedTab.Controls[0].ShowGotoDialog()}
+        "$localereplace" {$FastTab.SelectedTab.Controls[0].ShowReplaceDialog()
+        [vds]::SetWindowPos($(winexists "Find and replace"), -2, $(winpos $(winexists "Find and replace") L), $(winpos $(winexists "Find and replace") T), $(winpos $(winexists "Find and replace") W), $(winpos $(winexists "Find and replace") H), 0x0040)
+    }
+        "&Go To..." { $FastTab.SelectedTab.Controls[0].ShowGotoDialog()
+        wait .1
+        [vds]::SetWindowPos($(winexists "Go To Line"), -2, $(winpos $(winexists "Go To Line") L), $(winpos $(winexists "Go To Line") T), $(winpos $(winexists "Go To Line") W), $(winpos $(winexists "Go To Line") H), 0x0040)
+    }
         "$localeselectall" {$FastTab.SelectedTab.Controls[0].SelectAll()}
         "$localetimedate" {$FastTab.SelectedTab.Controls[0].SelectedText = (datetime)}
         "&Word Wrap" { 
@@ -1359,6 +1373,8 @@ $elements.Dispose()
 window close $(winexists "Dialog Elements")
 $mForm.Hide()
 
+$global:dd = "false"
+
 } 
  
 
@@ -1467,7 +1483,19 @@ $mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
 $mDeleteButton = dialog add $mform button 638 5 300 33 'Delete'
 $mDeleteButton.Add_Click({DeleteElement}) 
  
-$mExportButton = dialog add $mform button 638 335 300 33 'Create Form'
+$mExportButton = dialog add $mform button 638 335 150 33 'Create Form'
+
+$mCancelButton = dialog add $mform button 638 485 150 33 'Cancel'
+$mCancelButton.add_Click({
+    $mFormGroupBox.Dispose()
+$eleOK = "false"
+$elements.Dispose()
+window close $(winexists "Dialog Elements")
+$mForm.Hide()
+$global:dd = "false"
+
+})
+
 $mExportButton.Add_Click({ExportForm}) 
  
 $Global:mFormObj = new-object PSCustomObject 
@@ -1511,6 +1539,9 @@ repaintForm})
 $mFormGroupBox.Show()
 $mFormGroupBox.left = 500
 repaintForm
+[vds]::SetWindowPos($(winexists "DialogShell Designer"), -1, $(winpos $(winexists "DialogShell Designer") L), $(winpos $(winexists "DialogShell Designer") T), $(winpos $(winexists "DialogShell Designer") W), $(winpos $(winexists "DialogShell Designer") H), 0x0040)
+[vds]::SetWindowPos($(winexists "Dialog Elements"), -1, $(winpos $(winexists "Dialog Elements") L), $(winpos $(winexists "Dialog Elements") T), $(winpos $(winexists "Dialog Elements") W), $(winpos $(winexists "Dialog Elements") H), 0x0040)
+[vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
 }
 
 function elementswindow{
@@ -1523,10 +1554,15 @@ function elementswindow{
                 $dir = string $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell" "InstallLocation")
                  $psr = -join($dir,"\Elements")
                 $mWebBrowser1.Navigate($psr)
+           
         $elements.add_Closed({
             if ($eleOK -eq "true")
             {elementswindow}})
+
         $elements.Show() 
+                 [vds]::SetWindowPos($(winexists "DialogShell Designer"), -1, $(winpos $(winexists "DialogShell Designer") L), $(winpos $(winexists "DialogShell Designer") T), $(winpos $(winexists "DialogShell Designer") W), $(winpos $(winexists "DialogShell Designer") H), 0x0040)
+                 [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
+[vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
         }
 
 $global:mfgby = 480
