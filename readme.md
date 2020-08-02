@@ -3,7 +3,7 @@
 Visual DialogShell is a way forward for DialogScript syntax within Powershell ~ this project exists to provide a vehicle for the spirit of the DialogScript language to continue - providing a concise, powerful, straightforward language with seemingly untyped variables. I say seemingly because Powershell doesn't actually have variables, it has objects that it auto-determines the type for, but they feel like untyped variables.
 
 # Issue Velocity Points
-Leave a comment under any task you'd like to be assigned to in the format [n][n] where n is a fibonacci number, the first representing how complex you feel the issue is, and the second representing how much effort you feel it will take to resolve. 
+Leave a comment under any task you'd like to be assigned to in the format [n][n] where n is a fibonacci number, the first representing how complex you feel the issue is, and the second representing how much effort you feel it will take to resolve. In the title, the very first [n] gets updated by 1. Average the new complexity with the existing complexity number, and the effort with the existing effort number.
 
 # Discord
 https://discord.gg/87EyrgJ
