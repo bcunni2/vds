@@ -9,6 +9,7 @@ if ($global:tickz -ne $true){
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
 				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()
 			}
 		}
 		$var = "dialog add"
@@ -17,6 +18,7 @@ if ($global:tickz -ne $true){
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
 				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()
 			}
 		}
 		$var = "add"
@@ -24,7 +26,8 @@ if ($global:tickz -ne $true){
 		switch ($gee.text) {
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()				
 			}
 		}
 		$var = "add_"
@@ -32,7 +35,8 @@ if ($global:tickz -ne $true){
 		switch ($gee.text) {
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()
 			}
 		}
 		$var = "dialog"
@@ -41,6 +45,7 @@ if ($global:tickz -ne $true){
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
 				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()
 			}
 		}
 
@@ -49,7 +54,8 @@ if ($global:tickz -ne $true){
 		switch ($gee.text) {
 			$var{	 
 				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	
+				$FastTab.SelectedTab.Controls[0].DoSelectionVisible()				
 			}
 		}
 	})
@@ -76,8 +82,11 @@ switch ($lex)
 	$popupr = dialog popup $FastTextForm ("danger zone")
 	}
 }
-
+if ($popupr.handle){
 $popupr.show($(mousepos x),$(mousepos y))
+write-host $popupr.handle}
+
+#window send $FastTab.Handle $(key right)
 
 
 

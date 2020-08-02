@@ -1,40 +1,52 @@
 switch (dlgname $menu) {
 "if"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
 }'}
 
 "if else"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
 }
 else{
+
 }'}
 
 "if elseif"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
 }
 elseif ( -eq ){
+
 }'}
 
 "if elseif else"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
 }
 elseif ( -eq ){
+
 }
 else{
+
 }'}
 
 "else"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'else{
+
 }'}
 
 "elseif"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+
 }'}
 
 "elseif else"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+
 }
 else{
+
 }'}
 
 "Click"
