@@ -9,6 +9,10 @@ Leave a comment under any task you'd like to be assigned to in the format [n][n]
 https://discord.gg/87EyrgJ
 (maybe email me to schedule until things get rolling brandoncomputer@hotmail.com)
 
+## How should I clone this?
+
+I'm using Tortoise SVN.
+
 ## Getting Started
 The best way to get started is to find a brief minimal Powershell tutorial, and review the provided material and examples here. Visual DialogShell is technically a Powershell module, but the goal of the module is to create seamless DialogScript integration. Powershell scripting will just work, and as much of DialogScript as possible will also be supported.
 
