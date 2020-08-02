@@ -30,6 +30,8 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
 }
 
 $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
+$popmenupath = "C:\Users\$env:username\Documents\DialogShell\context\popups.ds1"
+$lexiconpath = "C:\Users\$env:username\Documents\DialogShell\context\lexicon.ds1"
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
 $docpath = "C:\Users\$env:username\Documents\DialogShell"
 
@@ -122,6 +124,8 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedesigner"] tooltiptext "$localedesignertt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
+
+(dialog properties $FastTab | out-file c:\temp\fasttab.txt)
 
     
 $testmenu.add_Click({
@@ -431,6 +435,30 @@ $mForm.Show()
             $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
             dialog property $FastText language "DialogShell"
             dialog property $FastText dock "Fill"
+          #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
+      #    $FastText.add_KeyPressed({  
+            #  $b = [System.Windows.Forms.KeyPressEventHandler]
+
+      #      write-host $_.KeyChar
+            
+      #      $popupr.show()
+
+  # })
+  
+            $FastText.add_SelectionChangedDelayed({
+                $t = $FastTab.SelectedTab.Controls[0].Selection
+                $lex = $t.text.toLower()
+           
+                if ($(file $lexiconpath))
+                {
+                    iex (get-content $lexiconpath | out-string)
+                }
+                
+          $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
+
+                
+                
+            })
             $FastTab.SelectedTab.Controls.Add($FastText)
             $init.enabled = $true
         }
@@ -543,7 +571,7 @@ $mForm.Show()
             $init.enabled = $true
         }
         "$localeopen" {
-        $fileOpen = (filedlg "$localedialog" $docpath)
+            $fileOpen = (filedlg "$localedialog")
             if ($fileOpen) {
                 if (equal (ext $fileOpen) "dsproj"){
                     $fileOpen = (trim (get-content $fileOpen | Out-String))
@@ -563,7 +591,7 @@ $mForm.Show()
         
         "$localesave" {
             if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
-            $saveFile = (savedlg "$localedialog" $docpath)
+                $saveFile = (savedlg "$localedialog")
                 if ($saveFile) {
                     if (equal (ext $saveFile) "dsproj") {
                         if (not (file $saveFile)) {
@@ -657,8 +685,6 @@ $mForm.Show()
             dialog close $FastTextForm
         }
         
-
-        
         "$localeundo" {$FastTab.SelectedTab.Controls[0].Undo()}
         "$localecut" {$FastTab.SelectedTab.Controls[0].Cut()}
         "$localecopy" {$FastTab.SelectedTab.Controls[0].Copy()}
@@ -694,7 +720,9 @@ $mForm.Show()
                 $init.enabled = $true
             }                       
         }
-    }
+    } 
+    if ($(file $popmenupath))
+    {iex (get-content $popmenupath | out-string)}
 }
 
 if ($args[0] -ne $null) {

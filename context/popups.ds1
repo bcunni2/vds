@@ -1,0 +1,16 @@
+switch (dlgname $menu) {
+"if"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+}'}
+"else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'else{
+}'}
+"add_Click"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Click({
+
+})'}
+"dialog add"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "dialog add"}
+"dialog add TextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox1 = dialog add $MyForm TextBox $top $left $height $width'}
+}
