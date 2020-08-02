@@ -2,15 +2,140 @@ switch (dlgname $menu) {
 "if"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
 }'}
+
+"if else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+}
+else{
+}'}
+
+"if elseif"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+}
+elseif ( -eq ){
+}'}
+
+"if elseif else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+}
+elseif ( -eq ){
+}
+else{
+}'}
+
 "else"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'else{
 }'}
-"add_Click"
+
+"elseif"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+}'}
+
+"elseif else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+}
+else{
+}'}
+
+"Click"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Click({
 
 })'}
+
+"Closing"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closing({
+
+})'}
+
+"Closed"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closed({
+
+})'}
+
+"DragEnter"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_DragEnter({
+<#.AllowDrop = $true
+.add_DragEnter({
+if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
+            foreach ($z in $_.Data.GetData([Windows.Forms.DataFormats]::FileDrop))  {
+                info $z
+            }
+            }
+})#>
+})'
+}
+
+"Tick"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Tick({
+#$timer = timer 1
+
+})'}
+
+"Resize"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Resize({
+
+})'}
+
+"MouseDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseDown({
+
+})'}
+
+"MouseMove"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseMove({
+
+})'}
+
+"MouseUp"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseUp({
+
+})'}
+
+"KeyUp"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyUp({
+#info ($_.KeyCode | out-string)
+})'}
+
+"KeyDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyDown({
+#info ($_.KeyCode | out-string)
+})'}
+
+"KeyPress"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyPress({
+#info ($_.KeyChar | out-string)
+})'}
+
 "dialog add"
 {$FastTab.SelectedTab.Controls[0].SelectedText = "dialog add"}
 "dialog add TextBox"
 {$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox1 = dialog add $MyForm TextBox $top $left $height $width'}
+
+
+"danger zone"
+{
+$dang = $FastTab.SelectedTab.Controls[0]
+$gee = $dang.GetRange(1,$dang.PlaceToPoint)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PlaceToPosition)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PointToClient)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PointToPlace)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PointToPosition)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PointToScreen)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PositionToPlace)
+info $gee.text | out-string
+$gee = $dang.GetRange(1,$dang.PositionToPoint)
+info $gee.text | out-string
+$gee = $dang.GetRange($dang.selectionstart -1,$dang.Selectionstart)
+info $gee.text | out-string
+}
+
+"cancel"
+{$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart + $FastTab.SelectedTab.Controls[0].selectionlength}
+
 }

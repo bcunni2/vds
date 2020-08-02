@@ -1,4 +1,4 @@
-$ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
 #info $(curdir)
 
@@ -9,6 +9,7 @@ console "DialogShell $(sysinfo dsver)"
 console "Open Source - vds/pwsh community."
 $host.ui.RawUI.WindowTitle = "DialogShell $(sysinfo dsver)"
 #>
+$timerz = timer 4000
 
 if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     directory create ("c:\users\$env:username\documents\DialogShell")
@@ -29,11 +30,19 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     }
 }
 
+$global:popuprtf = $true
+
+$global:tickz = $false
+
+    $global:var
+
 $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
 $popmenupath = "C:\Users\$env:username\Documents\DialogShell\context\popups.ds1"
 $lexiconpath = "C:\Users\$env:username\Documents\DialogShell\context\lexicon.ds1"
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
 $docpath = "C:\Users\$env:username\Documents\DialogShell"
+$global:nopop = $false
+
 
 $global:dd = "false"
 
@@ -165,7 +174,7 @@ $examples.add_Click({
                     iex (get-content $lexiconpath | out-string)
                 }
                 
-          $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
+                $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
 
                 
                 
@@ -282,6 +291,7 @@ $init.add_Tick({
         $FastTab.SelectedTab.Controls[0].ShowFoldingLines = $true
     }
     $init.enabled = $false
+    
 })
 
 $statusupdate = timer 200
@@ -460,14 +470,7 @@ $mForm.Show()
             dialog property $FastText language "DialogShell"
             dialog property $FastText dock "Fill"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
-      #    $FastText.add_KeyPressed({  
-            #  $b = [System.Windows.Forms.KeyPressEventHandler]
 
-      #      write-host $_.KeyChar
-            
-      #      $popupr.show()
-
-  # })
   
             $FastText.add_SelectionChangedDelayed({
                 $t = $FastTab.SelectedTab.Controls[0].Selection
@@ -476,6 +479,7 @@ $mForm.Show()
                 if ($(file $lexiconpath))
                 {
                     iex (get-content $lexiconpath | out-string)
+                    
                 }
                 
           $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
@@ -1547,6 +1551,7 @@ window close $(winexists "Dialog Elements")
 $Global:mFormGroupBox = dialog create $mFormXTextBox.text 0 0 $global:mfgbx $global:mfgby
 
 $mFormGroupBox.icon = $mform.icon
+
 
 $mFormGroupBox.AllowDrop = $true
 $mFormGroupBox.add_DragEnter({

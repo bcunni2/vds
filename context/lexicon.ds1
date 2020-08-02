@@ -1,10 +1,70 @@
+if ($global:tickz -ne $true){
+	$global:tickz = $true
+	$timerz.add_Tick({
+
+		$dang = $FastTab.SelectedTab.Controls[0]
+		$var = "if"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+		$var = "dialog add"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+		$var = "add"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+		$var = "add_"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+		$var = "dialog"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+
+		$var = "test"
+		$gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+		switch ($gee.text) {
+			$var{	 
+				$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+				$FastTab.SelectedTab.Controls[0].selectionlength = $var.length	 
+			}
+		}
+	})
+}
+
 switch ($lex)
 {
 	"if"{
-	$popupr = dialog popup $FastTextForm ("if,if else,if elseif else,else,elseif,elseif else")
+	$popupr = dialog popup $FastTextForm ("if,if else,if elseif,if elseif else,else,elseif,elseif else")
+	}
+	"add"{
+	$popupr = dialog popup $FastTextForm ("Click,Closing,Closed,DragEnter,Tick,Resize,MouseDown,MouseMove,MouseUp,KeyUp,KeyDown,KeyPress")
 	}
 	"add_"{
-	$popupr = dialog popup $FastTextForm ("add_Click")
+	$popupr = dialog popup $FastTextForm ("Click,Closing,Closed,DragEnter,Tick,Resize,MouseDown,MouseMove,MouseUp,KeyUp,KeyDown,KeyPress")
 	}
 	"dialog" {
 	$popupr = dialog popup $FastTextForm ("dialog add")
@@ -12,9 +72,17 @@ switch ($lex)
 	"dialog add" {
 	$popupr = dialog popup $FastTextForm ("dialog add TextBox")
 	}
+	"test"{
+	$popupr = dialog popup $FastTextForm ("danger zone")
+	}
 }
 
 $popupr.show($(mousepos x),$(mousepos y))
+
+
+
+
+
 
 
                     
