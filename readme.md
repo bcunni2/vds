@@ -5,6 +5,8 @@ Visual DialogShell is a way forward for DialogScript syntax within Powershell ~ 
 # Issue Velocity Points
 Leave a comment under any task you'd like to be assigned to in the format [n][n] where n is a fibonacci number, the first representing how complex you feel the issue is, and the second representing how much effort you feel it will take to resolve. In the title, the very first [n] gets updated by 1. Average the new complexity with the existing complexity number, and the effort with the existing effort number.
 
+I believe in simplicity. If you want to update the project, but don't want to geek out, zip your solution and attach it to the issue comments. I'll review and commit it for you when time permits. You can bug me about it to get it done faster, I don't mind.
+
 # Discord
 https://discord.gg/87EyrgJ
 (maybe email me to schedule until things get rolling brandoncomputer@hotmail.com)
