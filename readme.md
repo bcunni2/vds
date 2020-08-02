@@ -1,9 +1,13 @@
-# Discord
-https://discord.gg/87EyrgJ
-
 # Visual DialogShell
 
 Visual DialogShell is a way forward for DialogScript syntax within Powershell ~ this project exists to provide a vehicle for the spirit of the DialogScript language to continue - providing a concise, powerful, straightforward language with seemingly untyped variables. I say seemingly because Powershell doesn't actually have variables, it has objects that it auto-determines the type for, but they feel like untyped variables.
+
+# Issue Velocity Points
+Leave a comment under any task you'd like to be assigned to in the format [n][n] where n is a fibonacci number, the first representing how complex you feel the issue is, and the second representing how much effort you feel it will take to resolve. 
+
+# Discord
+https://discord.gg/87EyrgJ
+(maybe email me to schedule until things get rolling brandoncomputer@hotmail.com)
 
 ## Getting Started
 The best way to get started is to find a brief minimal Powershell tutorial, and review the provided material and examples here. Visual DialogShell is technically a Powershell module, but the goal of the module is to create seamless DialogScript integration. Powershell scripting will just work, and as much of DialogScript as possible will also be supported.
