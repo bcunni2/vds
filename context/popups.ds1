@@ -313,6 +313,75 @@ dialog property $ToolStrip.Items["Item2"] tooltiptext "The second one is better.
 "SizeNESW"
 {$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNESW'}
 
+"SizeNS"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNS'}
+
+"SizeNWSE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNWSE'}
+
+"SizeWE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeWE'}
+
+"UpArrow"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form UpArrow'}
+
+"VSplit"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form VSplit'}
+
+"WaitCursor"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form WaitCursor'}
+
+"dialog disable"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog disable $Control'}
+
+"dialog enable"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog enable $Control'}
+
+"dialog focus"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog focus $Control'}
+
+"dialog hide"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog hide $Control'}
+
+"dialog name"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog name $Control'}
+
+"dialog popup"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$PopUp = dialog popup $Form ("Item1|$(curdir)"\Image1.png,-,Item2|$(curdir)\Image2.png")'}
+
+"dialog property"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog property $control $property $value')
+
+"dialog remove"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog remove $control')
+
+"dialog run"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog run $Form')
+
+"dialog set"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog set $control $text')
+
+"dialog settip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog settip $control $tip')
+
+"dialog show"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog show $Form')
+
+"dialog showmodal"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog showmodal $Form')
+
+"dialog title"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog title $Form $title')
+
+
+
+
+
+
+
+
+
+
 
 
 
