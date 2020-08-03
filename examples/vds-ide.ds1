@@ -9,7 +9,7 @@ console "DialogShell $(sysinfo dsver)"
 console "Open Source - vds/pwsh community."
 $host.ui.RawUI.WindowTitle = "DialogShell $(sysinfo dsver)"
 #>
-$timerz = timer 4000
+$timerz = timer 1000
 
 if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     directory create ("c:\users\$env:username\documents\DialogShell")
@@ -110,7 +110,7 @@ $FastTextForm.MinimumSize = new-object System.Drawing.Size(480,360)
 $StatusStrip1       = dialog add $FastTextForm StatusStrip 
 $closetab           = dialog add $FastTextForm button 0 0 0 0
 $toolstrip1         = dialog add $FastTextForm toolstrip ("$localenew|$(curdir)\..\res\page_add.png,$localeopen|$(curdir)\..\res\folder_page_white.png,$localesave|$(curdir)\..\res\disk.png,-,$localeprint|$(curdir)\..\res\printer.png,-,$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,-,$localerecord|$(curdir)\..\res\record.png,$localeplay|$(curdir)\..\res\control_play_blue.png,-,$localedialogshell|$(curdir)\..\res\terminal.ico,$localedesigner|$(curdir)\..\res\icon.ico,$localedebug|$(curdir)\..\res\bug_go.png,$localecompile|$(curdir)\..\res\compile.ico")
-$file               = dialog add $FastTextForm menustrip "$localefile" ("$localenew|Ctrl+N|$(curdir)\..\res\page_add.png,$localeopen|Ctrl+O|$(curdir)\..\res\folder_page_white.png,$localesave|Ctrl+S|$(curdir)\..\res\disk.png,$localesaveas,-,$localeprint|Ctrl+P|$(curdir)\..\res\printer.png,-,E&xit")
+$file               = dialog add $FastTextForm menustrip "$localefile" ("$localenew||Ctrl+N|$(curdir)\..\res\page_add.png,$localeopen|Ctrl+O|$(curdir)\..\res\folder_page_white.png,$localesave|Ctrl+S|$(curdir)\..\res\disk.png,$localesaveas,-,$localeprint|Ctrl+P|$(curdir)\..\res\printer.png,-,E&xit")
 $edit               = dialog add $FastTextForm menustrip "$localeedit" ("$localeundo|Ctrl+Z|$(curdir)\..\res\arrow_undo.png,-,$localecut|Ctrl+X|$(curdir)\..\res\cut.png,$localecopy|Ctrl+C|$(curdir)\..\res\page_copy.png,$localepaste|Ctrl+V|$(curdir)\..\res\paste_plain.png,-,$localefind|Ctrl+F|$(curdir)\..\res\page_find.png,$localereplace|Ctrl+H,&Go To...|Ctrl+G,$localeselectall|Ctrl+A,$localetimedate|F5")
 $view               = dialog add $FastTextForm menustrip "$localeview" "$localestatusbar,-,50%|Ctrl+5,100%|Ctrl+0,200%|Ctrl+2" 
 $build              = dialog add $FastTextForm menustrip "$localebuild" ("$localedialogshell|F3|$(curdir)\..\res\terminal.ico,$localedesigner|F2|$(curdir)\..\res\icon.ico,$localedebug|F8|$(curdir)\..\res\bug_go.png,$localecompile|F9|$(curdir)\..\res\compile.ico")
@@ -166,6 +166,8 @@ $examples.add_Click({
             $FastTab.SelectedTab.Controls[0].IsChanged = $false
             $init.enabled = $true
                                         $FastText.add_SelectionChangedDelayed({
+                $timerz.enabled = $false
+                $timerz.enabled = $true
                 $t = $FastTab.SelectedTab.Controls[0].Selection
                 $lex = $t.text.toLower()
            
@@ -473,6 +475,8 @@ $mForm.Show()
 
   
             $FastText.add_SelectionChangedDelayed({
+                $timerz.enabled = $false
+                $timerz.enabled = $true
                 $t = $FastTab.SelectedTab.Controls[0].Selection
                 $lex = $t.text.toLower()
            
@@ -617,6 +621,8 @@ $mForm.Show()
             $init.enabled = $true
             
                             $FastText.add_SelectionChangedDelayed({
+                $timerz.enabled = $false
+                $timerz.enabled = $true
                 $t = $FastTab.SelectedTab.Controls[0].Selection
                 $lex = $t.text.toLower()
            
@@ -625,9 +631,7 @@ $mForm.Show()
                     iex (get-content $lexiconpath | out-string)
                 }
                 
-          $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
-
-                
+                $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")   
                 
             })
         }

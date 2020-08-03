@@ -120,34 +120,219 @@ if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
 
 "dialog add"
 {$FastTab.SelectedTab.Controls[0].SelectedText = "dialog add"}
+
+"clipboard set"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard set "}
+
+"clipboard append"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard append "}
+
+"clipboard clear"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard clear"}
+
+"console read"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "$(console read)"}
+
+"console write"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "console write "}
+
+"database open"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'database open ""'}
+
+"database close"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'database close'}
+
+"database execute"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$data = $(database execute "")'}
+
+"dialog add Button"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Button = dialog add $Form Button $top $left $width $height'}
+
+"dialog add CheckBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$CheckBox = dialog add $Form CheckBox $top $left $width $height'}
+
+"dialog add CheckedListBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$CheckedListBox = dialog add $Form CheckedListBox $top $left $width $height'}
+
+"dialog add ComboBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ComboBox = dialog add $Form ComboBox $top $left $width $height'}
+
+"dialog add DataGrid"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DataGrid = dialog add $Form DataGrid $top $left $width $height'}
+
+"dialog add DataGridView"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DataGridView = dialog add $Form DataGridView $top $left $width $height'}
+
+"dialog add DateTimePicker"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DateTimePicker = dialog add $Form DateTimePicker $top $left $width $height'}
+
+"dialog add GroupBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$GroupBox = dialog add $Form GroupBox $top $left $width $height'}
+
+"dialog add HScrollBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$HScrollBar = dialog add $Form HScrollBar $top $left $width $height'}
+
+"dialog add Label"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Label = dialog add $Form Label $top $left $width $height'}
+
+"dialog add LinkLabel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$LinkLabel = dialog add $Form LinkLabel $top $left $width $height'}
+
+"dialog add ListBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ListBox = dialog add $Form ListBox $top $left $width $height'}
+
+"dialog add MaskedTextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MaskedTextBox = dialog add $Form MaskedTextBox $top $left $width $height'}
+
+"dialog add MenuStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MenuStrip = dialog add $Form MenuStrip "MenuStrip" ("Item1|CTRL+I|$(curdir)\Image1.png,-,Item2||$(curdir)\Image2.png,Item3|Ctrl+3,Item4")'}
+
+"dialog add MonthCalendar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MonthCalendar = dialog add $Form MonthCalendar $top $left $width $height'}
+
+"dialog add NumericUpDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$NumericUpDown = dialog add $Form NumericUpDown $top $left $width $height'}
+
+"dialog add Panel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Panel = dialog add $Form Panel $top $left $width $height
+dialog property $Panel dock "Top"
+dialog property $Panel border "Fixed3D"'}
+
+"dialog add PictureBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$PictureBox = dialog add $Form PictureBox $top $left $width $height'}
+
+"dialog add ProgressBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ProgressBar = dialog add $Form ProgressBar $top $left $width $height'}
+
+"dialog add RadioButton"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$RadioButton = dialog add $Form RadioButton $top $left $width $height'}
+
+"dialog add RichTextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$RichTextBox = dialog add $Form RichTextBox $top $left $width $height'}
+
+"dialog add StatusStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$StatusStrip = dialog add $Form StatusStrip'}
+
 "dialog add TextBox"
-{$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox1 = dialog add $MyForm TextBox $top $left $height $width'}
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox = dialog add $Form TextBox $top $left $width $height'}
+
+"dialog add ToolStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ToolStrip = dialog add $Form ToolStrip ("Item1|$(curdir)"\Image1.png,-,Item2|$(curdir)\Image2.png")
+dialog property $ToolStrip.Items["Item2"] tooltiptext "The second one is better."'}
+
+"dialog add TrackBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TrackBar = dialog add $Form TextBox $top $left $width $height'}
+
+"dialog add TreeView"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TreeView = dialog add $Form TreeView $top $left $width $height'}
+
+"dialog add VScrollBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$VScrollBar = dialog add $Form VScrollBar $top $left $width $height'}
+
+"dialog add WebBrowser"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$WebBrowser = dialog add $Form WebBrowser $top $left $width $height'}
+
+"dialog BackGroundImage"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog BackGroundImage $Form $(curdir)\BackGroundImage.png # https://domain.com/BackGroundImage.png'}
+
+"dialog clear"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog clear $TextBox'}
+
+"dialog clearsel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog clearsel $TextBox'}
+
+"dialog close"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog close $Form'}
+
+"dialog create"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Form = dialog create "Program" $top $left $width $height'}
+
+"dialog cursor"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor'}
+
+"Arrow"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Arrow'}
+
+"Cross"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Cross'}
+
+"Default"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Default'}
+
+"Hand"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Hand'}
+
+"Help"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Help'}
+
+"HSplit"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form HSplit'}
+
+"IBeam"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form IBeam'}
+
+"No"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form No'}
+
+"NoMove2D"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMove2D'}
+
+"NoMoveHoriz"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMoveHoriz'}
+
+"NoMoveVert"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMoveVert'}
+
+"PanEast"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanEast'}
+
+"PanNE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNE'}
+
+"PanNorth"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNorth'}
+
+"PanNW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNW'}
+
+"PanSE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSE'}
+
+"PanSouth"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSouth'}
+
+"PanSW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSW'}
+
+"PanWest"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanWest'}
+
+"SizeAll"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeAll'}
+
+"SizeNESW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNESW'}
 
 
-"danger zone"
-{
-$dang = $FastTab.SelectedTab.Controls[0]
-$gee = $dang.GetRange(1,$dang.PlaceToPoint)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PlaceToPosition)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PointToClient)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PointToPlace)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PointToPosition)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PointToScreen)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PositionToPlace)
-info $gee.text | out-string
-$gee = $dang.GetRange(1,$dang.PositionToPoint)
-info $gee.text | out-string
-$gee = $dang.GetRange($dang.selectionstart -1,$dang.Selectionstart)
-info $gee.text | out-string
-}
 
-"cancel"
-{$FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart + $FastTab.SelectedTab.Controls[0].selectionlength}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 }
