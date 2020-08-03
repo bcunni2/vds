@@ -197,7 +197,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     $toolstripout       | Out-File "$(string $Label2.Text)\elements\ToolStrip.url"
                     $trackbarout        | Out-File "$(string $Label2.Text)\elements\TrackBar.url"
                     $treeviewout        | Out-File "$(string $Label2.Text)\elements\TreeView.url"
-                    $vscrollbarout      | Out-File "$(string $Label2.Text)\elements\VScrollaBar.url"
+                    $vscrollbarout      | Out-File "$(string $Label2.Text)\elements\VScrollBar.url"
                     $webbrowserout      | Out-File "$(string $Label2.Text)\elements\WebBrowser.url"
                     
                     directory create "c:\programdata\microsoft\windows\start menu\programs\Visual DialogShell"

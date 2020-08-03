@@ -3852,7 +3852,7 @@ function loaddll ($a){
 				}
 <#
     .SYNOPSIS
-     Creates a image from a web url stream
+     Loads a dynamic link library
      
     .DESCRIPTION
      VDS
