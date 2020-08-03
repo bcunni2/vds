@@ -521,7 +521,7 @@ function beep {
                  }
          properties {
              return $b | Get-Member
-         } #NEW COMMAND
+         } #Remains for backwards compatibility. Please use dlgprops
          property {
              $b.$c = $d
          }
@@ -3837,7 +3837,7 @@ function streamimage ($a){
 
 }
 
-function vdsdll ($a){
+function loaddll ($a){
 				if ($(substr $a 0 2) -eq 'ht') {
 				
                 $s = iwr $a
@@ -3856,10 +3856,11 @@ function vdsdll ($a){
      
     .DESCRIPTION
      VDS
-    $PictureBox1.image = $(streamimage 'https://dialogshell.com/eternium.png')
+    loaddll c:\temp\dotnet.dll
+	loaddll https://mydomain.com/dotnet.dll
     
     .LINK
-    https://dialogshell.com/vds/help/index.php/streamimage
+    https://dialogshell.com/vds/help/index.php/loaddll
 #>			
 
 }
