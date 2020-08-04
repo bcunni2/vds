@@ -1496,13 +1496,13 @@ $mAddButton.Add_Click({AddElement})
 $mFormLabel = dialog add $mform label 5 5 40 " " 'Title:'
 $mFormLabel.TextAlign='MiddleRight' 
  
-$mFormXTextBox = dialog add $mform textbox 5 50 90 100 'My Form'
+$mFormXTextBox = dialog add $mform textbox 5 50 90 100 'Form'
 $mFormXTextBox.add_KeyUp({$mFormGroupBox.Text = $mFormXTextBox.text})
 
 $mFormLabel2 = dialog add $mform label 5 100 80 23 'Name:' 
 $mFormLabel2.TextAlign='MiddleRight' 
  
-$mFormXTextBox2 = dialog add $mform textbox 5 190 90 ' ' '$MyForm'
+$mFormXTextBox2 = dialog add $mform textbox 5 190 90 ' ' '$Form'
 $mFormXTextBox2.add_KeyUp({$mFormGroupBox.Text = $mFormXTextBox.text})
  
 $mElemetnsGrid = dialog add $mform datagridview 33 5 300 600
