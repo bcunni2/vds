@@ -1052,11 +1052,59 @@ Function AddElement2 ($a, $filename) {
      
      $d1 = $d1.trim()
 
-   
-    
-    if ($d1 -eq "MenuStrip")
-        
-    {
+     switch ($d1){
+     
+ "StatusStrip" {}
+     
+      "ToolStrip" {
+     #  $dummy = dialog add $mForm $d1
+$mPropertiesArr+= AddProperty 'Item' '&Item|Image'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item' 
+$mPropertiesArr+= AddProperty 'Item' 
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+
+}
+     
+     "MenuStrip" {
      #  $dummy = dialog add $mForm $d1
 $mPropertiesArr+= AddProperty 'Item' '&Item|Hotkey|Image'
 $mPropertiesArr+= AddProperty 'Item' '-'
@@ -1103,7 +1151,8 @@ $mPropertiesArr+= AddProperty 'Item'
 $mPropertiesArr+= AddProperty 'Item'
 
 }
-    else{
+
+default{
     
  $dummy = dialog add $mForm $d1
  
@@ -1173,7 +1222,7 @@ foreach ($object in ($dummy | get-member)){
 
 }
     
-    
+}
     dialog remove $dummy
 
   <#  
@@ -1239,6 +1288,53 @@ function AddControl ($mControl) {
     $ctrol = $mControl.Type | Out-String 
     
     $ctrol = $ctrol.trim()
+    
+    switch($ctrol) {
+        
+        "StatusStrip" {
+            $mReturnControl = New-Object System.Windows.Forms.$ctrol
+    $mReturnControl.Name = $mControl.Name
+    Return $mReturnControl
+    }
+
+"ToolStrip"{
+
+
+#--------                 
+                  
+                     $oolbuttons = New-Object System.Windows.Forms.ToolStrip
+                     $oolbuttons.Name = $mControl.Name
+                     $oolbuttons.Text = $mControl.Name
+                     foreach ($mProperty in $mControl.Properties){
+                     foreach ($split in $mProperty.Value.split(",")) {
+                         if ($split -ne "-") {
+                             $item = new-object System.Windows.Forms.ToolStripButton
+                             $isplit = $split.split("|")
+                             $item.name = $isplit[0]
+                            if ($(substr $isplit[1] 0 2) -eq 'ht') {
+                                $item.image = $(streamimage $isplit[1])
+                            }
+                            else {
+                                $item.image = $(fileimage $isplit[1])
+                            }
+                             $item.text = $isplit[2]
+                             #  $item.Add_Click({&toolstripitemclick $this})
+                         }
+                         else {
+                             $item = new-object System.Windows.Forms.ToolStripSeparator
+                             $item.name = $split
+                             $item.text = $split                 
+                         }                       
+                         $oolbuttons.Items.Add($item) | Out-Null                    
+                     }}
+                     #    $b.Controls.Add($toolbuttons)
+                          return $oolbuttons
+#--------
+
+
+}
+        
+        default{
     
           if ($ctrol -eq "MenuStrip")
         
@@ -1405,9 +1501,11 @@ $enutitle = new-object System.Windows.Forms.ToolStripMenuItem
    
    ######THIS IS A GOOD SPOT TO BOUNCE BACK PROPERTIES INTO LIST##### 
    
-}
- 
+
     Return $mReturnControl 
+}
+}
+}
  
 } 
  
@@ -1457,15 +1555,56 @@ function ExportForm {
     $mFormObj  
     $mExportString = ''
     $mFooterString = ''
+    $mFooterString2 = ''
     $ms = $false
+    $ts = $false
     $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
     ' 
     foreach ($mElement in $mFormObj.Elements){ 
        
+        switch($mElement.Type){
+        "ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
+        default {$mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type}
+    }
         
-       $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type
+        
+       
        
        switch ($mElement.Type){
+           
+           "ToolStrip"
+           {
+           #  $item.Add_Click({&toolstripitemclick $this})
+               if ($ts -eq $false)
+               {$ts = $true
+                   $mFooterString2 = '
+function global:toolstripitemclick ($name) {
+    switch (dlgname $name) {'}
+
+               
+             $mExportString+=" $(chr 34)"
+               foreach ($mProperty in $mElement.Properties)
+               {
+                   if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
+                   {
+               $mExportString+=$mProperty.Value+','
+               $fsplit = $mProperty.Value.split("|")
+               if ($fsplit[0] -ne "-")
+               {
+                   $mFooterString2+= "
+        $(chr 34)$($fsplit[0])$(chr 34){
+
+        }"
+    }
+              
+           }
+               
+               }
+       $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+       
+           $mExportString+=$mProperty.Value+(chr 34)+'
+           '
+           }
            
            "MenuStrip"
            {
@@ -1500,6 +1639,7 @@ $mFooterString+= "
            $mExportString+=$mProperty.Value+(chr 34)+'
            '
            }
+   
         
        default{
         foreach ($mProperty in $mElement.Properties){
@@ -1561,6 +1701,14 @@ $mFooterString+= "
     } 
 }
 }
+
+if ($ts -eq $true)
+{
+    $mFooterString2+= "
+    }
+}
+"
+}
 if ($ms -eq $true)
 {
 $mFooterString+= "
@@ -1569,7 +1717,7 @@ $mFooterString+= "
 "
 
 }
-$mExportString+= $mFooterString+'dialog show '+$mFormXTextBox2.Text 
+$mExportString+= $mFooterString+$mFooterString2+'dialog show '+$mFormXTextBox2.Text 
    
 $FastTab.SelectedTab.Controls[0].InsertText($mExportString)
 
