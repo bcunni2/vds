@@ -30,9 +30,12 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     }
 }
 
+
 $global:popuprtf = $true
 
 $global:tickz = $false
+
+$global:designribbon = $false
 
     $global:var
 
@@ -892,7 +895,7 @@ Function renewGrids ($a){
     [array]$mElementsArr = $mFormObj.Elements | select Name,Type 
     $mList.AddRange($mElementsArr) 
     $mElemetnsGrid.DataSource =  $mList 
-    $mElemetnsGrid.Columns[1].ReadOnly = $true 
+    #    $mElemetnsGrid.Columns[1].ReadOnly = $true 
     $mElemetnsGrid.Columns[0].Width = '140'
     $mElemetnsGrid.Columns[1].Width = '140'
  
@@ -902,7 +905,7 @@ Function renewGrids ($a){
 
     $mList2.AddRange($mPropertyArr) 
     $mPropertiesGrid.DataSource = $mList2 
-    $mPropertiesGrid.Columns[0].ReadOnly=$true
+    #   $mPropertiesGrid.Columns[0].ReadOnly=$true
     $mPropertiesGrid.Columns[0].Width = '140'
     $mPropertiesGrid.Columns[1].Width = '140'
     
@@ -1049,8 +1052,60 @@ Function AddElement2 ($a, $filename) {
      
      $d1 = $d1.trim()
 
-    $dummy = dialog add $mForm $d1
+   
+    
+    if ($d1 -eq "MenuStrip")
+        
+    {
+     #  $dummy = dialog add $mForm $d1
+$mPropertiesArr+= AddProperty 'Item' '&Item|Hotkey|Image'
+$mPropertiesArr+= AddProperty 'Item' '-'
+$mPropertiesArr+= AddProperty 'Item' 'X Form to Repaint'
+$mPropertiesArr+= AddProperty 'Item' 
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
+$mPropertiesArr+= AddProperty 'Item'
 
+}
+    else{
+    
+ $dummy = dialog add $mForm $d1
  
     $mPropertiesArr+= AddProperty 'Text' $mControlName 
     $mPropertiesArr+= AddProperty 'Width' $dummy.width 
@@ -1115,6 +1170,8 @@ foreach ($object in ($dummy | get-member)){
         }
     }
 }
+
+}
     
     
     dialog remove $dummy
@@ -1175,12 +1232,83 @@ catch { $entry = $content.split("=")[0]
 } 
  
 function AddControl ($mControl) { 
+    
  
     $mReturnControl = $null 
  
     $ctrol = $mControl.Type | Out-String 
     
     $ctrol = $ctrol.trim()
+    
+          if ($ctrol -eq "MenuStrip")
+        
+    {
+
+     
+     if ($global:designribbon -eq $false){
+         $global:designribbon = $true
+         $global:designribbonctrl = New-Object System.Windows.Forms.$ctrol
+        
+    }
+$enutitle = new-object System.Windows.Forms.ToolStripMenuItem
+                                          $enutitle.Name = $mControl.Name
+                     $enutitle.Text = $mControl.Name
+                     $global:designribbonctrl.Items.add($enutitle) | Out-Null
+
+        foreach ($mProperty in $mControl.Properties){
+            
+        #    write-host $mProperty.Name
+            
+
+                     
+
+                  #   write-host $mProperty.Value
+                     
+                     foreach ($split in $mProperty.Value.split(",")) {
+                     
+                        if ($split -ne "-") {
+                             $innersplit = $split.split("|")
+                             $split = $innersplit[0]
+                             $item = new-object System.Windows.Forms.ToolStripMenuItem
+                             if ($innersplit[2]) {
+                                if ($(substr $innersplit[2] 0 2) -eq 'ht') {
+                                    $item.image = $(streamimage $innersplit[2])
+                                }
+                                else {
+                                $item.image = $(fileimage $innersplit[2])
+                                }
+                             }
+                             if ($innersplit[1]) {
+                                 $item.ShortCutKeys = $innersplit[1]
+                                 $item.ShowShortCutKeys = $true
+                             }
+                             $item.name = $split
+                             $item.text = $split
+                             #      $item.Add_Click({
+                                 #       &menuitemclick $this
+                             # })
+                         } 
+                         else {
+                             $item = new-object System.Windows.Forms.ToolStripSeparator
+                             $item.name = $split
+                             $item.text = $split                 
+                         }                       
+                         $enutitle.DropDownItems.Add($item) | Out-Null             
+            
+            
+        }
+                     
+                     
+        
+             }
+                 
+                  Return $global:designribbonctrl
+        
+    # $mFormGroupBox.controls.add((AddControl $dummy)) 
+    }
+    
+    else
+    {
 
     $mReturnControl = New-Object System.Windows.Forms.$ctrol
 
@@ -1268,15 +1396,6 @@ function AddControl ($mControl) {
 
  }
  
-
- 
-
-
- 
-
-
- 
- 
     } 
  
     $mReturnControl.Size = New-Object System.Drawing.Size($mSizeX,$mSizeY) 
@@ -1285,6 +1404,8 @@ function AddControl ($mControl) {
     $mReturnControl.Add_MouseUP({MouseUP})
    
    ######THIS IS A GOOD SPOT TO BOUNCE BACK PROPERTIES INTO LIST##### 
+   
+}
  
     Return $mReturnControl 
  
@@ -1308,17 +1429,18 @@ function PropertiesEndEdit{
  
  
 Function repaintForm { 
- 
+    
     $mFormGroupBox.controls.clear() 
  
     Foreach ($mElement in $mFormObj.Elements){ 
 
-
+  
       $mFormGroupBox.controls.add((AddControl $mElement)) 
                
     } 
  
-} 
+}
+
  
 Function EditFormSize ($x,$y){ 
  
@@ -1334,14 +1456,52 @@ function ExportForm {
  
     $mFormObj  
     $mExportString = ''
+    $mFooterString = ''
+    $ms = $false
     $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
     ' 
     foreach ($mElement in $mFormObj.Elements){ 
        
         
        $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type
+       
+       switch ($mElement.Type){
+           
+           "MenuStrip"
+           {
+               
+               if ($ms -eq $false)
+               {$ms = $true
+$mFooterString = '
+function global:menuitemclick ($menu) {
+    switch (dlgname $menu) {'}
+
+               
+             $mExportString+=" $($mElement.Name) $(chr 34)"
+               foreach ($mProperty in $mElement.Properties)
+               {
+                   if ($mProperty.Value -ne $null -or $mProperty.Value -ne "")
+                   {
+               $mExportString+=$mProperty.Value+','
+               $fsplit = $mProperty.Value.split("|")
+               if ($fsplit[0] -ne "-")
+               {
+$mFooterString+= "
+        $(chr 34)$($fsplit[0])$(chr 34){
+
+        }"
+    }
+              
+           }
+               
+               }
+       $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+       
+           $mExportString+=$mProperty.Value+(chr 34)+'
+           '
+           }
         
-    
+       default{
         foreach ($mProperty in $mElement.Properties){
                    If ($mProperty.Name -eq 'Top'){ 
                  $mExportString+=' '+$mProperty.Value 
@@ -1399,8 +1559,17 @@ function ExportForm {
         ' 
  
     } 
- 
-    $mExportString+= 'dialog show '+$mFormXTextBox2.Text 
+}
+}
+if ($ms -eq $true)
+{
+$mFooterString+= "
+    }
+}
+"
+
+}
+$mExportString+= $mFooterString+'dialog show '+$mFormXTextBox2.Text 
    
 $FastTab.SelectedTab.Controls[0].InsertText($mExportString)
 
@@ -1572,6 +1741,7 @@ $global:mfgbx = $mFormGroupBox.width
 })
 
 $mFormGroupBox.add_Closed({DesignWindow
+     $global:designribbon = $false
 repaintForm})
 
 $mFormGroupBox.Show()
