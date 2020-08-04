@@ -1480,7 +1480,7 @@ function global:menuitemclick ($menu) {
              $mExportString+=" $($mElement.Name) $(chr 34)"
                foreach ($mProperty in $mElement.Properties)
                {
-                   if ($mProperty.Value -ne $null -or $mProperty.Value -ne "")
+                   if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
                    {
                $mExportString+=$mProperty.Value+','
                $fsplit = $mProperty.Value.split("|")
@@ -1747,8 +1747,8 @@ repaintForm})
 $mFormGroupBox.Show()
 $mFormGroupBox.left = 500
 repaintForm
-[vds]::SetWindowPos($(winexists "DialogShell Designer"), -1, $(winpos $(winexists "DialogShell Designer") L), $(winpos $(winexists "DialogShell Designer") T), $(winpos $(winexists "DialogShell Designer") W), $(winpos $(winexists "DialogShell Designer") H), 0x0040)
-[vds]::SetWindowPos($(winexists "Dialog Elements"), -1, $(winpos $(winexists "Dialog Elements") L), $(winpos $(winexists "Dialog Elements") T), $(winpos $(winexists "Dialog Elements") W), $(winpos $(winexists "Dialog Elements") H), 0x0040)
+ [vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H),  0x0040)
+                 [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
 [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
 }
 
@@ -1767,9 +1767,9 @@ function elementswindow{
             if ($eleOK -eq "true")
             {elementswindow}})
 
-        $elements.Show() 
-                 [vds]::SetWindowPos($(winexists "DialogShell Designer"), -1, $(winpos $(winexists "DialogShell Designer") L), $(winpos $(winexists "DialogShell Designer") T), $(winpos $(winexists "DialogShell Designer") W), $(winpos $(winexists "DialogShell Designer") H), 0x0040)
-                 [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
+            $elements.Show() 
+                   [vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H),  0x0040)
+               [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
 [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
         }
 
