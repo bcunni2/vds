@@ -1,4 +1,4 @@
-$ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
 #info $(curdir)
 
@@ -895,7 +895,7 @@ Function renewGrids ($a){
     [array]$mElementsArr = $mFormObj.Elements | select Name,Type 
     $mList.AddRange($mElementsArr) 
     $mElemetnsGrid.DataSource =  $mList 
-    #    $mElemetnsGrid.Columns[1].ReadOnly = $true 
+       $mElemetnsGrid.Columns[1].ReadOnly = $true 
     $mElemetnsGrid.Columns[0].Width = '140'
     $mElemetnsGrid.Columns[1].Width = '140'
  
@@ -905,7 +905,7 @@ Function renewGrids ($a){
 
     $mList2.AddRange($mPropertyArr) 
     $mPropertiesGrid.DataSource = $mList2 
-    #   $mPropertiesGrid.Columns[0].ReadOnly=$true
+       $mPropertiesGrid.Columns[0].ReadOnly=$true
     $mPropertiesGrid.Columns[0].Width = '140'
     $mPropertiesGrid.Columns[1].Width = '140'
     
@@ -1826,13 +1826,20 @@ $mElemetnsGrid = dialog add $mform datagridview 33 5 300 600
 
 $mElemetnsGrid.RowHeadersVisible =$false 
 $mElementsGrid.Font = ",8"
-$mElemetnsGrid.Add_CellContentClick({ElementsChanged}) 
+$mElemetnsGrid.Add_CellContentClick({
+ElementsChanged}) 
+
+$mElemetnsGrid.Add_Click({
+   renewGrids $mElemetnsGrid.SelectedCells.value | out-string
+ElementsChanged}) 
+
 $mElemetnsGrid.Add_CellEndEdit({ElementsEndEdit}) 
  
 $mPropertiesGrid = dialog add $mform datagridview 33 335 300 600 
 $mPropertiesGrid.ColumnHeadersVisible=$true 
 $mPropertiesGrid.RowHeadersVisible =$false 
-$mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit}) 
+$mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
+#$mPropertiesGrid.Add_CellContentClick({info "click"}) 
  
 $mDeleteButton = dialog add $mform button 638 5 300 33 'Delete'
 $mDeleteButton.Add_Click({DeleteElement}) 
