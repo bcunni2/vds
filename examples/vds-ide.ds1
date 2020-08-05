@@ -1,7 +1,7 @@
 $ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
 #info $(curdir)
-
+[System.GC]::Collect()
 <#
 $host.ui.RawUI.Backgroundcolor = 1
 cls
