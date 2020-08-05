@@ -1525,6 +1525,8 @@ function PropertiesEndEdit{
  
  
 Function repaintForm { 
+
+ $global:designribbon = $false
     
     $mFormGroupBox.controls.clear() 
  
