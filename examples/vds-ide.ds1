@@ -1483,10 +1483,11 @@ Function repaintForm {
  $global:designribbon = $false
     
     $mFormGroupBox.controls.clear() 
- 
+	
+	# $mFormObj.Elements | Export-Clixml c:\temp\ele.xml
+	
     Foreach ($mElement in $mFormObj.Elements){ 
-
-  
+ 
       $mFormGroupBox.controls.add((AddControl $mElement)) 
                
     } 
@@ -1504,9 +1505,8 @@ Function EditFormSize ($x,$y){
 } 
  
  
-function ExportForm { 
- 
-    $mFormObj  
+function ExportForm {
+	$mFormObj  
     $mExportString = ''
     $mFooterString = ''
     $mFooterString2 = ''
@@ -1515,172 +1515,136 @@ function ExportForm {
     $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
     ' 
     foreach ($mElement in $mFormObj.Elements){ 
-       
-        switch($mElement.Type){
-        "ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
-        default {$mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type}
-    }
-        
- 
-       switch ($mElement.Type){
-           
-           "ToolStrip"
-           {
-           #  $item.Add_Click({&toolstripitemclick $this})
-               if ($ts -eq $false)
-               {$ts = $true
-                   $mFooterString2 = '
+		switch($mElement.Type){
+			"ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
+			default {$mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type}
+		}
+
+		switch ($mElement.Type){
+			"ToolStrip" {
+				if ($ts -eq $false) {
+				$ts = $true
+				$mFooterString2 = '
 function global:toolstripitemclick ($name) {
-    switch (dlgname $name) {'}
-
+    switch (dlgname $name) {'
+				}
                
-             $mExportString+=" $(chr 34)"
-               foreach ($mProperty in $mElement.Properties)
-               {
-                   if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
-                   {
-               $mExportString+=$mProperty.Value+','
-               $fsplit = $mProperty.Value.split("|")
-               if ($fsplit[0] -ne "-")
-               {
-                   $mFooterString2+= "
+				$mExportString+=" $(chr 34)"
+				foreach ($mProperty in $mElement.Properties) {
+					if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "") 
+					{
+						$mExportString+=$mProperty.Value+','
+						$fsplit = $mProperty.Value.split("|")
+						if ($fsplit[0] -ne "-") {
+						$mFooterString2+= "
         $(chr 34)$($fsplit[0])$(chr 34){
 
         }"
-    }
-              
-           }
-               
-               }
-       $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
-       
-           $mExportString+=$mProperty.Value+(chr 34)+'
-           '
-           }
+						}
+					}
+				}
+				$mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+				$mExportString+=$mProperty.Value+(chr 34)+'
+				'
+			}
            
-           "MenuStrip"
-           {
-               
-               if ($ms -eq $false)
-               {$ms = $true
-$mFooterString = '
+			"MenuStrip" {
+				if ($ms -eq $false) {
+					$ms = $true
+					$mFooterString = '
 function global:menuitemclick ($menu) {
-    switch (dlgname $menu) {'}
-
-               
-             $mExportString+=" $($mElement.Name) $(chr 34)"
-               foreach ($mProperty in $mElement.Properties)
-               {
-                   if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
-                   {
-               $mExportString+=$mProperty.Value+','
-               $fsplit = $mProperty.Value.split("|")
-               if ($fsplit[0] -ne "-")
-               {
-$mFooterString+= "
+    switch (dlgname $menu) {'
+				}
+				$mExportString+=" $($mElement.Name) $(chr 34)"
+				foreach ($mProperty in $mElement.Properties) {
+					if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
+					{
+						$mExportString+=$mProperty.Value+','
+						$fsplit = $mProperty.Value.split("|")
+						if ($fsplit[0] -ne "-") {
+							$mFooterString+= "
         $(chr 34)$($fsplit[0])$(chr 34){
 
         }"
-    }
+						}
               
-           }
-               
-               }
-       $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
-       
-           $mExportString+=$mProperty.Value+(chr 34)+'
-           '
-           }
+					}
+				}
+			$mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+			$mExportString+=$mProperty.Value+(chr 34)+'
+			'
+			}
    
         
-       default{
-        foreach ($mProperty in $mElement.Properties){
-                   If ($mProperty.Name -eq 'Top'){ 
-                 $mExportString+=' '+$mProperty.Value 
-             }
-             } 
+			default{
+				foreach ($mProperty in $mElement.Properties){
+						If ($mProperty.Name -eq 'Top'){ 
+							$mExportString+=' '+$mProperty.Value 
+						}
+				} 
+				foreach ($mProperty in $mElement.Properties){
+						If ($mProperty.Name -eq 'Left'){ 
+						$mExportString+=' '+$mProperty.Value 
+						}
+				} 
+				foreach ($mProperty in $mElement.Properties){
+					If ($mProperty.Name -eq 'Width'){ 
+					$mExportString+=' '+$mProperty.Value 
+					}
+				} 
 
-                     foreach ($mProperty in $mElement.Properties){
-                   If ($mProperty.Name -eq 'Left'){ 
-                 $mExportString+=' '+$mProperty.Value 
-             }
-             } 
-
-                     foreach ($mProperty in $mElement.Properties){
-                   If ($mProperty.Name -eq 'Width'){ 
-                 $mExportString+=' '+$mProperty.Value 
-             }
-             } 
-
-                     foreach ($mProperty in $mElement.Properties){
-                   If ($mProperty.Name -eq 'Height'){ 
-                 $mExportString+=' '+$mProperty.Value 
-             }
-             } 
-
-                     foreach ($mProperty in $mElement.Properties){
-                   If ($mProperty.Name -eq 'Text'){ 
-                 $mExportString+=' "'+$mProperty.Value+'"'
-             }
-             } 
-
-        $mPrSizeX='' 
-        $mPrSizeY='' 
- 
-        foreach ($mProperty in $mElement.Properties){ 
- 
-    switch ($mProperty.Name)
-    {
-           Top {}
-            Left {}
-            Width {}
-            Height {}
-            Text {}
-
-            default { 
-                if ($mProperty.Value -ne $null){
-                $mExportString+=' 
-            dialog property $'+$mElement.Name+' '+$mProperty.Name +' "'+$mProperty.Value+'"' }
- 
-            }
-           } 
- 
-        } 
- 
-        $mExportString+='  
-        ' 
- 
-    } 
-}
-}
-
-if ($ts -eq $true)
-{
+				foreach ($mProperty in $mElement.Properties){
+					If ($mProperty.Name -eq 'Height'){ 
+						$mExportString+=' '+$mProperty.Value 
+					}
+				} 
+				foreach ($mProperty in $mElement.Properties){
+					If ($mProperty.Name -eq 'Text'){ 
+					$mExportString+=' "'+$mProperty.Value+'"'
+					}
+				} 
+				$mPrSizeX='' 
+				$mPrSizeY='' 
+				foreach ($mProperty in $mElement.Properties){ 
+					switch ($mProperty.Name) {
+						Top {}
+						Left {}
+						Width {}
+						Height {}
+						Text {}
+						default { 
+							if ($mProperty.Value -ne $null){
+								$mExportString+=' 
+		dialog property $'+$mElement.Name+' '+$mProperty.Name +' "'+$mProperty.Value+'"' 
+							}
+						}
+					} 
+				} 
+			$mExportString+='  
+			' 
+			} 
+		}
+	}
+	if ($ts -eq $true) {
     $mFooterString2+= "
     }
 }
 "
-}
-if ($ms -eq $true)
-{
+	}
+	if ($ms -eq $true) {
 $mFooterString+= "
     }
 }
 "
-
-}
-$mExportString+= $mFooterString+$mFooterString2+'dialog show '+$mFormXTextBox2.Text 
-   
-$FastTab.SelectedTab.Controls[0].InsertText($mExportString)
-
-$mFormGroupBox.Dispose()
-$eleOK = "false"
-$elements.Dispose()
-window close $(winexists "Dialog Elements")
-$mForm.Hide()
-
-$global:dd = "false"
-
+	}
+	$mExportString+= $mFooterString+$mFooterString2+'dialog show '+$mFormXTextBox2.Text 
+	$FastTab.SelectedTab.Controls[0].InsertText($mExportString)
+	$mFormGroupBox.Dispose()
+	$eleOK = "false"
+	$elements.Dispose()
+	window close $(winexists "Dialog Elements")
+	$mForm.Hide()
+	$global:dd = "false"
 } 
  
 
@@ -1787,18 +1751,36 @@ ElementsChanged})
 
 $mElemetnsGrid.Add_CellEndEdit({ElementsEndEdit}) 
  
-$mPropertiesGrid = dialog add $mform datagridview 33 335 300 600 
+$mPropertiesGrid = dialog add $mform datagridview 33 335 300 600
 $mPropertiesGrid.ColumnHeadersVisible=$true 
 $mPropertiesGrid.RowHeadersVisible =$false 
 $mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
 #$mPropertiesGrid.Add_CellContentClick({info "click"}) 
  
-$mDeleteButton = dialog add $mform button 638 5 300 33 'Delete'
+$mDeleteButton = dialog add $mform button 638 5 300 66 'Delete'
 $mDeleteButton.Add_Click({DeleteElement}) 
  
 $mExportButton = dialog add $mform button 638 335 150 33 'Create Form'
 
 $mCancelButton = dialog add $mform button 638 485 150 33 'Cancel'
+
+$mSaveButton = dialog add $mform button (638+35) 335 150 33 'Save Form'
+$mSaveButton.add_Click({
+$saveform = (savedlg "DialogShell Form|*.dsform")
+	if ($saveform) {
+		$mFormObj.Elements | Export-Clixml $saveform 
+	}
+})
+$mOpenButton = dialog add $mform button (638+35) 485 150 33 'Open Form'
+$mOpenButton.add_Click({
+	$openform = filedlg("DialogShell Form|*.dsform")
+		if ($openform){
+			$mFormObj.Elements = Import-Clixml $openform
+			repaintForm
+		}
+})
+ 
+
 $mCancelButton.add_Click({
     $mFormGroupBox.Dispose()
 $eleOK = "false"
@@ -1818,6 +1800,7 @@ $Global:mFormObj | Add-Member -Name 'Elements' -MemberType NoteProperty -Value @
 $Global:mCurFirstX =0  
 $Global:mCurFirstY =0 
 
+#$mFormObj.Elements =  Import-Clixml C:\temp\ele.xml
 
 $mForm.add_Closed({
 $mFormGroupBox.Dispose()
