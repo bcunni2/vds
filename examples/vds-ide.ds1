@@ -1760,7 +1760,7 @@ $mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
 $mDeleteButton = dialog add $mform button 638 5 300 66 'Delete'
 $mDeleteButton.Add_Click({DeleteElement}) 
  
-$mExportButton = dialog add $mform button 638 335 150 33 'Create Form'
+$mExportButton = dialog add $mform button 638 335 150 33 'Print Form'
 
 $mCancelButton = dialog add $mform button 638 485 150 33 'Cancel'
 
@@ -1768,6 +1768,7 @@ $mSaveButton = dialog add $mform button (638+35) 335 150 33 'Save Form'
 $mSaveButton.add_Click({
 $saveform = (savedlg "DialogShell Form|*.dsform")
 	if ($saveform) {
+#	$mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
 		$mFormObj.Elements | Export-Clixml $saveform 
 	}
 })
@@ -1776,19 +1777,23 @@ $mOpenButton.add_Click({
 	$openform = filedlg("DialogShell Form|*.dsform")
 		if ($openform){
 			$mFormObj.Elements = Import-Clixml $openform
+		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
 			repaintForm
 		}
 })
  
 
 $mCancelButton.add_Click({
-    $mFormGroupBox.Dispose()
+$ask = $(ask "Changes will be lost. Continue to close?")
+if (($ask | out-string).trim() -eq "Yes"){
+$mFormObj.Elements = @()
+$mFormGroupBox.Dispose()
 $eleOK = "false"
 $elements.Dispose()
 window close $(winexists "Dialog Elements")
 $mForm.Hide()
 $global:dd = "false"
-
+}
 })
 
 $mExportButton.Add_Click({ExportForm}) 
