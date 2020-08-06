@@ -13,6 +13,9 @@ $MyForm = dialog create "clipboard" 0 0 600 230
         $Button2 = dialog add $MyForm Button 85 132 100 50 "Cancel" 
             dialog property $Button2 Font "Segoe UI Black, 16"  
             
+            $MyForm.AcceptButton = $Button1
+            $MyForm.CancelButton = $Button2
+            
               $MyForm.controlbox = $false
 
               $MyForm.formborderstyle = "fixed3d"
@@ -20,8 +23,6 @@ $MyForm = dialog create "clipboard" 0 0 600 230
               list add $ComboBox1 "set"
               list add $ComboBox1 "append"
               list add $ComboBox1 "clear"
-              
-              dialog focus $Button1
               
               
               dialog property $ComboBox1 selecteditem "set"
