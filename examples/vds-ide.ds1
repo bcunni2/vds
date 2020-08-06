@@ -43,6 +43,7 @@ $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
 $popmenupath = "C:\Users\$env:username\Documents\DialogShell\context\popups.ds1"
 $lexiconpath = "C:\Users\$env:username\Documents\DialogShell\context\lexicon.ds1"
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
+$plugins = "C:\Users\$env:username\Documents\DialogShell\plugins"
 $docpath = "C:\Users\$env:username\Documents\DialogShell"
 $global:nopop = $false
 
@@ -139,9 +140,16 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
 
-(dialog properties $FastTab | out-file c:\temp\fasttab.txt)
+#dialog properties $FastTab | out-file c:\temp\fasttab.txt)
 
-    
+#info $plugins
+
+Get-ChildItem -Path $plugins -Filter *.ds1 -Recurse -File -Name | ForEach-Object {
+#info "$(chr 34)$plugins\$_$(chr 34)" 
+iex (get-content "$(chr 34)$plugins\$_''$(chr 34)" | out-string)
+info $_
+}
+
 $testmenu.add_Click({
     $curdir = $(curdir)
     $fileOpenvds = (filedlg "DialogShell Script|*.ds1" "$wizardpath")
@@ -1786,7 +1794,9 @@ $mOpenButton.add_Click({
 $mCancelButton.add_Click({
 $ask = $(ask "Changes will be lost. Continue to close?")
 if (($ask | out-string).trim() -eq "Yes"){
-$mFormObj.Elements = @()
+$Global:mFormObj = new-object PSCustomObject 
+$Global:mFormObj | Add-Member -Name 'Elements' -MemberType NoteProperty -Value @() 
+renewGrids
 $mFormGroupBox.Dispose()
 $eleOK = "false"
 $elements.Dispose()
