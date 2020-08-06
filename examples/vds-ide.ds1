@@ -146,8 +146,8 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 
 Get-ChildItem -Path $plugins -Filter *.ds1 -Recurse -File -Name | ForEach-Object {
 #info "$(chr 34)$plugins\$_$(chr 34)" 
-iex (get-content "$(chr 34)$plugins\$_''$(chr 34)" | out-string)
-info $_
+iex (get-content "$(chr 34)$plugins\$_$(chr 34)".trim() | out-string)
+info (get-content "$(chr 34)$plugins\$_$(chr 34)" | out-string)
 }
 
 $testmenu.add_Click({
