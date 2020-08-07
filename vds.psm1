@@ -8,6 +8,8 @@ using System.Windows.Forms;
 
 public class vds {
 [DllImport("user32.dll")]
+public static extern IntPtr GetParent(IntPtr hWnd);
+[DllImport("user32.dll")]
 public static extern int SendMessage(int hWnd, int hMsg, int wParam, int lParam);
 [DllImport("user32.dll")]
 public static extern bool ShowWindow(int hWnd, WindowState nCmdShow);
@@ -4197,6 +4199,11 @@ function winclass($a) {
     https://dialogshell.com/vds/help/index.php/winclass
 #>
 } 
+
+function winparent($a){
+return [vds]::GetParent($a)
+}
+
 function windir($a) {
     return $(env windir)
 <#
