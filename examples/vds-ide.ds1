@@ -1,7 +1,7 @@
 $ErrorActionPreference = "SilentlyContinue"
 directory change (path $host.ui.RawUI.WindowTitle)
 #info $(curdir)
-[System.GC]::Collect()
+#[System.GC]::Collect()
 <#
 $host.ui.RawUI.Backgroundcolor = 1
 cls
@@ -140,7 +140,7 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
 
-Get-ChildItem -Path $plugins -Filter *.ds1 -Recurse -File -Name | ForEach-Object {
+Get-ChildItem -Path $plugins -Filter *.ds1 -File -Name | ForEach-Object {
 iex $(get-content "$plugins\$_" | out-string)
 }
 
@@ -781,33 +781,7 @@ $mForm.Show()
     {iex (get-content $popmenupath | out-string)}
 }
 
-if ($args[0] -ne $null) {
-    if ((ext $args[0]) -ne "dsproj") {
-        $FastTab.TabPages.Add($args[0])
-        $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-        $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-        dialog property $FastText language "DialogShell"
-        dialog property $FastText dock "Fill"
-        $FastTab.SelectedTab.Controls.Add($FastText)    
-        $FastText.OpenFile($args[0])
-        $script:curdoc = (string $args[0])
-        $FastTab.SelectedTab.Controls[0].IsChanged = $false
-        $init.enabled = $true
-    }
-    else {
-        $scfile = (trim (get-content $args[0] | Out-String))
-        $FastTab.TabPages.Add($scfile)
-        $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-        $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-        dialog property $FastText language "DialogShell"
-        dialog property $FastText dock "Fill"
-        $FastTab.SelectedTab.Controls.Add($FastText)    
-        $FastText.OpenFile($scfile)
-        $script:curdoc = (string $scfile)
-        $FastTab.SelectedTab.Controls[0].IsChanged = $false
-        $init.enabled = $true
-    }
-}
+
 
 function aboutbox {
     $AboutForm = dialog create "About Visual DialogShell" 0 0 725 480
@@ -1824,9 +1798,8 @@ window close $(winexists "Dialog Elements")
 
  function DesignWindow{
 $Global:mFormGroupBox = dialog create $mFormXTextBox.text 0 0 $global:mfgbx $global:mfgby
-
-$mFormGroupBox.icon = $mform.icon
-
+    $dir = string $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell" "InstallLocation")
+    $mFormGroupBox.icon = "$dir\res\application.ico"
 
 $mFormGroupBox.AllowDrop = $true
 $mFormGroupBox.add_DragEnter({
@@ -1887,6 +1860,48 @@ $global:mfgbx = 600
 #[System.Windows.Forms.Application]::Run($mForm)
 
 
+switch(ext $args[0]) {
+	dsproj {
+			$scfile = (trim (get-content $args[0] | Out-String))
+			$FastTab.TabPages.Add($scfile)
+			$FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+			$FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+			dialog property $FastText language "DialogShell"
+			dialog property $FastText dock "Fill"
+			$FastTab.SelectedTab.Controls.Add($FastText)    
+			$FastText.OpenFile($scfile)
+			$script:curdoc = (string $scfile)
+			$FastTab.SelectedTab.Controls[0].IsChanged = $false
+			$init.enabled = $true
+	}
+	dsform {
+		$global:eleOK = "true"
+		if ($global:dd -eq "false") {
+			$global:dd = "true"
+			DesignWindow | out-null
+			elementswindow | out-null
+			$mForm.Show()
+			$a =[vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
+			$a =[vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
+			$a = [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
+			$mFormObj.Elements = Import-Clixml $args[0]
+			repaintForm | out-null
+		}
+	}
+
+	default {
+			$FastTab.TabPages.Add($args[0])
+			$FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+			$FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+			dialog property $FastText language "DialogShell"
+			dialog property $FastText dock "Fill"
+			$FastTab.SelectedTab.Controls.Add($FastText)    
+			$FastText.OpenFile($args[0])
+			$script:curdoc = (string $args[0])
+			$FastTab.SelectedTab.Controls[0].IsChanged = $false
+			$init.enabled = $true
+	}
+}
 
 dialog show $FastTextForm
 
