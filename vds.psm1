@@ -222,6 +222,7 @@ public class Window
 #=====================================commands==========================================
 
 $global:xmen = $false
+$global:excelinit = $false
 $global:fieldsep = "|"
 $global:database = new-object System.Data.Odbc.OdbcConnection
 set-alias run invoke-expression
@@ -4464,5 +4465,83 @@ function zero($a) {
     .LINK
     https://dialogshell.com/vds/help/index.php/zero
 #>
+}
+
+function zip($a,$b,$c)
+{
+	switch ($a){
+		update{
+		compress-archive -path $b -update -destinationpath $c
+		}
+		default{
+		compress-archive -path $a -destinationpath $b
+		}
+	}
+}
+
+function unzip($a,$b)
+{
+	Expand-Archive -LiteralPath $a -DestinationPath $b -force
+}
+
+function excel($a,$b,$c,$d)
+{
+	if ($global:excelinit -eq $false){
+		$global:excelinit = $true
+		$global:excelVDS = new-object -comobject excel.application
+	}
+	switch ($a,$b){
+		connect {
+			return $global:excelinit
+		}
+		new {
+			return $global:excelVDS.Workbooks.add()
+		}
+		show {
+			$global:excelVDS.visible = $true
+		}
+		hide {
+			$global:excelVDS.visible = $false
+		}
+		AddWorksheet {
+			$b.Worksheets.Add()
+		}
+		Open {
+			$global:excelVDS.Workbooks.Open($b)
+		}
+		Save {
+			$global:excelVDS.Workbooks.Save()
+		}
+		SaveAs {
+			$global:excelVDS.ActiveWorkbook.SaveAs($b)
+		}
+		SelectSheet {
+			$global:excelVDS.Worksheets.Item($b).Select()
+		}
+		SetCell {
+			$global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
+		}
+		GetCell {
+				return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
+		}
+		DeleteColumn {
+				$global:excelVDS.ActiveSheet.Columns[$b].Delete()
+		}
+		DeleteRow {
+				$global:excelVDS.ActiveSheet.Rows[$b].Delete()
+		}
+		InsertColumn {
+				$global:excelVDS.ActiveSheet.Columns[$b].Insert()
+		}
+		InsertRow {
+				$global:excelVDS.ActiveSheet.Rows[$b].Insert()
+		}
+		ColumnCount {
+				return $global:excelVDS.ActiveSheet.UsedRange.Columns.Count
+		}
+		RowCount {
+				return $global:excelVDS.ActiveSheet.UsedRange.Rows.Count
+		}
+	}
 }
 
