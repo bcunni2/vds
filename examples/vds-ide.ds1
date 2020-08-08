@@ -1771,7 +1771,9 @@ $mSaveButton.add_Click({
 $saveform = (savedlg "DialogShell Form|*.dsform")
 	if ($saveform) {
 #	$mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
-		$mFormObj.Elements | Export-Clixml $saveform 
+		 $mFormObj.Elements | Export-Clixml $saveform 
+		
+		# $mForm.Obj.Elements | export-csv $saveform -NoTypeInformation
 	}
 })
 $mOpenButton = dialog add $mform button (638+35) 485 150 33 'Open Form'
@@ -1779,6 +1781,7 @@ $mOpenButton.add_Click({
 	$openform = filedlg("DialogShell Form|*.dsform")
 		if ($openform){
 			$mFormObj.Elements = Import-Clixml $openform
+			# $mFormObj.Elements = Import-Csv $openform
 		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
 			repaintForm
 		}

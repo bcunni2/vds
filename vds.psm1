@@ -4545,3 +4545,79 @@ function excel($a,$b,$c,$d)
 	}
 }
 
+function csv ($a,$b,$c,$d,$e,$f)
+{
+	switch ($a)
+	{
+		read{
+			if ($e){
+				while ($i -lt $e) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			$i = 0
+			$csv | %{
+			$i = $i+1
+				if ($i -eq $d){
+				return $_.$c
+				}
+			}
+		}
+		write {
+			if ($f){
+				while ($i -lt $f) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			$i = 0
+			$csv | %{
+			$i = $i+1
+				if ($i -eq $d){
+				$_.$c = $e
+				return $csv
+				}
+			}
+		}
+		count {
+			if ($c){
+				while ($i -lt $c) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			return $csv.count		
+		}
+		save {
+		$b | export-csv $c -NoTypeInformation
+		$Content = Get-content $c | select-object -skip 1
+		$Content | out-file $c -Encoding utf8		
+		}
+	}
+}
+
