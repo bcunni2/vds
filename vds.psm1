@@ -1,10 +1,28 @@
 Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase
 
 Add-Type @"
+//" closing above quote for editing c# syntax in another editor.
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+public class vdsForm:Form {
+[DllImport("user32.dll")]
+public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+[DllImport("user32.dll")]
+public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+	protected override void WndProc(ref Message m) {
+		base.WndProc(ref m);
+		if (m.Msg == 0x0312) {
+			int id = m.WParam.ToInt32();	
+			foreach (Control item in this.Controls) {
+				if (item.Name == "hotkey") {
+					item.Text = id.ToString();
+				}
+			}
+		}
+	}
+}
 
 public class vds {
 [DllImport("user32.dll")]
@@ -163,6 +181,7 @@ public static void RightClickAtPoint(int x, int y)
         License: Microsoft Limited Public License
 #>
 Add-Type -TypeDefinition @"
+//"
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -466,7 +485,18 @@ function beep {
              $b.Close()
          }
          create {
-             $Form = New-Object system.Windows.Forms.Form
+			$Form = [vdsForm] @{
+				ClientSize = New-Object System.Drawing.Point 0,0
+			}      
+             $Form.Text = $b
+             $Form.Top = $c
+             $Form.Left = $d
+             $Form.Width = $e
+             $Form.Height = $f
+             return $Form
+         }
+		 oldcreate {
+             $Form = new-object system.windows.forms.form
              $Form.Text = $b
              $Form.Top = $c
              $Form.Left = $d
@@ -3981,7 +4011,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.6.0'
+        return '0.2.6.1'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -4200,10 +4230,6 @@ function winclass($a) {
     https://dialogshell.com/vds/help/index.php/winclass
 #>
 } 
-
-function winparent($a){
-return [vds]::GetParent($a)
-}
 
 function windir($a) {
     return $(env windir)
@@ -4621,3 +4647,17 @@ function csv ($a,$b,$c,$d,$e,$f)
 	}
 }
 
+function winparent($a){
+return [vds]::GetParent($a)
+}
+
+<#
+[DllImport("user32.dll")]
+public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+[DllImport("user32.dll")]
+public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+#>
+function hotkey($a,$b,$c)
+{
+
+}

@@ -37,6 +37,8 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
 }
 
 
+
+
 $global:popuprtf = $true
 
 $global:tickz = $false
@@ -115,6 +117,13 @@ $localedialogshell = "DialogShell"
 $script:lastfind = ""
 $script:curdoc = ""
 $FastTextForm       = dialog create "Visual DialogShell" 0 0 600 480
+
+$bean = dialog add $FastTextForm TextBox 0 0 100 100
+dialog name $bean "hotkey"
+dialog hide $bean
+
+[vdsForm]::RegisterHotKey($FastTextForm.handle,1,2,0x09) | out-null
+
 $FastTextForm.icon = (curdir)+"\..\res\icon.ico"
 $FastTextForm.MinimumSize = new-object System.Drawing.Size(480,360)
 $StatusStrip1       = dialog add $FastTextForm StatusStrip 
@@ -146,9 +155,17 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
 
+
 Get-ChildItem -Path $plugins -Filter *.ds1 -File -Name | ForEach-Object {
 iex $(get-content "$plugins\$_" | out-string)
 }
+
+$bean.add_TextChanged(
+{
+if ($bean.text -eq "1"){
+$FastTextForm.Text = "Visual DialogShell Version $(sysinfo dsver)"}
+$bean.text = ""
+})
 
 $testmenu.add_Click({
     $curdir = $(curdir)
@@ -361,7 +378,7 @@ function global:menuitemclick ($menu) {
         }
         
         "$localehelp" {
-            run 'start https://dialogshell.com/vds/help'
+            run 'start https://dialogshell.com/vds/help/index.php/Special:AllPages'
         }
         "$localedesigner" {
       <#   run (get-content "'$(curdir)\..\DialogShell Designer.ds1'") | out-string
