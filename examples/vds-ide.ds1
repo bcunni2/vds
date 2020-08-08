@@ -1,5 +1,11 @@
 $ErrorActionPreference = "SilentlyContinue"
+
+if ($(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"  "InstallLocation")){
+directory change "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"  "InstallLocation")\examples"
+}
+else{
 directory change (path $host.ui.RawUI.WindowTitle)
+}
 #info $(curdir)
 #[System.GC]::Collect()
 <#
@@ -1629,7 +1635,7 @@ $mFooterString+= "
 if ($args[0])
 
 
-{$mform.icon = $args[0]+'\res\icon.ico'
+{$mform.icon = '..\res\icon.ico'
 }
 else{
     $dir = string $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell" "InstallLocation")
