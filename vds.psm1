@@ -21,7 +21,7 @@ public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 				}
 			}
 		}
-	}
+	}	
 }
 
 public class vds {
@@ -4651,13 +4651,201 @@ function winparent($a){
 return [vds]::GetParent($a)
 }
 
-<#
-[DllImport("user32.dll")]
-public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
-[DllImport("user32.dll")]
-public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-#>
-function hotkey($a,$b,$c)
-{
+function hotkey($a,$b,$c,$d) {
+[vdsForm]::RegisterHotKey($a.handle,$b,$c,$d) | out-null
+	if ($global:hotkeyobject -ne $true) {
+		$hotkey = dialog add $a label 0 0 0 0
+		dialog name $hotkey hotkey
+		$hotkey.add_TextChanged({
+			if ($this.text -ne ""){
+				hotkeyEvent $this.text
+			}
+			$this.text = ""
+		})
+	$global:hotkeyobject = $true
+	}
+}
 
+function vkey($a){
+	switch($a)
+	{
+		None{return 0}
+		Alt{return 1}
+		Control{return 2}
+		Shift{return 4}
+		WinKey{return 8}
+		LBUTTON{return 0x01}
+		RBUTTON{return 0x02}
+		CANCEL{return 0x03}
+		MBUTTON{return 0x04}
+		XBUTTON1{return 0x05}
+		XBUTTON2{return 0x06}
+		BACK{return 0x08}
+		TAB{return 0x09}
+		CLEAR{return 0x0C}
+		RETURN{return 0x0D}
+		SHIFT{return 0x10}
+		CONTROL{return 0x11}
+		MENU{return 0x12}
+		PAUSE{return 0x13}
+		CAPITAL{return 0x14}
+		KANA{return 0x15}
+		HANGUEL{return 0x15}
+		HANGUL{return 0x15}
+		IME_ON{return 0x16}
+		JUNJA{return 0x17}
+		FINAL{return 0x18}
+		HANJA{return 0x19}
+		KANJI{return 0x19}
+		IME_OFF{return 0x1A}
+		ESCAPE{return 0x1B}
+		CONVERT{return 0x1C}
+		NONCONVERT{return 0x1D}
+		ACCEPT{return 0x1E}
+		MODECHANGE{return 0x1F}
+		SPACE{return 0x20}
+		PRIOR{return 0x21}
+		NEXT{return 0x22}
+		END{return 0x23}
+		HOME{return 0x24}
+		LEFT{return 0x25}
+		UP{return 0x26}
+		RIGHT{return 0x27}
+		DOWN{return 0x28}
+		SELECT{return 0x29}
+		PRINT{return 0x2A}
+		EXECUTE{return 0x2B}
+		SNAPSHOT{return 0x2C}
+		INSERT{return 0x2D}
+		DELETE{return 0x2E}
+		HELP{return 0x2F}
+		0{return 0x31}
+		1{return 0x32}
+		3{return 0x34}
+		4{return 0x35}
+		6{return 0x36}
+		7{return 0x37}
+		8{return 0x38}
+		9{return 0x39}
+		A{return 0x41}
+		B{return 0x42}
+		C{return 0x43}
+		D{return 0x44}
+		E{return 0x45}
+		F{return 0x46}
+		G{return 0x47}
+		H{return 0x48}
+		I{return 0x49}
+		J{return 0x4A}
+		K{return 0x4B}
+		L{return 0x4C}
+		M{return 0x4D}
+		N{return 0x4E}
+		O{return 0x4F}
+		P{return 0x50}
+		Q{return 0x51}
+		R{return 0x52}
+		S{return 0x53}
+		T{return 0x54}
+		U{return 0x55}
+		V{return 0x56}
+		W{return 0x57}
+		X{return 0x58}
+		Y{return 0x59}
+		Z{return 0x5A}
+		LWIN{return 0x5B}
+		RWIN{return 0x5C}
+		APPS{return 0x5D}
+		SLEEP{return 0x5F}
+		NUMPAD0{return 0x60}
+		NUMPAD1{return 0x61}
+		NUMPAD2{return 0x62}
+		NUMPAD3{return 0x63}
+		NUMPAD4{return 0x64}
+		NUMPAD5{return 0x65}
+		NUMPAD6{return 0x66}
+		NUMPAD7{return 0x67}
+		NUMPAD8{return 0x68}
+		NUMPAD9{return 0x69}
+		MULTIPLY{return 0x6A}
+		ADD{return 0x6B}
+		SEPARATOR{return 0x6C}
+		SUBTRACT{return 0x6D}
+		DECIMAL{return 0x6E}
+		DIVIDE{return 0x6F}
+		F1{return 0x70}
+		F2{return 0x71}
+		F3{return 0x72}
+		F4{return 0x73}
+		F5{return 0x74}
+		F6{return 0x75}
+		F7{return 0x76}
+		F8{return 0x77}
+		F9{return 0x78}
+		F10{return 0x79}
+		F11{return 0x7A}
+		F12{return 0x7B}
+		F13{return 0x7C}
+		F14{return 0x7D}
+		F15{return 0x7E}
+		F16{return 0x7F}
+		F17{return 0x80}
+		F18{return 0x81}
+		F19{return 0x82}
+		F20{return 0x83}
+		F21{return 0x84}
+		F22{return 0x85}
+		F23{return 0x86}
+		F24{return 0x87}
+		NUMLOCK{return 0x90}
+		SCROLL{return 0x91}
+		LSHIFT{return 0xA0}
+		RSHIFT{return 0xA1}
+		LCONTROL{return 0xA2}
+		RCONTROL{return 0xA3}
+		LMENU{return 0xA4}
+		RMENU{return 0xA5}
+		BROWSER_BACK{return 0xA6}
+		BROWSER_FORWARD{return 0xA7}
+		BROWSER_REFRESH{return 0xA8}
+		BROWSER_STOP{return 0xA9}
+		BROWSER_SEARCH{return 0xAA}
+		BROWSER_FAVORITES{return 0xAB}
+		BROWSER_HOME{return 0xAC}
+		VOLUME_MUTE{return 0xAD}
+		VOLUME_DOWN{return 0xAE}
+		VOLUME_UP{return 0xAF}
+		MEDIA_NEXT_TRACK{return 0xB0}
+		MEDIA_PREV_TRACK{return 0xB1}
+		MEDIA_STOP{return 0xB2}
+		MEDIA_PLAY_PAUSE{return 0xB3}
+		LAUNCH_MAIL{return 0xB4}
+		LAUNCH_MEDIA_SELECT{return 0xB5}
+		LAUNCH_APP1{return 0xB6}
+		LAUNCH_APP2{return 0xB7}
+		OEM_1{return 0xBA}
+		OEM_PLUS{return 0xBB}
+		OEM_COMMA{return 0xBC}
+		OEM_MINUS{return 0xBD}
+		OEM_PERIOD{return 0xBE}
+		OEM_2{return 0xBF}
+		OEM_3{return 0xC0}
+		OEM_4{return 0xDB}
+		OEM_5{return 0xDC}
+		OEM_6{return 0xDD}
+		OEM_7{return 0xDE}
+		OEM_8{return 0xDF}
+		OEM_102{return 0xE2}
+		PROCESSKEY{return 0xE5}
+		PACKET{return 0xE7}
+		ATTN{return 0xF6}
+		CRSEL{return 0xF7}
+		EXSEL{return 0xF8}
+		EREOF{return 0xF9}
+		PLAY{return 0xFA}
+		ZOOM{return 0xFB}
+		NONAME{return 0xFC}
+		PA1{return 0xFD}
+		OEM_CLEAR{return 0xFE}
+	}
 }

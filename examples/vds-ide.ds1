@@ -122,8 +122,6 @@ $bean = dialog add $FastTextForm TextBox 0 0 100 100
 dialog name $bean "hotkey"
 dialog hide $bean
 
-[vdsForm]::RegisterHotKey($FastTextForm.handle,1,2,0x09) | out-null
-
 $FastTextForm.icon = (curdir)+"\..\res\icon.ico"
 $FastTextForm.MinimumSize = new-object System.Drawing.Size(480,360)
 $StatusStrip1       = dialog add $FastTextForm StatusStrip 
@@ -160,12 +158,14 @@ Get-ChildItem -Path $plugins -Filter *.ds1 -File -Name | ForEach-Object {
 iex $(get-content "$plugins\$_" | out-string)
 }
 
-$bean.add_TextChanged(
-{
-if ($bean.text -eq "1"){
-$FastTextForm.Text = "Visual DialogShell Version $(sysinfo dsver)"}
-$bean.text = ""
-})
+hotkey $FastTextForm 1 ((vkey control)+(vkey shift)+(vkey alt)) (vkey v)
+function hotkeyEvent ($a) {
+	switch ($a){
+		1 {
+		$FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
+		}
+	}
+}
 
 $testmenu.add_Click({
     $curdir = $(curdir)
@@ -1050,6 +1050,12 @@ Function AddElement2 ($a, $filename) {
      $d1 = $d1.trim()
 
      switch ($d1){
+ 
+ "Form" {
+ $mPropertiesArr+= AddProperty 'Name' $nameref
+ $mPropertiesArr+= AddProperty 'Height' $nameref
+ $mPropertiesArr+= AddProperty 'Width' $nameref
+ }
      
  "StatusStrip" {}
      
@@ -1486,6 +1492,8 @@ Function repaintForm {
 	# $mFormObj.Elements | Export-Clixml c:\temp\ele.xml
 	
     Foreach ($mElement in $mFormObj.Elements){ 
+	
+	write-host $mElement | Get-member
  
       $mFormGroupBox.controls.add((AddControl $mElement)) 
                
@@ -1769,6 +1777,14 @@ $saveform = (savedlg "DialogShell Form|*.dsform")
 	if ($saveform) {
 #	$mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
 		 $mFormObj.Elements | Export-Clixml $saveform 
+		 
+		 Add-Content $saveForm "<!--
+[Form]
+Object=$($mFormXTextBox2.Text)
+Text=$($mFormXTextBox.Text)
+Height=$($global:mfgby)
+Width=$($global:mfgbx)
+-->"
 		
 		# $mForm.Obj.Elements | export-csv $saveform -NoTypeInformation
 	}
@@ -1778,6 +1794,12 @@ $mOpenButton.add_Click({
 	$openform = filedlg("DialogShell Form|*.dsform")
 		if ($openform){
 			$mFormObj.Elements = Import-Clixml $openform
+			inifile open $openform
+			$mFormXTextBox2.Text = $(iniread Form Object)
+			$mFormXTextBox.Text = $(iniread Form Text)
+			$mFormGroupBox.Height = $(iniread Form Height)
+			$mFormGroupBox.Width = $(iniread Form Width)
+			$mFormGroupBox.Text = $mFormXTextBox.text
 			# $mFormObj.Elements = Import-Csv $openform
 		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
 			repaintForm
