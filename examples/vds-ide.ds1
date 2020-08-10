@@ -1802,15 +1802,17 @@ $FormPropertiesGrid.Columns[1].Name = "Value"
 $FormPropertiesGrid.Add_CellEndEdit({
 # write-host $FormPropertiesGrid.CurrentRow | out-string
 
-if ($FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value.toLower() -eq '$false')
-{$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[0].Value
-$mFormGroupBox.$prop = $False}
-
 if ($FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value -ne "")
 {
 $prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[0].Value
 $mFormGroupBox.$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value
 }
+
+if ($FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value.toLower() -eq '$false')
+{$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[0].Value
+$mFormGroupBox.$prop = $False}
+
+
 })
 
 $mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
@@ -1948,12 +1950,15 @@ $FormPropertiesGrid.Rows.Add("TransparencyKey",$(iniread Form TransparencyKey))
 $FormPropertiesGrid.Rows.Add("UseWaitCursor",$(iniread Form UseWaitCursor))
 $FormPropertiesGrid.Rows.Add("VerticalScroll",$(iniread Form VerticalScroll))
 $FormPropertiesGrid.Rows.Add("Visible",$(iniread Form Visible))
-$FormPropertiesGrid.Rows.Add("WindowState",$(iniread Form WindowState))
+$.Rows.Add("WindowState",$(iniread Form WindowState))
 
 			
 			# $mFormObj.Elements = Import-Csv $openform
 		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
-			repaintForm
+			   renewGrids #$mElemetnsGrid.SelectedCells.value | out-string
+ElementsChanged
+repaintForm
+			
 		}
 })
  
@@ -1961,6 +1966,7 @@ $FormPropertiesGrid.Rows.Add("WindowState",$(iniread Form WindowState))
 $mCancelButton.add_Click({
 $ask = $(ask "Changes will be lost. Continue to close?")
 if (($ask | out-string).trim() -eq "Yes"){
+$FormPropertiesGrid.Rows.Clear()
 $Global:mFormObj = new-object PSCustomObject 
 $Global:mFormObj | Add-Member -Name 'Elements' -MemberType NoteProperty -Value @() 
 renewGrids
