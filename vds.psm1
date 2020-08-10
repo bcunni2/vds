@@ -65,7 +65,10 @@ public static int FindWindowByTitle(string lpTitle) {
 return FWBT(0, lpTitle);}
 
 [DllImport("user32.dll")]
-     public static extern IntPtr GetForegroundWindow();
+public static extern IntPtr GetForegroundWindow();
+
+[DllImport("user32.dll")]
+public static extern IntPtr GetWindow(int hWnd, uint uCmd);
 
 [DllImport("user32.dll")]    
      public static extern int GetWindowTextLength(int hWnd);
@@ -1616,7 +1619,7 @@ function file($a,$b,$c,$d) {
             $b.items.addrange($name.Split([char][byte]13))
         } 
         savefile {
-        $b.items | Out-File  $c
+        $b.items | Out-File $c
         }
         tasklist {
             $proc = Get-Process | Select-Object -ExpandProperty ProcessName | Out-String
@@ -4649,6 +4652,10 @@ function csv ($a,$b,$c,$d,$e,$f)
 
 function winparent($a){
 return [vds]::GetParent($a)
+}
+
+function winchild($a){
+return [vds]::GetWindow($a, 5)
 }
 
 function hotkey($a,$b,$c,$d) {
