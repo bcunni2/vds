@@ -1485,6 +1485,9 @@ function PropertiesEndEdit{
  
 Function repaintForm { 
 
+    $FormPropertiesGrid.Columns[0].Width = '140'
+    $FormPropertiesGrid.Columns[1].Width = '140'
+
  $global:designribbon = $false
     
     $mFormGroupBox.controls.clear() 
@@ -1493,11 +1496,19 @@ Function repaintForm {
 	
     Foreach ($mElement in $mFormObj.Elements){ 
 	
-	write-host $mElement | Get-member
+	# write-host $mElement | Get-member
  
       $mFormGroupBox.controls.add((AddControl $mElement)) 
                
-    } 
+    }
+
+foreach ($row in $FormPropertiesGrid.Rows)
+{
+if ($row.Cells[1].Value -ne "") {
+ $mFormGroupBox.($row.Cells[0].Value)=($row.Cells[1].Value)}
+ if ($row.Cells[1].Value.toLower() -eq '$false') {
+ $mFormGroupBox.($row.Cells[0].Value)=$false}
+}	
  
 }
 
@@ -1521,6 +1532,16 @@ function ExportForm {
     $ts = $false
     $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
     ' 
+	
+	foreach ($row in $FormPropertiesGrid.Rows)
+{
+if ($row.Cells[1].Value -ne $null){
+if ($row.Cells[1].Value -ne "") {
+$mExportString+='dialog property '+$mFormXTextBox2.Text+' '+($row.Cells[0].Value) +' "'+($row.Cells[1].Value)+'"
+' 
+ }
+ }}
+	
     foreach ($mElement in $mFormObj.Elements){ 
 		switch($mElement.Type){
 			"ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
@@ -1758,9 +1779,40 @@ ElementsChanged})
 
 $mElemetnsGrid.Add_CellEndEdit({ElementsEndEdit}) 
  
-$mPropertiesGrid = dialog add $mform datagridview 33 335 300 600
+$tabcontrol = dialog add $mform tabcontrol 33 335 310 600
+$tabpage1 = dialog add $tabcontrol tabpage
+dialog set $tabpage1 "Controls"
+$tabpage2 = dialog add $tabcontrol tabpage
+dialog set $tabpage2 "Form"
+
+$mPropertiesGrid = dialog add $tabpage1 datagridview 0 0 300 575
 $mPropertiesGrid.ColumnHeadersVisible=$true 
 $mPropertiesGrid.RowHeadersVisible =$false 
+
+$FormPropertiesGrid = dialog add $tabpage2 datagridview 0 0 300 575
+$FormPropertiesGrid.ColumnHeadersVisible=$true 
+$FormPropertiesGrid.ColumnCount = 2
+$FormPropertiesGrid.RowHeadersVisible =$false
+$FormPropertiesGrid.Columns[0].Name = "Property"
+$FormPropertiesGrid.Columns[1].Name = "Value"
+
+    $FormPropertiesGrid.Columns[0].Width = '140'
+    $FormPropertiesGrid.Columns[1].Width = '140'
+
+$FormPropertiesGrid.Add_CellEndEdit({
+# write-host $FormPropertiesGrid.CurrentRow | out-string
+
+if ($FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value.toLower() -eq '$false')
+{$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[0].Value
+$mFormGroupBox.$prop = $False}
+
+if ($FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value -ne "")
+{
+$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[0].Value
+$mFormGroupBox.$prop = $FormPropertiesGrid.Rows[$FormPropertiesGrid.CurrentRow.index].Cells[1].Value
+}
+})
+
 $mPropertiesGrid.Add_CellEndEdit({PropertiesEndEdit})
 #$mPropertiesGrid.Add_CellContentClick({info "click"}) 
  
@@ -1778,13 +1830,20 @@ $saveform = (savedlg "DialogShell Form|*.dsform")
 #	$mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
 		 $mFormObj.Elements | Export-Clixml $saveform 
 		 
+		
+		 
 		 Add-Content $saveForm "<!--
 [Form]
 Object=$($mFormXTextBox2.Text)
 Text=$($mFormXTextBox.Text)
 Height=$($global:mfgby)
-Width=$($global:mfgbx)
--->"
+Width=$($global:mfgbx)"
+
+foreach ($row in $FormPropertiesGrid.Rows)
+{
+Add-Content $saveForm "$($row.Cells[0].Value)=$($row.Cells[1].Value)"
+}
+Add-Content $saveForm "-->"
 		
 		# $mForm.Obj.Elements | export-csv $saveform -NoTypeInformation
 	}
@@ -1800,6 +1859,98 @@ $mOpenButton.add_Click({
 			$mFormGroupBox.Height = $(iniread Form Height)
 			$mFormGroupBox.Width = $(iniread Form Width)
 			$mFormGroupBox.Text = $mFormXTextBox.text
+			
+			$FormPropertiesGrid.rows.Clear()
+			
+		
+			
+$FormPropertiesGrid.Rows.Add("AcceptButton",$(iniread Form AcceptButton))
+$FormPropertiesGrid.Rows.Add("ActiveControl",$(iniread Form ActiveControl))
+$FormPropertiesGrid.Rows.Add("ActiveMdiChild",$(iniread Form ActiveMdiChild))
+$FormPropertiesGrid.Rows.Add("AllowDrop",$(iniread Form AllowDrop))
+$FormPropertiesGrid.Rows.Add("AllowTransparency",$(iniread Form AllowTransparency))
+$FormPropertiesGrid.Rows.Add("Anchor",$(iniread Form Anchor))
+$FormPropertiesGrid.Rows.Add("AutoScale",$(iniread Form AutoScale))
+$FormPropertiesGrid.Rows.Add("AutoScaleBaseSize",$(iniread Form AutoScaleBaseSize))
+$FormPropertiesGrid.Rows.Add("AutoScaleDimensions",$(iniread Form AutoScaleDimensions))
+$FormPropertiesGrid.Rows.Add("AutoScaleMode",$(iniread Form AutoScaleMode))
+$FormPropertiesGrid.Rows.Add("AutoScroll",$(iniread Form AutoScroll))
+$FormPropertiesGrid.Rows.Add("AutoScrollMargin",$(iniread Form AutoScrollMargin))
+$FormPropertiesGrid.Rows.Add("AutoScrollMinSize",$(iniread Form AutoScrollMinSize))
+$FormPropertiesGrid.Rows.Add("AutoScrollOffset",$(iniread Form AutoScrollOffset))
+$FormPropertiesGrid.Rows.Add("AutoScrollPosition",$(iniread Form AutoScrollPosition))
+$FormPropertiesGrid.Rows.Add("AutoSize",$(iniread Form AutoSize))
+$FormPropertiesGrid.Rows.Add("AutoSizeMode",$(iniread Form AutoSizeMode))
+$FormPropertiesGrid.Rows.Add("AutoValidate",$(iniread Form AutoValidate))
+$FormPropertiesGrid.Rows.Add("BackColor",$(iniread Form BackColor))
+$FormPropertiesGrid.Rows.Add("BackgroundImage",$(iniread Form BackgroundImage))
+$FormPropertiesGrid.Rows.Add("BackgroundImageLayout",$(iniread Form BackgroundImageLayout))
+$FormPropertiesGrid.Rows.Add("BindingContext",$(iniread Form BindingContext))
+$FormPropertiesGrid.Rows.Add("Bottom",$(iniread Form Bottom))
+$FormPropertiesGrid.Rows.Add("Bounds",$(iniread Form Bounds))
+$FormPropertiesGrid.Rows.Add("CancelButton",$(iniread Form CancelButton))
+$FormPropertiesGrid.Rows.Add("Capture",$(iniread Form Capture))
+$FormPropertiesGrid.Rows.Add("CausesValidation",$(iniread Form CausesValidation))
+$FormPropertiesGrid.Rows.Add("ClientRectangle",$(iniread Form ClientRectangle))
+$FormPropertiesGrid.Rows.Add("ClientSize",$(iniread Form ClientSize))
+$FormPropertiesGrid.Rows.Add("ContextMenu",$(iniread Form ContextMenu))
+$FormPropertiesGrid.Rows.Add("ContextMenuStrip",$(iniread Form ContextMenuStrip))
+$FormPropertiesGrid.Rows.Add("ControlBox",$(iniread Form ControlBox))
+$FormPropertiesGrid.Rows.Add("CurrentAutoScaleDimensions",$(iniread Form CurrentAutoScaleDimensions))
+$FormPropertiesGrid.Rows.Add("Cursor",$(iniread Form Cursor))
+$FormPropertiesGrid.Rows.Add("DesktopBounds",$(iniread Form DesktopBounds))
+$FormPropertiesGrid.Rows.Add("DesktopLocation",$(iniread Form DesktopLocation))
+$FormPropertiesGrid.Rows.Add("DialogResult",$(iniread Form DialogResult))
+$FormPropertiesGrid.Rows.Add("Dock",$(iniread Form Dock))
+$FormPropertiesGrid.Rows.Add("DockPadding",$(iniread Form DockPadding))
+$FormPropertiesGrid.Rows.Add("Enabled",$(iniread Form Enabled))
+$FormPropertiesGrid.Rows.Add("Font",$(iniread Form Font))
+$FormPropertiesGrid.Rows.Add("ForeColor",$(iniread Form ForeColor))
+$FormPropertiesGrid.Rows.Add("FormBorderStyle",$(iniread Form FormBorderStyle))
+$FormPropertiesGrid.Rows.Add("HelpButton",$(iniread Form HelpButton))
+$FormPropertiesGrid.Rows.Add("HorizontalScroll",$(iniread Form HorizontalScroll))
+$FormPropertiesGrid.Rows.Add("Icon",$(iniread Form Icon))
+$FormPropertiesGrid.Rows.Add("IsMdiChild",$(iniread Form IsMdiChild))
+$FormPropertiesGrid.Rows.Add("IsMdiContainer",$(iniread Form IsMdiContainer))
+$FormPropertiesGrid.Rows.Add("IsRestrictedWindow",$(iniread Form IsRestrictedWindow))
+$FormPropertiesGrid.Rows.Add("KeyPreview",$(iniread Form KeyPreview))
+$FormPropertiesGrid.Rows.Add("MainMenuStrip",$(iniread Form MainMenuStrip))
+$FormPropertiesGrid.Rows.Add("Margin",$(iniread Form Margin))
+$FormPropertiesGrid.Rows.Add("MaximizeBox",$(iniread Form MaximizeBox))
+$FormPropertiesGrid.Rows.Add("MaximumSize",$(iniread Form MaximumSize))
+$FormPropertiesGrid.Rows.Add("MdiChildren",$(iniread Form MdiChildren))
+$FormPropertiesGrid.Rows.Add("MdiParent",$(iniread Form MdiParent))
+$FormPropertiesGrid.Rows.Add("Menu",$(iniread Form Menu))
+$FormPropertiesGrid.Rows.Add("MergedMenu",$(iniread Form MergedMenu))
+$FormPropertiesGrid.Rows.Add("MinimizeBox",$(iniread Form MinimizeBox))
+$FormPropertiesGrid.Rows.Add("MinimumSize",$(iniread Form MinimumSize))
+$FormPropertiesGrid.Rows.Add("Modal",$(iniread Form Modal))
+$FormPropertiesGrid.Rows.Add("Opacity",$(iniread Form Opacity))
+$FormPropertiesGrid.Rows.Add("OwnedForms",$(iniread Form OwnedForms))
+$FormPropertiesGrid.Rows.Add("Owner",$(iniread Form Owner))
+$FormPropertiesGrid.Rows.Add("Padding",$(iniread Form Padding))
+$FormPropertiesGrid.Rows.Add("ParentForm",$(iniread Form ParentForm))
+$FormPropertiesGrid.Rows.Add("RestoreBounds",$(iniread Form RestoreBounds))
+$FormPropertiesGrid.Rows.Add("RightToLeft",$(iniread Form RightToLeft))
+$FormPropertiesGrid.Rows.Add("RightToLeftLayout",$(iniread Form RightToLeftLayout))
+$FormPropertiesGrid.Rows.Add("ShowIcon",$(iniread Form ShowIcon))
+$FormPropertiesGrid.Rows.Add("ShowInTaskbar",$(iniread Form ShowInTaskbar))
+$FormPropertiesGrid.Rows.Add("Size",$(iniread Form Size))
+$FormPropertiesGrid.Rows.Add("SizeGripStyle",$(iniread Form SizeGripStyle))
+$FormPropertiesGrid.Rows.Add("StartPosition",$(iniread Form StartPosition))
+$FormPropertiesGrid.Rows.Add("TabIndex",$(iniread Form TabIndex))
+$FormPropertiesGrid.Rows.Add("TabStop",$(iniread Form TabStop))
+$FormPropertiesGrid.Rows.Add("Tag",$(iniread Form Tag))
+$FormPropertiesGrid.Rows.Add("TopLevel",$(iniread Form TopLevel))
+$FormPropertiesGrid.Rows.Add("TopLevelControl",$(iniread Form TopLevelControl))
+$FormPropertiesGrid.Rows.Add("TopMost",$(iniread Form TopMost))
+$FormPropertiesGrid.Rows.Add("TransparencyKey",$(iniread Form TransparencyKey))
+$FormPropertiesGrid.Rows.Add("UseWaitCursor",$(iniread Form UseWaitCursor))
+$FormPropertiesGrid.Rows.Add("VerticalScroll",$(iniread Form VerticalScroll))
+$FormPropertiesGrid.Rows.Add("Visible",$(iniread Form Visible))
+$FormPropertiesGrid.Rows.Add("WindowState",$(iniread Form WindowState))
+
+			
 			# $mFormObj.Elements = Import-Csv $openform
 		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
 			repaintForm
@@ -1864,8 +2015,73 @@ $mFormGroupBox.add_Closed({DesignWindow
      $global:designribbon = $false
 repaintForm})
 
+
+if ($FormPropertiesGrid.Rows.count -eq 1)
+{
+
+ foreach ($mProperty in ($mFormGroupBox | get-member)){ 
+ if ($mProperty.membertype.toString() -eq "Property"){
+       switch ($mProperty.Name){ 
+            'Top'   {} 
+            'Left'  {}  
+            'Width' {} 
+            'Height' {} 
+             'Text'  {}
+
+'AccessibilityObject' {}
+'CanFocus' {}
+'CanSelect' {}
+'CompanyName' {}
+'Container' {}
+'ContainsFocus' {}
+'Controls' {}
+'Created' {}
+'DataBindings' {}
+'DeviceDpi' {}
+'DisplayRectangle' {}
+'Disposing' {}
+'Focused' {}
+'Handle' {}
+'HasChildren' {}
+'InvokeRequired' {}
+'IsDisposed' {}
+'IsHandleCreated' {}
+'IsMirrored' {}
+'LayoutEngine' {}
+'PreferredHeight' {}
+'PreferredSize' {}
+'ProductName' {}
+'ProductVersion' {}
+'RecreatingHandle' {}
+'Right' {}
+'AccessibleName' {}
+'AccessibleDefaultActionDescription' {}
+'AccessibleDescription' {}
+'AccessibleRole' {}
+'ImeMode' {}
+'IsAccessible' {}
+'Location' {}
+'Name' {}
+'Parent' {}
+'Region' {}
+'Site' {}
+'WindowTarget' {}
+
+            default{ 
+		#	write-host $mFormGroupBox.($mProperty.name) | out-string
+#$FormPropertiesGrid.Rows.Add($mProperty.Name,$mFormGroupBox.($mProperty.name))
+$FormPropertiesGrid.Rows.Add($mProperty.Name,"")
+}
+}
+}
+}
+}
 $mFormGroupBox.Show()
+
 $mFormGroupBox.left = 500
+
+ 
+
 repaintForm
  [vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H),  0x0040)
                  [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
