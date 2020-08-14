@@ -20,55 +20,55 @@ else {
 		$args[8] = $null
 		$args[9] = $null
 		
-		$arg0 = $(regread "HKCU:\Software\dwsh\" "arg0")
+		$arg0 = $(regread "HKCU:\Software\pwsh\" "arg0")
 		if ($arg0 -ne ""){
 		$args[0] = $arg0
-		registry modifyitem "HKCU:\Software\dwsh\" "arg0" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg0" ""
 		}
-		$arg1 = $(regread "HKCU:\Software\dwsh\" "arg1")
+		$arg1 = $(regread "HKCU:\Software\pwsh\" "arg1")
 		if ($arg1 -ne ""){
 		$args[1] = $arg1
-		registry modifyitem "HKCU:\Software\dwsh\" "arg1" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg1" ""
 		}
-		$arg2 = $(regread "HKCU:\Software\dwsh\" "arg2")
+		$arg2 = $(regread "HKCU:\Software\pwsh\" "arg2")
 		if ($arg2 -ne ""){
 		$args[2] = $arg2
-		registry modifyitem "HKCU:\Software\dwsh\" "arg2" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg2" ""
 		}
-		$arg3 = $(regread "HKCU:\Software\dwsh\" "arg3")
+		$arg3 = $(regread "HKCU:\Software\pwsh\" "arg3")
 		if ($arg3 -ne ""){
 		$args[3] = $arg3
-		registry modifyitem "HKCU:\Software\dwsh\" "arg3" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg3" ""
 		}
-		$arg4 = $(regread "HKCU:\Software\dwsh\" "arg4")
+		$arg4 = $(regread "HKCU:\Software\pwsh\" "arg4")
 		if ($arg4 -ne ""){
 		$args[4] = $arg4
-		registry modifyitem "HKCU:\Software\dwsh\" "arg4" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg4" ""
 		}
-		$arg5 = $(regread "HKCU:\Software\dwsh\" "arg5")
+		$arg5 = $(regread "HKCU:\Software\pwsh\" "arg5")
 		if ($arg5 -ne ""){
 		$args[5] = $arg5
-		registry modifyitem "HKCU:\Software\dwsh\" "arg5" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg5" ""
 		}
-		$arg6 = $(regread "HKCU:\Software\dwsh\" "arg6")
+		$arg6 = $(regread "HKCU:\Software\pwsh\" "arg6")
 		if ($arg6 -ne ""){
 		$args[6] = $arg6
-		registry modifyitem "HKCU:\Software\dwsh\" "arg6" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg6" ""
 		}
-		$arg7 = $(regread "HKCU:\Software\dwsh\" "arg7")
+		$arg7 = $(regread "HKCU:\Software\pwsh\" "arg7")
 		if ($arg7 -ne ""){
 		$args[7] = $arg7
-		registry modifyitem "HKCU:\Software\dwsh\" "arg7" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg7" ""
 		}
-		$arg8 = $(regread "HKCU:\Software\dwsh\" "arg8")
+		$arg8 = $(regread "HKCU:\Software\pwsh\" "arg8")
 		if ($arg8 -ne ""){
 		$args[8] = $arg8
-		registry modifyitem "HKCU:\Software\dwsh\" "arg8" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg8" ""
 		}
-		$arg9 = $(regread "HKCU:\Software\dwsh\" "arg9")
+		$arg9 = $(regread "HKCU:\Software\pwsh\" "arg9")
 		if ($arg9 -ne ""){
 		$args[9] = $arg9
-		registry modifyitem "HKCU:\Software\dwsh\" "arg9" ""
+		registry modifyitem "HKCU:\Software\pwsh\" "arg9" ""
 		}
 		$ErrorActionPreference = $ep
 '@
@@ -78,9 +78,9 @@ else {
 	#	$encoding | out-file c:\temp\$dll -encoding ascii
 		$decoding = resource asciidecode (get-content $dll | out-string)
 		if ($7)
-			{$dwsh = $7}
+			{$pwsh = $7}
 		else{
-			$dwsh = $("..\res\7\dwsh.exe")
+			$pwsh = $("..\res\7\pwsh.exe")
 		}
 		Add-Content "cme.ps1" @'
 		$ep = $ErrorActionPreference
@@ -157,64 +157,64 @@ function registry ($a, $b, $c, $d, $e) {
 #>
 }
 
-$regxists = test-path hkcu:\Software\dwsh
+$regxists = test-path hkcu:\Software\pwsh
 if (!$regexists)
 {
-	$a = registry newkey "HKCU:\Software\" "dwsh"
-    $a = registry newitem "HKCU:\Software\dwsh\" "arg0" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg1" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg2" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg3" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg4" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg5" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg6" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg7" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg8" String ""
-	$a = registry newitem "HKCU:\Software\dwsh\" "arg9" String ""
+	$a = registry newkey "HKCU:\Software\" "pwsh"
+    $a = registry newitem "HKCU:\Software\pwsh\" "arg0" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg1" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg2" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg3" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg4" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg5" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg6" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg7" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg8" String ""
+	$a = registry newitem "HKCU:\Software\pwsh\" "arg9" String ""
 }
 
 if ($args[0]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg0" $args[0] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg0" $args[0] 
 }
 if ($args[1]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg1" $args[1] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg1" $args[1] 
 }
 if ($args[2]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg0" $args[2] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg0" $args[2] 
 }
 if ($args[3]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg0" $args[3] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg0" $args[3] 
 }
 if ($args[4]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg0" $args[4] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg0" $args[4] 
 }
 if ($args[5]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg0" $args[5] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg0" $args[5] 
 }
 if ($args[6]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg6" $args[6] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg6" $args[6] 
 }
 if ($args[7]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg7" $args[7] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg7" $args[7] 
 }
 if ($args[8]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg8" $args[8] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg8" $args[8] 
 }
 if ($args[9]){
-$a = registry modifyitem "HKCU:\Software\dwsh\" "arg9" $args[9] 
+$a = registry modifyitem "HKCU:\Software\pwsh\" "arg9" $args[9] 
 }
 $ErrorActionPreference = $ep
 
 '@
-		$corevalid = (test-path $dwsh)
+		$corevalid = (test-path $pwsh)
 		
 		if ($corevalid)
 		{
-		Add-Content "cme.ps1" "$dwsh -command $([char][byte]34)iex ([System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String((get-content $dll)))))$([char][byte]34)"
+		Add-Content "cme.ps1" "$pwsh -command $([char][byte]34)iex ([System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String((get-content $dll)))))$([char][byte]34)"
 		}else
 		{cls
 		write-host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-		write-host "CORE NOT FOUND! DWSH FAIL! FALLING BACK TO POWERSHELL!"
+		write-host "CORE NOT FOUND! PWSH FAIL! FALLING BACK TO POWERSHELL!"
 		write-host "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 		Add-Content "cme.ps1" "powershell -command $([char][byte]34)iex ([System.Text.Encoding]::ASCII.GetString(([System.Convert]::FromBase64String((get-content $dll)))))$([char][byte]34)"}
 		}
