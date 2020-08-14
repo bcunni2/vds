@@ -1,7 +1,8 @@
-Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase
-
+Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase, System.ComponentModel
+		$ep = $ErrorActionPreference
+		$ErrorActionPreference = "SilentlyContinue"
+try {
 Add-Type @"
-//" closing above quote for editing c# syntax in another editor.
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -23,6 +24,20 @@ public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 		}
 	}	
 }
+"@ -ReferencedAssemblies System.Windows.Forms,System.Drawing
+}
+catch {$core = $true}
+
+$ErrorActionPreference = $ep
+
+Add-Type @"
+//" closing above quote for editing c# syntax in another editor.
+using System;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using System.ComponentModel;
+
 
 public class vds {
 [DllImport("user32.dll")]
@@ -72,9 +87,9 @@ public static extern IntPtr GetWindow(int hWnd, uint uCmd);
 
 [DllImport("user32.dll")]    
      public static extern int GetWindowTextLength(int hWnd);
-     
+	 
 [DllImport("user32.dll")]
-public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
+public static extern IntPtr WindowFromPoint(int x, int y);
      
 [DllImport("user32.dll")]
 public static extern IntPtr GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
@@ -132,12 +147,12 @@ const int MOUSEEVENTF_ABSOLUTE   = 0x8000 ;
 
 const int screen_length = 0x10000 ;
 
-public static void LeftClickAtPoint(int x, int y)
+public static void LeftClickAtPoint(int x, int y, int width, int height)
 {
     //Move the mouse
     INPUT[] input = new INPUT[3];
-    input[0].mi.dx = x*(65535/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width);
-    input[0].mi.dy = y*(65535/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height);
+    input[0].mi.dx = x*(65535/width);
+    input[0].mi.dy = y*(65535/height);
     input[0].mi.dwFlags = MOUSEEVENTF_MOVED | MOUSEEVENTF_ABSOLUTE;
     //Left mouse button down
     input[1].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
@@ -146,12 +161,12 @@ public static void LeftClickAtPoint(int x, int y)
     SendInput(3, input, Marshal.SizeOf(input[0]));
 }
 
-public static void RightClickAtPoint(int x, int y)
+public static void RightClickAtPoint(int x, int y, int width, int height)
 {
     //Move the mouse
     INPUT[] input = new INPUT[3];
-    input[0].mi.dx = x*(65535/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width);
-    input[0].mi.dy = y*(65535/System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height);
+    input[0].mi.dx = x*(65535/width);
+    input[0].mi.dy = y*(65535/height);
     input[0].mi.dwFlags = MOUSEEVENTF_MOVED | MOUSEEVENTF_ABSOLUTE;
     //Left mouse button down
     input[1].mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
@@ -487,19 +502,15 @@ function beep {
          close {
              $b.Close()
          }
-         create {
-			$Form = [vdsForm] @{
+		 create {
+			if ($core){
+				$Form = new-object system.windows.forms.form 
+			}
+			else {
+				$Form = [vdsForm] @{
 				ClientSize = New-Object System.Drawing.Point 0,0
-			}      
-             $Form.Text = $b
-             $Form.Top = $c
-             $Form.Left = $d
-             $Form.Width = $e
-             $Form.Height = $f
-             return $Form
-         }
-		 oldcreate {
-             $Form = new-object system.windows.forms.form
+				}
+			}
              $Form.Text = $b
              $Form.Top = $c
              $Form.Left = $d
@@ -717,7 +728,6 @@ $global:errpref = $ErrorActionPreference
 		$global:ie.visible = $true
 		}
         busy {while($global:ie.Busy) { Start-Sleep -s 1 }
-        while($global:ie.ReadyState() -ne 4){ Start-Sleep -s 1 }
         }
         navigate {
         if ($b){$global:ie.Navigate($b)
@@ -2349,7 +2359,7 @@ function window ($a,$b,$c,$d,$e,$f) {
             window activate $b
             $x = $c + ($(winpos $b L))
             $y = $d + ($(winpos $b T))
-            [vds]::LeftClickAtPoint($x,$y)
+            [vds]::LeftClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
         }
         close {
             $(sendmsg $b 0x0112 0xF060 0)
@@ -2376,7 +2386,7 @@ function window ($a,$b,$c,$d,$e,$f) {
             window activate $b
             $x = $c + ($(winpos $b L))
             $y = $d + ($(winpos $b T))
-            [vds]::RightClickAtPoint($x,$y)
+            [vds]::RightClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
         }       
         normal {
             [vds]::ShowWindow($b, "SW_SHOW_NORMAL")
@@ -4203,7 +4213,7 @@ function winactive($a) {
 }  
 function winatpoint($a,$b) {
     $p = new-object system.drawing.point($a,$b)
-    $return = [vds]::WindowFromPoint($p)
+    $return = [vds]::WindowFromPoint($a,$b)
     return $return;
 <#
     .SYNOPSIS
@@ -4656,6 +4666,10 @@ return [vds]::GetParent($a)
 
 function winchild($a){
 return [vds]::GetWindow($a, 5)
+}
+
+function winsibling($a){
+return [vds]::GetWindow($a, 2)
 }
 
 function hotkey($a,$b,$c,$d) {
