@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 public class vdsForm:Form {
 [DllImport("user32.dll")]
+public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
+[DllImport("user32.dll")]
 public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 [DllImport("user32.dll")]
 public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -88,9 +90,6 @@ public static extern IntPtr GetWindow(int hWnd, uint uCmd);
 [DllImport("user32.dll")]    
      public static extern int GetWindowTextLength(int hWnd);
 	 
-[DllImport("user32.dll")]
-public static extern IntPtr WindowFromPoint(int x, int y);
-     
 [DllImport("user32.dll")]
 public static extern IntPtr GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
 
@@ -4212,9 +4211,16 @@ function winactive($a) {
 #>
 }  
 function winatpoint($a,$b) {
+
+if ($core) {
+	[vds]::LeftClickAtPoint($a,$b,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
+	return $(winactive)
+}
+else{
     $p = new-object system.drawing.point($a,$b)
-    $return = [vds]::WindowFromPoint($a,$b)
+    $return = [vdsForm]::WindowFromPoint($p)
     return $return;
+	}
 <#
     .SYNOPSIS
     Returns the window handle at x y
