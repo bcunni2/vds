@@ -1,1 +1,0 @@
-.\compile.exe .\DialogShell.ds1 .\DialogShell.exe -sta -version 0.2.6.1 -iconfile ..\res\terminal.ico -company "vds/pwsh community" -product "DialogShell" -description "DialogShell" -title "DialogShell"

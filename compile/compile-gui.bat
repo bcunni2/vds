@@ -1,1 +1,0 @@
-.\compile.exe .\compile-gui.ds1 .\compile-gui.exe -noconsole -sta -version 0.2.6.1 -iconfile ..\res\compile.ico -company "vds/pwsh community" -product "compile-gui" -description "compile-gui" -title "compile-gui"
