@@ -21,6 +21,7 @@ cd examples
 cd ..
 mkdir setup\compile
 copy .\compile\*.exe .\setup\compile
+copy .\compile\*.dll .\setup\compile
 copy .\compile\*.config .\setup\compile
 mkdir setup\examples
 copy .\examples .\setup\examples
