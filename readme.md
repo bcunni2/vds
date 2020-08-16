@@ -97,7 +97,7 @@ New events are available for most objects you are familiar with, use the new fun
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the MIT License - see the [license.md](license.md) file for details
 
 ## Acknowledgments
 ```
