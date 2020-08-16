@@ -253,12 +253,6 @@ public class Window
 }
 "@
 
-
-##Code standards -----------------------------------------------------------------------
-#Follow the patterns used in the current code.
-
-#=====================================commands==========================================
-
 $global:xmen = $false
 $global:excelinit = $false
 $global:fieldsep = "|"
