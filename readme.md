@@ -17,7 +17,7 @@ DialogShell is a PowerShell module.
 Visual DialogShell is a visual programming language, a product of DialogShell, which is a PowerShell module. It contains a executable that encompasses the codebase 'compile.exe' that allows you to create new executables in the DialogShell language (derived from PowerShell and DialogScript) for end user applications. Alternately you can call to the codebase vds.psm1 (dialogshell!) and make the deliverable a PowerShell script although this method isn't included in the release it's easy enough to apply from the source code.
 
 ### Why do I need DialogShell?
-Why should you be interested in DialogShell when C++, C# and Visual Basic are all similarly suited to the task of visual programming? DialogScript was amazing at one thing: The Law of Demeter, or principle of least knowledge. PowerShell is good at this, but not as good as DialogScript. The Law of Demeter is why people love PowerShell, DialogShell builds on this strength to allow users to quickly build powerful solutions. If you are solution oriented, DialogShell should appeal to you.
+Why should you be interested in DialogShell when C++, C# and Visual Basic are all similarly suited to the task of visual programming? DialogScript is amazing at one thing: The Law of Demeter, or principle of least knowledge. PowerShell is good at this, but not as good as DialogScript. The Law of Demeter is why people love PowerShell, DialogShell builds on this strength to allow users to quickly build powerful solutions. If you are solution oriented, DialogShell should appeal to you.
 
 # Project Board
 https://github.com/brandoncomputer/vds/projects/1
