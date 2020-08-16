@@ -1,4 +1,4 @@
-$ErrorActionPreference = "SilentlyContinue"
+#$ErrorActionPreference = "SilentlyContinue"
 
 if ($(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"  "InstallLocation")){
 directory change "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"  "InstallLocation")\examples"
@@ -819,13 +819,14 @@ function aboutbox {
     dialog property $PictureBox3 BorderStyle "Fixed3D"  
     $PictureBox4 = dialog add $AboutForm PictureBox 22 23 150 100 
     dialog property $PictureBox4 BorderStyle "Fixed3D"  
-    dialog property $PictureBox1 backcolor "lightblue" 
-    dialog property $PictureBox2 backcolor "lightblue" 
-    dialog property $PictureBox3 backcolor "lightblue"
+    dialog property $PictureBox1 backcolor lightblue
+    dialog property $PictureBox2 backcolor lightblue
+	dialog property $PictureBox3 backcolor lightblue
+ #   dialog property $PictureBox3 backcolor $(color rgb 0 0 255)
     $string = "Visual DialogShell $(cr)$(lf)$(cr)$(lf)Unless otherwise mentioned, this is the fruit of an MIT Open sourced project located at https://github.com/brandoncomputer/vds, some portions are CC by SA, others are lgplv3, and some are MSPL.$(cr)$(lf)This software is meant for the quickest freshest on the fly windows programs ever. Get more done, in less time, by using simpler tools. $(cr)$(lf)PowerShell compatible.$(cr)$(lf) A very special thanks to Julian Moss, the creator of DialogScript, for introducing me to the world of computer programming.$(cr)$(lf)$(cr)$(lf)Copyright 2019 Brandon Cunningham$(cr)$(lf)Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the $(chr 34)Software$(chr 34)), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:$(cr)$(lf)The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.$(cr)$(lf)THE SOFTWARE IS PROVIDED $(chr 34)AS IS$(chr 34), WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."  
     #  $string = "$localeaboutdialog"
     $Label1 = dialog add $AboutForm label 21 188 500 500 $string
-    dialog property $Label1 font "Segoe UI Black, 8"
+	dialog property $Label1 font "Segoe UI Black, 8"
     $Buttonx = dialog add $AboutForm button 400 400 40 20 "OK"
     $Buttonx.BringToFront()
     $Buttonx.add_Click({dialog close $AboutForm})

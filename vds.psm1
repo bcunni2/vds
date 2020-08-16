@@ -9,8 +9,6 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 public class vdsForm:Form {
 [DllImport("user32.dll")]
-public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
-[DllImport("user32.dll")]
 public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 [DllImport("user32.dll")]
 public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
@@ -40,8 +38,10 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.ComponentModel;
 
-
 public class vds {
+[DllImport("user32.dll")]
+public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
+// Now working in pwsh 7 thanks to advice from seeminglyscience#2404 on Discord
 [DllImport("user32.dll")]
 public static extern IntPtr GetParent(IntPtr hWnd);
 [DllImport("user32.dll")]
@@ -107,6 +107,7 @@ public static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
     
 [DllImport("User32.dll")]
 public static extern bool SetWindowText(IntPtr hWnd, string lpString);
+
 
 //CC-BY-SA
 //Adapted from script by StephenP
@@ -187,7 +188,8 @@ public static void RightClickAtPoint(int x, int y, int width, int height)
     public int Right;
     public int Bottom;
     }
-"@ -ReferencedAssemblies System.Windows.Forms,System.Drawing
+"@ -ReferencedAssemblies System.Windows.Forms,System.Drawing, System.Drawing.Primitives
+
 
 
 <#      
@@ -263,6 +265,70 @@ $global:fieldsep = "|"
 $global:database = new-object System.Data.Odbc.OdbcConnection
 set-alias run invoke-expression
 
+function abs($a) {
+<#
+    .SYNOPSIS
+     Returns the abslute value of a number.
+     
+    .DESCRIPTION
+     VDS
+    $number = -5
+    if ($(abs $number) -gt 4)
+    {console "It's greater than 4"}
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/abs
+#>
+    return [math]::abs($a)
+}
+
+function asc($a) {
+<#
+    .SYNOPSIS
+     Returns the ascii code number related to character $a.
+
+    .DESCRIPTION
+     VDS
+     $(asc 'm')
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/asc
+#>
+    return [byte][char]$a
+}
+
+function alt($a) {
+    return "%$a"
+<#
+    .SYNOPSIS
+     Sends the ALT key plus string. Only useful with 'window send'.
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(alt "F")
+    .LINK
+    https://dialogshell.com/vds/help/index.php/alt
+#>
+}
+
+function ask($a,$b) {
+    $ask = [System.Windows.Forms.MessageBox]::Show($a,$b,'YesNo','Info')
+    return $ask
+<#
+    .SYNOPSIS
+     Opens a dialog window to ask the user a question.
+     
+    .DESCRIPTION
+     VDS
+    if ($(ask "Is this the question?" "This is the title") -eq "Yes")
+    {info "This is the question"}
+    else
+    {info "This is not the question"}
+    .LINK
+    https://dialogshell.com/vds/help/index.php/ask
+#>
+}
+
 function beep {
     [console]::beep(500,300)
 <#
@@ -277,7 +343,40 @@ function beep {
     https://dialogshell.com/vds/help/index.php?title=Beep
 #>
 }
- function clipboard ($a,$b) {
+function both($a, $b) {
+    if (($a) -and ($b)) {
+        return $true 
+    } 
+    else {
+        return $false
+    }
+<#
+    .SYNOPSIS
+     Checks if both values are $true
+     
+    .DESCRIPTION
+     VDS
+    if ($(both 1 2)){console "Both 1 and 2 exists"}
+    .LINK
+    https://dialogshell.com/vds/help/index.php/both
+#>
+}
+function chr ($a) {
+    $a = $a | Out-String
+    return [char][byte]$a
+<#
+    .SYNOPSIS
+     Returns the ascii code to character
+     
+    .DESCRIPTION
+     VDS
+    $(chr 34)
+    .LINK
+    https://dialogshell.com/vds/help/index.php/chr
+#>
+}
+
+function clipboard ($a,$b) {
     switch ($a) {
         append {
             Set-Clipboard -Append $b
@@ -302,7 +401,63 @@ function beep {
     https://dialogshell.com/vds/help/index.php?title=Clipboard
  #>
  }
- function console ($a,$b){
+ 
+function clipbrd {
+    return Get-Clipboard -Format Text
+<#
+    .SYNOPSIS
+     Returns the text in the clipboard
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(clipbrd)
+    .LINK
+    https://dialogshell.com/vds/help/index.php/clipbrd
+#>
+}
+
+function color ($a,$b,$c,$d) {
+	switch ($a.toLower()) {
+		name {return [System.Drawing.Color]::FromName($b)}
+		rgb {return  [System.Drawing.Color]::FromArgb($b,$c,$d)}
+		}
+<#
+    .SYNOPSIS
+     Returns color by name or rgb
+     
+    .DESCRIPTION
+     VDS
+    Color
+    .LINK
+    https://dialogshell.com/vds/help/index.php/color
+#>
+}
+
+function colordlg {
+    $colorDialog = new-object System.Windows.Forms.ColorDialog
+    $colorDialog.ShowDialog() | Out-Null
+    if (($global:colordlg -eq $null) -or ($global:colordlg -eq "object")) {
+        return $colorDialog
+    }
+    else {
+            return $colorDialog.color.name
+    }
+<#
+    .SYNOPSIS
+     Produces a color selection dialog. 
+     If 'option colordlg normal' has been set, this will return the friendly color name, otherwise it returns the entire colorDialog object.
+     If 'option colordlg normal' is set, it may be unset using 'option colordlg object'.
+         
+    .DESCRIPTION
+     VDS
+     $color = $(colordlg); console $color.color.R; console $color.color.G; console $color.color.B
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/colordlg
+#>
+}
+ 
+function console ($a,$b){
      switch ($a) {
          read {
              return read-host -prompt $b
@@ -325,7 +480,173 @@ function beep {
      .LINK
      https://dialogshell.com/vds/help/index.php?title=Console
  #>
- }
+}
+ 
+ function count ($a) {
+    return $a.items.count
+<#
+    .SYNOPSIS
+     Returns the count of items in an object, usually a listbox. 
+
+    .DESCRIPTION
+     VDS
+     $c = $(count $listbox1)
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/count
+#>
+}
+function cr {
+    return chr(13)
+<#
+    .SYNOPSIS
+     A carriage return, this is usually followed by a line feed. 
+
+    .DESCRIPTION
+     VDS
+     info "Return a new line $(cr) here."
+
+    .LINK
+    https://dialogshell.com/vds/help/index.php/cr
+#>
+}
+
+function csv ($a,$b,$c,$d,$e,$f)
+{
+	switch ($a)
+	{
+		read{
+			if ($e){
+				while ($i -lt $e) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			$i = 0
+			$csv | %{
+			$i = $i+1
+				if ($i -eq $d){
+				return $_.$c
+				}
+			}
+		}
+		write {
+			if ($f){
+				while ($i -lt $f) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			$i = 0
+			$csv | %{
+			$i = $i+1
+				if ($i -eq $d){
+				$_.$c = $e
+				return $csv
+				}
+			}
+		}
+		count {
+			if ($c){
+				while ($i -lt $c) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+			else {
+				while ($i -lt 256) {
+				$build += ($i+1),($i+2)
+				$i = $i+2
+				}
+			}
+
+			$csv = Import-Csv $b -header $build.ForEach({ $_ })
+			return $csv.count		
+		}
+		save {
+		$b | export-csv $c -NoTypeInformation
+		$Content = Get-content $c | select-object -skip 1
+		$Content | out-file $c -Encoding utf8		
+		}
+	}
+	 <#
+     .SYNOPSIS
+     Manipulate CSV files 
+      
+     .DESCRIPTION
+      VDS
+      #There are 300 columns. Read cell A1
+	  $csv = $(csv read c:\temp\temp.csv 1 1 300)
+	  
+	  #There are less than 255 columns. Read cell B2
+	  $csv = $(csv read c:\temp\temp.csv 2 2)
+	  
+	  #There are 300 columns. Write to cell A1, return the whole CSV back.
+	  $csv = $(csv read c:\temp\temp.csv 1 1 NotMyCow 300)
+	  
+	  #There are less than 255 columns. Write cell B2, return the whole CSV back.
+	  $csv = $(csv read c:\temp\temp.csv 2 2 Beans)
+	  
+	  #Get the row count of a CSV
+	  $csv = $(csv count c:\temp\temp.csv)
+	  
+	  #Save CSV file
+	  csv save $csv c:\temp\temp.csv
+	 
+     .LINK
+     https://dialogshell.com/vds/help/index.php?title=csv
+ #>
+} 
+
+function ctrl($a) {
+    return "^$a"
+<#
+    .SYNOPSIS
+     Sends the CTRL key plus string. Only useful with 'window send'.
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(ctrl "s")
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/ctrl
+#>
+}
+
+ function curdir {
+    return $(trim (Get-Location | Select-Object -expandproperty Path | Out-String))
+<#
+    .SYNOPSIS
+     Returns the current directory as string
+     
+    .DESCRIPTION
+     VDS
+    $c = $(curdir)
+    directory change c:\windows
+    rem do some stuff
+    directory change $c
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/curdir
+#>
+}
+
  function database($a,$b) {
      switch ($a) {
          Open {
@@ -370,6 +691,51 @@ function beep {
      https://dialogshell.com/vds/help/index.php?title=date
  #>  
  }
+ 
+ function datetime {
+    return Get-Date
+<#
+    .SYNOPSIS
+     Returns the current date and time.
+     
+    .DESCRIPTION
+     VDS
+     $(datetime)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/datetime
+#>
+} 
+
+function decrypt ($a, $b){
+	if ($b){
+		[byte[]]$b = $b.split(" ")
+		$secure = $a | ConvertTo-SecureString -Key $b
+		$user = "inconsequential"
+		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+		return ($credObject.GetNetworkCredential().Password)
+	}
+	else{
+		$secure = $a | ConvertTo-SecureString 
+		$user = "inconsequential"
+		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+		return ($credObject.GetNetworkCredential().Password)
+	}
+<#
+    .SYNOPSIS
+    Decrypt an encrypted secret.
+     
+    .DESCRIPTION
+     VDS
+    $encrypt = 'Hello'
+	$b = $(encrypt $encrypt 'Aes')
+	$vals = $b.Split($(fieldsep))
+	info $(decrypt $vals[0] $vals[1])
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/decrypt
+#>
+}
  
  function dialog($a,$b,$c,$d,$e,$f,$g,$h) {
      switch ($a) {
@@ -569,7 +935,29 @@ function beep {
              return $b | Get-Member
          } #Remains for backwards compatibility. Please use dlgprops
          property {
+			#	write-host $($c -match "color")
+				
+				if ($($c -match "color")) {
+					if ($d.GetType() -match "string") {
+						$s = $d.split(",")
+						if ($s[1]){
+							$d = $(color rgb $s[0] $s[1] $s[2])
+						}
+						else {
+						$d = $(color name $d)
+						}
+					}
+				}
+				
+				if ($c.toLower() -eq 'font') {
+					if ($d.GetType() -match "string") {
+						$s = $d.split(",")
+						$d = $(font $s[0] ($s[1]/1))
+					}
+				}
+				
              $b.$c = $d
+			# write-host $d.GetType();
          }
          remove {    
              $b.dispose()
@@ -677,7 +1065,48 @@ function beep {
       .LINK
   https://dialogshell.com/vds/help/index.php/Dialog
       #>  
-  }
+}
+  
+function differ ($a,$b) {
+    return $a - $b
+<#
+    .SYNOPSIS
+    Returns the subtractrion result.
+     
+    .DESCRIPTION
+     VDS
+     $(differ 4 2)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/differ
+#>
+}
+
+function dirdlg($a,$b,$c) {
+$dirdlg = New-Object System.Windows.Forms.FolderBrowserDialog
+$dirdlg.description = $a
+$dirdlg.rootfolder = $b
+    if($dirdlg.ShowDialog() -eq "OK")   {
+        $folder += $dirdlg.SelectedPath
+    }
+        return $folder
+<#
+    .SYNOPSIS
+    Allows use of dialog to browse for folder and returns the result as string. 
+    The first paramater is the text to display "Select main folder", the second paramater is the start folder.
+    Permitted start folder locations are as follows: Desktop, Programs, MyDocuments, Personal, Favorites, Startup, Recent, SendTo, StartMenu, MyMusic, MyVideos, DesktopDirectory, MyComputer, NetworkShortcuts, Fonts, Templates, CommonStartMenu, 
+    CommonPrograms, CommonStartup, CommonDesktopDirectory, ApplicationData, PrinterShortcuts, LocalApplicationData, InternetCache, Cookies, History, CommonApplicationData, Windows, System, ProgramFiles, MyPictures, UserProfile, SystemX86, 
+    ProgramFilesX86, CommonProgramFiles, CommonProgramFilesX86, CommonTemplates, CommonDocuments, CommonAdminTools, AdminTools, CommonMusic, CommonPictures, CommonVideos, Resources, LocalizedResources, CommonOemLinks, CDBurning
+    
+    .DESCRIPTION
+     VDS
+     $mainfolder = $(dirdlg "Select Main Folder" "CDBurning")
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/dirdlg
+#>
+} #partial implementation - root folder constrained to certain values by powershell. 
+
 function directory($a,$b,$c) {
     switch ($a) {
         change 
@@ -710,6 +1139,197 @@ function directory($a,$b,$c) {
     https://dialogshell.com/vds/help/index.php/Directory
 #>  
 }
+
+function div ($a,$b) {
+    return $a / $b
+    <#
+    .SYNOPSIS
+    Returns the quotient of a dividend and a divisor.
+     
+    .DESCRIPTION
+     VDS
+     $(div 4 2)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/div
+#>
+}
+
+function dlgname($a) {
+    return $a.name
+<#
+    .SYNOPSIS
+    Returns the name property of a dialog element
+     
+    .DESCRIPTION
+     VDS
+     $(name $textbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/dlgname
+#>
+}
+
+function dlgpos ($a,$b) {
+    switch ($b) {
+        T {
+            return $a.Top
+        }
+        L {
+            return $a.Left
+        }
+        W {
+            return $a.Width
+        }
+        'H' {
+            return $a.Height
+        }
+    }
+<#
+    .SYNOPSIS
+    Returns the an element of a dialog position, T for top, L for left, W for width or H for height.
+     
+    .DESCRIPTION
+     VDS
+     $(dlgpos $textbox1 T)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/dlgpos
+#>  
+} #partial implementation
+
+function dlgprops ($a,$b,$c) {
+    if ($b -eq $null) {
+        return $a | Get-Member | Out-String
+    }
+    else {
+        return ($a | select -ExpandProperty $b | Out-String).Trim()
+    }
+<#
+    .SYNOPSIS
+    Returns properties (1) or property (2 params) of a dialog element.
+     
+    .DESCRIPTION
+     VDS
+    console $(dlgprops $textbox1)
+    $textbox1text = $(dlgprops $textbox1 text)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/dlgprops
+#>
+}
+
+function dlgtext($a) {  
+    return $a.Text
+<#
+    .SYNOPSIS
+    Returns the text of a dialog element.
+     
+    .DESCRIPTION
+     VDS
+     $(dlgtext $textbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/dlgtext
+#>
+}
+
+function encrypt ($a,$b){
+	$SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
+	if ($b){
+			$AESKey = New-Object Byte[] 32
+			[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey)
+			$encrypt = $SecureString | ConvertFrom-SecureString -Key $AESKey
+			return $encrypt+$fieldsep+$AESKey
+	}
+	else
+	{
+			return ($SecureString | ConvertFrom-SecureString)
+	}
+<#
+    .SYNOPSIS
+    Decrypt an encrypted secret.
+     
+    .DESCRIPTION
+     VDS
+    $encrypt = 'Hello'
+	$b = $(encrypt $encrypt 'Aes')
+	$vals = $b.Split($(fieldsep))
+	info $(decrypt $vals[0] $vals[1])
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/encrypt
+#>
+} 
+
+function env($a) {
+    $loc = Get-Location | select -ExpandProperty Path
+    Set-Location Env:
+    $return = Get-ChildItem Env:$a | select -ExpandProperty Value
+    Set-Location $loc;return $return
+<#
+    .SYNOPSIS
+    Returns an environmental variable.
+     
+    .DESCRIPTION
+     VDS
+     $windir = $(env windir)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/env
+#>
+}
+
+function equal($a, $b) {
+    if ($a -eq $b) {
+        return $true 
+    } 
+    else {
+        return $false
+    }
+<#
+    .SYNOPSIS
+    Returns if two values are equal.
+     
+    .DESCRIPTION
+     VDS
+     if ($(equal 4 2))
+     {console "Hey, four and two really are equal!"}
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/equal
+#>
+}
+
+function error {
+    return $LASTEXITCODE
+<#
+    .SYNOPSIS
+    Returns the last error exit code.
+     
+    .DESCRIPTION
+     VDS
+     console $(error)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/error
+#>
+}
+
+function esc {
+    return $(chr 27)
+<#
+    .SYNOPSIS
+    Returns the escape key, useful with window send.
+     
+    .DESCRIPTION
+     VDS
+     window send $(winexists "Save as...") $(esc)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/esc
+#>
+} 
 
 function eternium($a,$b,$c,$d,$e){ 
 $global:errpref = $ErrorActionPreference
@@ -1178,47 +1798,141 @@ $global:errpref = $ErrorActionPreference
 #>	
 }
 
-function fileimage ($a){
-return [System.Drawing.Image]::FromFile($a)
+function event {
+    return (Get-PSCallStack)[1].Command
 <#
     .SYNOPSIS
-     Creates a image from a file.
+    Returns the last command called. This probably needs reworked, use sparsly.
      
     .DESCRIPTION
      VDS
-    $PictureBox1.image = $(fileimage 'c:\temp\eternium.png')
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/streamimage
-#>	
-}
-function encrypt ($a,$b){
-	$SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
-	if ($b){
-			$AESKey = New-Object Byte[] 32
-			[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey)
-			$encrypt = $SecureString | ConvertFrom-SecureString -Key $AESKey
-			return $encrypt+$fieldsep+$AESKey
-	}
-	else
-	{
-			return ($SecureString | ConvertFrom-SecureString)
-	}
-<#
-    .SYNOPSIS
-    Decrypt an encrypted secret.
+     $event = $(event)
      
-    .DESCRIPTION
-     VDS
-    $encrypt = 'Hello'
-	$b = $(encrypt $encrypt 'Aes')
-	$vals = $b.Split($(fieldsep))
-	info $(decrypt $vals[0] $vals[1])
-    
     .LINK
-    https://dialogshell.com/vds/help/index.php/encrypt
+    https://dialogshell.com/vds/help/index.php/event
 #>
-} 
+}
+
+function excel($a,$b,$c,$d)
+{
+	if ($global:excelinit -eq $false){
+		$global:excelinit = $true
+		$global:excelVDS = new-object -comobject excel.application
+	}
+	switch ($a,$b){
+		connect {
+			return $global:excelinit
+		}
+		new {
+			return $global:excelVDS.Workbooks.add()
+		}
+		show {
+			$global:excelVDS.visible = $true
+		}
+		hide {
+			$global:excelVDS.visible = $false
+		}
+		AddWorksheet {
+			$b.Worksheets.Add()
+		}
+		Open {
+			$global:excelVDS.Workbooks.Open($b)
+		}
+		Save {
+			$global:excelVDS.Workbooks.Save()
+		}
+		SaveAs {
+			$global:excelVDS.ActiveWorkbook.SaveAs($b)
+		}
+		SelectSheet {
+			$global:excelVDS.Worksheets.Item($b).Select()
+		}
+		SetCell {
+			$global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
+		}
+		GetCell {
+				return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
+		}
+		DeleteColumn {
+				$global:excelVDS.ActiveSheet.Columns[$b].Delete()
+		}
+		DeleteRow {
+				$global:excelVDS.ActiveSheet.Rows[$b].Delete()
+		}
+		InsertColumn {
+				$global:excelVDS.ActiveSheet.Columns[$b].Insert()
+		}
+		InsertRow {
+				$global:excelVDS.ActiveSheet.Rows[$b].Insert()
+		}
+		ColumnCount {
+				return $global:excelVDS.ActiveSheet.UsedRange.Columns.Count
+		}
+		RowCount {
+				return $global:excelVDS.ActiveSheet.UsedRange.Rows.Count
+		}
+	}
+<#
+    .SYNOPSIS
+    Automates Microsoft Excel
+     
+    .DESCRIPTION
+     VDS
+	 #begin automation
+     $excel = excel connect
+	 
+	 #Create new workbook
+	 $excel = excel new
+	 
+     #Show Excel
+	 excel show 
+	 
+	 #Hide Excel
+	 excel hide
+	 
+	 #Add worksheet
+	 excel AddWorksheet
+	 
+	 #Open Workbooks
+	 excel open c:\temp\excel.xlsx
+	 
+	 #Save workbook
+	 excel save
+	 
+	 #Workbook Save As
+	 excel saveas c:\temp\save-excel.xlsx
+	 
+	 #Select sheet	 
+	 excel SelectSheet Book2	 
+	 
+	 #Set cell value 'B2' 'value'
+	 excel SetCell 2 1 value
+	 
+	 #Get cell 'B2' value
+	 $cell = excel GetCell 2 1
+	 
+	 #Delete column 'C'
+	 excel DeleteColumn 3
+	 
+	 #Delete row 3
+	 excel DeleteRow 3
+	 
+	 #Insert Column before 'A'
+	 excel InsertColumn 1
+	 
+	 #Insert row between 1 and 2
+	 excel InsertRow 2
+	 
+	 #Get the used column count
+	 $cc = excel ColumnCount
+	 
+	 #Get the row count
+	 $rc = excel RowCount	 
+	 
+    .LINK
+    https://dialogshell.com/vds/help/index.php/excel
+#>
+}
 
 function exit ($a) {
 exit $a
@@ -1234,6 +1948,7 @@ exit $a
     https://dialogshell.com/vds/help/index.php/Exit
 #>
 } #partial implementation - does not work with gosubs, this is technically now the same as error
+
 function exitwin($a) {
     switch ($a) {
         logoff {
@@ -1258,35 +1973,146 @@ function exitwin($a) {
 #>
 }
 
-function decrypt ($a, $b){
-	if ($b){
-		[byte[]]$b = $b.split(" ")
-		$secure = $a | ConvertTo-SecureString -Key $b
-		$user = "inconsequential"
-		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
-		return ($credObject.GetNetworkCredential().Password)
-	}
-	else{
-		$secure = $a | ConvertTo-SecureString 
-		$user = "inconsequential"
-		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
-		return ($credObject.GetNetworkCredential().Password)
-	}
+function expandproperty($a,$b){
+return $(select-object -inputobject $a -expandproperty $b)
 <#
     .SYNOPSIS
-    Decrypt an encrypted secret.
+    Expands the property [property] of inputobject [inputobject]
      
     .DESCRIPTION
      VDS
-    $encrypt = 'Hello'
-	$b = $(encrypt $encrypt 'Aes')
-	$vals = $b.Split($(fieldsep))
-	info $(decrypt $vals[0] $vals[1])
-    
+     $major = $(expandproperty [System.Environment]::OSVersion.Version major)
+     #major being the property.
+     
     .LINK
-    https://dialogshell.com/vds/help/index.php/decrypt
+    https://dialogshell.com/vds/help/index.php/expandproperty
 #>
 }
+
+function ext($a) {
+    $split = $a.Split('.')
+    return $split[$split.count -1]
+<#
+    .SYNOPSIS
+    returns the three character extension of a file name.
+     
+    .DESCRIPTION
+     VDS
+    $file = $(filedlg "Files|*.*")
+    $ext = $(ext $file)
+    info $ext
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/ext
+#>
+}
+
+function fabs($a) {
+    return [math]::abs($a)
+<#
+    .SYNOPSIS
+    Returns the absolute value of a number.
+     
+    .DESCRIPTION
+     VDS
+    info $(fabs -10)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fabs
+#>
+}
+
+function fadd($a,$b) {
+    return $a + $b
+<#
+    .SYNOPSIS
+    Returns the sum of two values.
+     
+    .DESCRIPTION
+     VDS
+    info $(fadd 2 2)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fadd
+#>
+}
+
+function fatn($a,$b) {
+    return [math]::atn($a / $b)
+<#
+    .SYNOPSIS
+    Returns the arctangent of y over x.
+     
+    .DESCRIPTION
+     VDS
+    info $(fatn $y $x)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fatn
+#>
+}
+
+function fcos {
+    Param ($a);
+    return [math]::cos($a)
+<#
+    .SYNOPSIS
+    Returns cosine.
+     
+    .DESCRIPTION
+     VDS
+    info $(cos $a)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fcos
+#>
+}
+function fdiv ($a,$b) {
+    return $a / $b
+<#
+    .SYNOPSIS
+    Returns the quotient of a division problem.
+     
+    .DESCRIPTION
+     VDS
+    info $(fdiv $a $b)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fdiv
+#>
+}
+
+function fexp($a) {
+    return [math]::exp($a)
+<#
+    .SYNOPSIS
+    Returns exponent.
+     
+    .DESCRIPTION
+     VDS
+    info $(exp $a)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fexp
+#>
+}
+
+function fieldsep {
+    return $fieldsep
+<#
+    .SYNOPSIS
+    Returns the fieldsep specified by option fieldsep
+     
+    .DESCRIPTION
+     VDS
+    info $a.split($(fieldsep))[0]
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fieldsep
+#>
+}
+
+
 
 function file($a,$b,$c,$d) {
     switch ($a) {
@@ -1345,40 +2171,343 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/File
 #>
 }
- function font ($a, $b) {
-    switch ($a) {
-        add {
-            $shellapp =  New-Object -ComoObject Shell.Application
-            $Fonts =  $shellapp.NameSpace(0x14)
-            $Fonts.CopyHere($b)
-        }
-        remove {
-            $name = Get-Item -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' | Select-Object -ExpandProperty Property | Out-String
-            #$name = $(out-string $(select-object $(get-item -path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts') -expandproperty property))
-            $keys = $name.Split([char][byte]10)
-            foreach ($key in $keys) {
-                $key = $key.Trim()
-                if ($(substr $key 0 ($b.length)) -eq $b) {
-                    $file = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' -Name $key | Select -ExpandProperty $key
-                    $file = $file.trim() 
-                    Remove-ItemProperty -path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' -Name $key 
-                }
-            }
-        }
+
+function filedlg($a,$b,$c) {
+    if ($c -ne "save") {
+        $filedlg = New-Object System.Windows.Forms.OpenFileDialog
+        $filedlg.initialDirectory = $b
+        $filedlg.filter = $a
+        $filedlg.ShowDialog() | Out-Null
+        return $filedlg.FileName
     }
- <#
+    else {
+        $filedlg = New-Object System.Windows.Forms.SaveFileDialog
+        $filedlg.initialDirectory = $b
+        $filedlg.filter = $a
+        $filedlg.ShowDialog() | Out-Null
+        return $filedlg.FileName
+    }
+<#
     .SYNOPSIS
-    Adds or removes a font
+    Returns the results of a file selection dialog. An optional 'save' parameter is available to generate a file save dialog.
      
     .DESCRIPTION
      VDS
-    font add $file
-    font remove $font-name
+    $file = $(filedlg 'Text Files|*.txt' $(windir)) 
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/filedlg
+#>
+}#partial implementation - excluded multi. Needs fixed.
+
+function fileimage ($a){
+return [System.Drawing.Image]::FromFile($a)
+<#
+    .SYNOPSIS
+     Creates a image from a file.
+     
+    .DESCRIPTION
+     VDS
+    $PictureBox1.image = $(fileimage 'c:\temp\eternium.png')
     
     .LINK
-    https://dialogshell.com/vds/help/index.php/Font
- #>
- }
+    https://dialogshell.com/vds/help/index.php/streamimage
+#>	
+}
+
+function fint ($a) {
+    return [int]$a
+<#
+    .SYNOPSIS
+    Returns the value as integer.
+     
+    .DESCRIPTION
+     VDS
+    $(fint 19)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fint
+#>
+}
+
+function fln ($a){
+    return [math]::log($a)
+<#
+    .SYNOPSIS
+    Returns logarithm
+     
+    .DESCRIPTION
+     VDS
+    $a = $(fln 64)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fln
+#>
+}
+
+function flog ($a) {
+    return [math]::log($a)
+<#
+    .SYNOPSIS
+    Returns log
+     
+    .DESCRIPTION
+     VDS
+    console $(log 15)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/flog
+#>
+}
+
+function fmul($a,$b) {
+    return $a * $b
+    <#
+    .SYNOPSIS
+    Returns the product of a multiplication problem.
+     
+    .DESCRIPTION
+     VDS
+    $a = $(fmul 4 4)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fmul
+#>
+}
+
+function focus($a) {
+    return $a.ActiveControl
+<#
+    .SYNOPSIS
+    Returns the active control of the parameter
+     
+    .DESCRIPTION
+     VDS
+    $a = $(focus $MyForm)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/focus
+#>
+} #partial implementation - in this version, must specify the form as a parameter
+
+function font($a,$b,$c,$d,$e,$f) {
+$font = ([System.Drawing.Font]::new($a, $b/1))
+if ($c){
+$font.$c = $d}
+if ($e){
+$font.$e = $f}
+return $font
+<#
+    .SYNOPSIS
+    Returns a font object
+     
+    .DESCRIPTION
+     VDS
+    $font = (font "Segoe UI Black" "16")
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/font
+#>
+}
+
+function fontdlg($a,$b) {
+    $fontdlg = new-object windows.forms.fontdialog
+    $fontdlg.showcolor = $true
+    $fontdlg.ShowDialog()
+    return $fontdlg
+<#
+    .SYNOPSIS
+    Returns a font dialog, the properties of which must be parsed.
+     
+    .DESCRIPTION
+     VDS
+    $fontdlg = $(fontdlg)
+    $RichEdit.SelectionFont = $fontdlg.font
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fontdlg
+#>
+} #partial implementation - does not preset font upon displaying the dialog.
+
+function format($a,$b) {
+    return $a | % {
+        $_.ToString($b)
+    }
+<#
+    .SYNOPSIS
+    Formats a string according to specified paramater
+     
+    .DESCRIPTION
+     VDS
+    console $(format 8888888888 '###-###-####')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/format
+#>
+} 
+
+function frac($a) {
+    $a = $a | Out-String 
+    return  $a.split(".")[1]/1
+<#
+    .SYNOPSIS
+    Returns the fractional portion of a number as integer.
+     
+    .DESCRIPTION
+     VDS
+    info $(frac 3.14)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/frac
+#>
+} 
+
+function fsep($a) {
+    return $fieldsep
+<#
+    .SYNOPSIS
+    Returns the fieldsep specified by option fieldsep
+     
+    .DESCRIPTION
+     VDS
+    info $a.split($(fsep))[0]
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fsep
+#>
+} 
+
+function fsin ($a){
+    return [math]::sin($a)
+<#
+    .SYNOPSIS
+    Returns the math sine of a number
+     
+    .DESCRIPTION
+     VDS
+    console $(fsin 1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fsin
+#>
+}
+
+function fsqt ($a){
+    return [math]::sqt($a)
+<#
+    .SYNOPSIS
+    Returns the square root of a number
+     
+    .DESCRIPTION
+     VDS
+    console $(fsqt 4)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fsqt
+#>
+}
+
+function fsub ($a,$b) {
+    return $a - $b
+<#
+    .SYNOPSIS
+    Returns the difference of two numbers
+     
+    .DESCRIPTION
+     VDS
+    console $(fsub 2 2)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/fsub
+#>
+}
+
+function greater($a, $b) {
+    if (($a) -gt ($b)) 
+    {
+        return $true
+    } 
+    else {
+        return $false
+    }
+<#
+    .SYNOPSIS
+    Returns true if one value is greater than another.
+     
+    .DESCRIPTION
+     VDS
+    console $(greater 4 2)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/greater
+#>
+}
+
+function gridview($a) { 
+return $a | Out-Gridview
+<#
+    .SYNOPSIS
+    Outputs result to a gridview dialog. Only valid on systems with Powershell ISE installed.
+     
+    .DESCRIPTION
+     VDS
+    gridview $(ls)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/gridview
+#>
+}
+
+function hex($a){
+    return $a | format-hex
+<#
+    .SYNOPSIS
+    Returns hex
+     
+    .DESCRIPTION
+     VDS
+    console $(hex 15)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/hex
+#>
+}
+
+function hotkey($a,$b,$c,$d) {
+[vdsForm]::RegisterHotKey($a.handle,$b,$c,$d) | out-null
+	if ($global:hotkeyobject -ne $true) {
+		$hotkey = dialog add $a label 0 0 0 0
+		dialog name $hotkey hotkey
+		$hotkey.add_TextChanged({
+			if ($this.text -ne ""){
+				hotkeyEvent $this.text
+			}
+			$this.text = ""
+		})
+	$global:hotkeyobject = $true
+	}
+<#
+    .SYNOPSIS
+    Adds a hotkey to the form
+     
+    .DESCRIPTION
+     VDS
+    Registers a hotkey by ID to fire function hotkeyEvent by vkey function.
+	Example:
+	hotkey $FastTextForm 1 ((vkey alt)+(vkey control)) (vkey v)
+	function hotkeyEvent ($a) {
+	switch ($a){
+		1 {
+		$FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
+		}
+	}
+}
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/hotkey
+#>
+}
+
  function htmlhelp ($a) {
     start-process -filepath hh.exe -argumentlist $a
  <#
@@ -1393,7 +2522,23 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/htmlhelp
  #>
  }
- function info($a,$b) {
+
+function index($a) {
+    return $a.SelectedIndex
+<#
+    .SYNOPSIS
+    Returns the selected index of a control
+     
+    .DESCRIPTION
+     VDS
+    $index = $(index $listbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/index
+#>
+}
+
+function info($a,$b) {
     [System.Windows.Forms.MessageBox]::Show($a,$b,'OK',64) | Out-Null
  <#
     .SYNOPSIS
@@ -1407,6 +2552,7 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/info
  #>
 }
+
  function inifile ($a,$b,$c,$d) {
     switch ($a) { 
         open {
@@ -1462,6 +2608,45 @@ function file($a,$b,$c,$d) {
  #>
  }
  
+ function iniread($a,$b) {
+    $Items = New-Object System.Collections.Generic.List[System.Object]
+    $content = get-content $global:inifile
+    if ($content) {
+        $Items.AddRange($content)
+    }
+    if ($Items.indexof("[$a]") -eq -1) {
+        $return = ""
+    }
+    else {
+        $return = ""
+        For ($i=$Items.indexof("[$a]")+1; $i -lt $Items.count; $i++) {
+            if ($Items[$i].length -gt $b.length) {
+                if ($Items[$i].substring(0,$b.length) -eq $b -and $gate -ne $true) {
+                        $return = $Items[$i].split("=")[1]
+                        $gate = $true
+                }
+            }
+            if ($Items[$i].length -gt 0) {
+                if (($Items[$i].substring(0,1) -eq "[") -and ($tgate -ne $true)) {
+                    $gate = $true
+                }
+            }
+        }
+    }
+    return $return
+<#
+    .SYNOPSIS
+    Returns a read from a file specified by inifile open.
+     
+    .DESCRIPTION
+     VDS
+    console $(iniread content value)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/iniread
+#>  
+}
+ 
  function innertext ($a,$b,$c,$d) {
 	$split1 = $a -Split $b
 	$split2 = ($split1[1] | out-string) -Split $c
@@ -1483,8 +2668,70 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/innertext
  #>
  }
- 
- function killtask ($a) {
+
+
+function input($a,$b) {
+    $input = [Microsoft.VisualBasic.Interaction]::InputBox($a,$b)
+    return $input
+<#
+    .SYNOPSIS
+    Produces a input dialog and returns the value.
+     
+    .DESCRIPTION
+     VDS
+    $input = $(input "Verify Address" "Verify Details")
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/input
+#>  
+} #partial implementation - Missing optional password parameter
+
+function item($a) {
+    return $a.SelectedItems
+<#
+    .SYNOPSIS
+    Returns the selected item from a list
+     
+    .DESCRIPTION
+     VDS
+    $item = $(item $listbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/item
+#>  
+}
+
+function items($a) {
+    return $a.SelectedItems
+<#
+    .SYNOPSIS
+    Returns the selected items from a list
+     
+    .DESCRIPTION
+     VDS
+    $items = $(items $listbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/items
+#>
+} #untested
+
+function key($a) {
+    return $(chr $(asc "{"))+$a+$(chr $(asc "}"))
+<#
+    .SYNOPSIS
+    Useful with window send, works with special keys. Esc, Enter, Up, Down etc.
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(key up)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/key
+#>
+} 
+
+function killtask ($a) {
     stop-process -name $a
  <#
     .SYNOPSIS
@@ -1498,6 +2745,52 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/killtask
  #>
  }
+ 
+ function len($a) {
+    return $a.length
+<#
+    .SYNOPSIS
+    Returns the length of a string
+     
+    .DESCRIPTION
+     VDS
+    $length = $(len $textbox1.text)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/len
+#>
+}
+
+function lf {
+    return chr(10)
+<#
+    .SYNOPSIS
+    Returns a line feed
+     
+    .DESCRIPTION
+     VDS
+    $lf = $(lf)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/lf
+#>
+}
+
+function like ($a,$b) {
+    return $a -like $b
+<#
+    .SYNOPSIS
+    Returns the one item is like another
+     
+    .DESCRIPTION
+     VDS
+    $like = $(string $(like 'string' 'string'))
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/like
+#>
+}
+
  function link ($a,$b,$c,$d,$e,$f,$g) {
     $Shell = New-Object -ComObject ("WScript.Shell")
     $ShortCut = $Shell.CreateShortcut($a)
@@ -1522,6 +2815,11 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/link
  #>
  }
+
+
+
+ 
+
  function list ($a,$b,$c,$d) {
     switch ($a) {
         add {
@@ -1700,6 +2998,117 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/list
  #>
  }
+ 
+ function loaddll ($a){
+	if ($(substr $a 0 2) -eq 'ht') {
+		$s = iwr $a
+        return [Reflection.Assembly]::Load($s.content) | out-null
+	}
+	else {
+		[Reflection.Assembly]::LoadFile($a) | Out-Null
+	}
+<#
+    .SYNOPSIS
+     Loads a dynamic link library
+     
+    .DESCRIPTION
+     VDS
+    loaddll c:\temp\dotnet.dll
+	loaddll https://mydomain.com/dotnet.dll
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/loaddll
+#>			
+}
+ 
+function lower($a) {
+    return $a.ToLower()
+<#
+    .SYNOPSIS
+    Returns the lower case string of a string
+     
+    .DESCRIPTION
+     VDS
+    $lower = $(lower $string)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/lower
+#>
+}
+
+function match($a,$b,$c) {
+    if ($c = $null){
+        $c = -1
+    }
+    else {
+        $c = $c
+    }
+    try{$return = $a.FindString($b,$c)}
+	catch{$return = $a.Items.IndexOf($b)}
+	    return $return
+<#
+    .SYNOPSIS
+    The index of the next match in a list, with an optional start point.
+     
+    .DESCRIPTION
+     VDS
+    $match = $(match $listbox1 $string 3)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/match
+#>
+}
+
+function mod($a,$b) {
+    return $a % $b
+<#
+    .SYNOPSIS
+    Returns the modulo of dividend and divisor
+     
+    .DESCRIPTION
+     VDS
+    $mod = $(mod 60 30)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/mod
+#>
+}
+
+ function modifyfonts ($a, $b) {
+    switch ($a) {
+        add {
+            $shellapp =  New-Object -ComoObject Shell.Application
+            $Fonts =  $shellapp.NameSpace(0x14)
+            $Fonts.CopyHere($b)
+        }
+        remove {
+            $name = Get-Item -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' | Select-Object -ExpandProperty Property | Out-String
+            #$name = $(out-string $(select-object $(get-item -path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts') -expandproperty property))
+            $keys = $name.Split([char][byte]10)
+            foreach ($key in $keys) {
+                $key = $key.Trim()
+                if ($(substr $key 0 ($b.length)) -eq $b) {
+                    $file = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' -Name $key | Select -ExpandProperty $key
+                    $file = $file.trim() 
+                    Remove-ItemProperty -path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Fonts' -Name $key 
+                }
+            }
+        }
+    }
+ <#
+    .SYNOPSIS
+    Adds or removes a font
+     
+    .DESCRIPTION
+     VDS
+    modifyfonts add $file
+    modifyfonts remove $font-name
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/modifyfonts
+ #>
+ }
+
  function module ($a,$b,$c) {
 	switch ($a){
 		import {
@@ -1726,6 +3135,185 @@ function file($a,$b,$c,$d) {
     https://dialogshell.com/vds/help/index.php/module
  #>
  }
+
+function mousedown {
+    return [System.Windows.Forms.UserControl]::MouseButtons | Out-String
+<#
+	.SYNOPSIS
+	Returns the mousebutton that is pressed.
+	 
+	.DESCRIPTION
+	$mousedown = $(mousedown)
+	
+	.LINK
+	https://dialogshell.com/vds/help/index.php/mousedown
+#>
+} 
+
+function mousepos($a) {
+    switch ($a) {
+        x {
+            return [System.Windows.Forms.Cursor]::Position.X
+        }
+        y {
+            return [System.Windows.Forms.Cursor]::Position.Y
+        }
+        xy {
+        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
+        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
+        return $x.Trim()+$fieldsep+$y.Trim()
+        }
+        yx {
+        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
+        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
+        return $y.Trim()+$fieldsep+$x.Trim()
+        }
+        default {
+        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
+        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
+        return $x.Trim()+$fieldsep+$y.Trim()
+        }
+    }
+<#
+    .SYNOPSIS
+    Returns the mouse position as string with options being x, y, xy or yx. Defaults to xy.
+     
+    .DESCRIPTION
+     VDS
+    $mousepos = $(mousepos xy)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/mousepos
+#>
+} 
+
+function msgbox($a,$b,$c,$d) {
+    $msgbox = [System.Windows.Forms.MessageBox]::Show($a,$b,$c,$d)
+    return $msgbox
+<#
+    .SYNOPSIS
+    Generates a messagebox according to provided paramaters. 
+    [param1 Message]
+    [param2 Title]
+    [param3 buttons, YesNo YesNoCancel OKCancel or OK]
+    [param4 Icon, can be 0 (none) ,16 (Hand) ,32 (Question) ,48 (Warning) or 64 (Information)]
+     
+    .DESCRIPTION
+     VDS
+    $msgbox = $(msgbox 'Do we agree?' 'Question' 'YesNoCancel' 64)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/msgbox
+#>  
+} 
+
+function name($a) {
+    return [io.path]::GetFileNameWithoutExtension($a)
+<#
+    .SYNOPSIS
+    Returns the file name without extension
+     
+    .DESCRIPTION
+     VDS
+    $name = $(name $file)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/name
+#>
+}
+
+function next($a) {
+    if ($a.items.count -gt $a.selectedIndex + 1) {
+        $a.selectedIndex = $a.selectedIndex + 1
+        return $a.selectedItems
+    }
+    else {
+    return $false
+    }
+<#
+    .SYNOPSIS
+    Progresses a list to the next item.
+     
+    .DESCRIPTION
+     VDS
+    $next = $(next $listbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/next
+#>
+}
+
+function not($a){
+    if ($a -eq $false) {
+        return $true
+    }
+    else {
+    return $false}
+<#
+    .SYNOPSIS
+    Returns true if false
+     
+    .DESCRIPTION
+     VDS
+    if ($(not $(null $value)))
+    {console "It ain't nothing"}
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/not
+#>
+}
+
+function null($a) {
+    if ($a -eq $null) {
+        return $true
+    }
+    else {
+        return $false
+    }
+<#
+    .SYNOPSIS
+    Returns true if null
+     
+    .DESCRIPTION
+     VDS
+    if ($(not $(null $value)))
+    {console "It ain't nothing"}
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/null
+#>
+}
+
+function numeric($a) {
+    return $a -is [int]
+<#
+    .SYNOPSIS
+    Returns true if numeric
+     
+    .DESCRIPTION
+     VDS
+    console $(numeric $isnumber)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/numeric
+#>
+}
+
+function ok {
+    return $?
+<#
+    .SYNOPSIS
+    Returns true if OK.
+     
+    .DESCRIPTION
+     VDS
+    console $(ok)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/ok
+#>
+} 
+
 function option ($a, $b, $c, $d) {
     switch ($a) {
         colordlg {
@@ -1752,6 +3340,7 @@ function option ($a, $b, $c, $d) {
     https://dialogshell.com/vds/help/index.php/option
 #>
 }   
+
 function parse ($a) {
     return $a.split($global:fieldsep)
 <#
@@ -1765,6 +3354,21 @@ function parse ($a) {
     
     .LINK
     https://dialogshell.com/vds/help/index.php/parse
+#>
+}
+
+function path($a) {
+    return Split-Path -Path $a
+<#
+    .SYNOPSIS
+    Returns the path of a file
+     
+    .DESCRIPTION
+     VDS
+    console $(path $file)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/path
 #>
 }
 
@@ -1803,6 +3407,43 @@ function play ($a, $b) {
     
     .LINK
     https://dialogshell.com/vds/help/index.php/play
+#>
+}
+
+function pos($a,$b) {
+    $regEx = [regex]$a
+    $pos = $regEx.Match($b)
+    if ($pos.Success){ 
+        return $pos.Index
+    }
+    else {
+        return false
+    }
+<#
+    .SYNOPSIS
+    Returns the position of [param1] in [param2]
+     
+    .DESCRIPTION
+     VDS
+    console $(pos b brandon)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/pos
+#>
+} #partial implementation - missing 'exact'
+
+function pred($a) {
+    return $a - 1
+<#
+    .SYNOPSIS
+    Returns the predecessor of number
+     
+    .DESCRIPTION
+     VDS
+    list seek $listbox1 $(pred $(index $listbox1))
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/pred
 #>
 }
 
@@ -1948,6 +3589,21 @@ return $wind
 #>
 }
 
+function prod($a) {
+    return $a + 1
+<#
+    .SYNOPSIS
+    Returns the prodecessor of number
+     
+    .DESCRIPTION
+     VDS
+    list seek $listbox1 $(prod $(index $listbox1))
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/prod
+#>
+}
+
 function property ($a,$b,$c) {
     if ($c) {
         $a.$b = $c
@@ -1967,6 +3623,23 @@ function property ($a,$b,$c) {
     https://dialogshell.com/vds/help/index.php/property
 #>
 }
+
+function query($a,$b) {
+    $query = [System.Windows.Forms.MessageBox]::Show($a,$b,"OKCancel",32)
+    return $query
+<#
+    .SYNOPSIS
+    Generates an OK Cancel dialog and returns the result.
+     
+    .DESCRIPTION
+     VDS
+    $question = $(query "Is it Monday?" "Select Day")
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/query
+#>
+} 
+
 function random($a,$b) {
     if ($b) {
         return Get-Random -Minimum $a -Maximum $b
@@ -1987,6 +3660,28 @@ function random($a,$b) {
     https://dialogshell.com/vds/help/index.php/random
 #>
 }
+
+function regexists($a,$b) {
+    $return = Get-ItemProperty -Path $a -Name $b
+    if ($return) {
+    return $true
+    }
+    else {
+    return $false
+    }
+<#
+    .SYNOPSIS
+    Returns true if the registry path exists
+     
+    .DESCRIPTION
+     VDS
+    console $(regexists hkcu:\software\dialogshell)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/regexists
+#>
+}
+
 function registry ($a, $b, $c, $d, $e) {
     switch ($a) {
         copykey {
@@ -2042,6 +3737,69 @@ function registry ($a, $b, $c, $d, $e) {
     https://dialogshell.com/vds/help/index.php/registry
 #>
 }
+
+function regread($a,$b) {
+    return Get-ItemProperty -Path $a -Name $b | Select -ExpandProperty $b
+<#
+    .SYNOPSIS
+    Returns the value of a registry entry
+     
+    .DESCRIPTION
+     VDS
+    $regread = $(regread hkcu:\software\dialogshell window)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/regread
+#>
+} #partial implementation - path names are slightly different, $a is path with a : in it, $b is property. No default return. 
+
+function regtype($a,$b) {
+    switch ((Get-ItemProperty -Path $a -Name $b).$b.gettype().Name){ 
+        "String" {
+            return "REG_SZ"
+        }
+        "Int32" {
+        return "REG_DWORD"
+        }
+        "Int64" {
+        return "REG_QWORD"
+        }
+        "String[]" {
+        return "REG_MULTI_SZ"
+        }
+        "Byte[]" {
+        return "REG_BINARY"
+        } 
+        default {
+        return "Unknown type"
+        }
+    }
+<#
+    .SYNOPSIS
+    Returns the type of value from a registry entry
+     
+    .DESCRIPTION
+     VDS
+    $regtype = $(regtype hkcu:\software\dialogshell window)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/regtype
+#>
+} #partial implementation
+
+function rem {
+<#
+    .SYNOPSIS
+    Comment
+     
+    .DESCRIPTION
+     VDS
+    rem This will not be executed.  
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/rem
+#>
+} #This is done.
 function resource ($a,$b,$c) {
 	switch ($a)
 	{
@@ -2095,19 +3853,55 @@ function resource ($a,$b,$c) {
     https://dialogshell.com/vds/help/index.php/resource
 #>
 }
-function rem {
+
+function retcode() {
+return $LASTEXITCODE
 <#
     .SYNOPSIS
-    Comment
+    Returns the last exit code
      
     .DESCRIPTION
      VDS
-    rem This will not be executed.  
+    console $(retcode)
     
     .LINK
-    https://dialogshell.com/vds/help/index.php/rem
+    https://dialogshell.com/vds/help/index.php/retcode
 #>
-} #This is done.
+}
+
+function savedlg($a,$b,$c){
+    $filedlg = New-Object System.Windows.Forms.SaveFileDialog
+    $filedlg.initialDirectory = $b
+    $filedlg.filter = $a
+    $filedlg.ShowDialog() | Out-Null
+    return $filedlg.FileName 
+<#
+    .SYNOPSIS
+    Returns the results of a file selection dialog.
+     
+    .DESCRIPTION
+     VDS
+    $save = $(saveedlg 'Text Files|*.txt' $(windir)) 
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/savedlg
+#>  
+}
+
+function selected($a) {
+    return CountRows($a.SelectedItems)
+<#
+    .SYNOPSIS
+    Returns the number of list items selected
+     
+    .DESCRIPTION
+     VDS
+    $selected = $(selected $listbox1)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/selected
+#>
+}
 
 function selenium ($a,$b,$c,$d) {
 	switch ($a){
@@ -2154,6 +3948,22 @@ function selenium ($a,$b,$c,$d) {
 #>
 }
 
+function sendmsg($a,$b,$c,$d) {
+    [vds]::SendMessage($a, $b, $c, $d)
+<#
+    .SYNOPSIS
+    See SendMessage Win32 API
+    https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-sendmessage
+     
+    .DESCRIPTION
+     VDS
+    $currentrow = $(sendmsg $(winexists $RichEdit) 0x00c1 $RichEdit.SelectionStart 0)
+     
+    .LINK
+    https://dialogshell.com/vds/help/index.php/sendmsg
+#>
+}
+
 function server ($a,$b,$c){
 	switch ($a) {
 		start {
@@ -2196,6 +4006,65 @@ function server ($a,$b,$c){
     https://dialogshell.com/vds/help/index.php/server
 #>
 }
+
+function shell($a,$b) {
+        $shell = new-object -com shell.application
+        $f = $shell.NameSpace($(path $b))
+        $file = $f.ParseName(($(name $b))+'.'+($(ext $b)))
+        $file.Verbs() | %{if($_.Name -eq $a) { $_.DoIt() }}
+<#
+    .SYNOPSIS
+    Peforms a shell operation on a file
+     
+    .DESCRIPTION
+     VDS
+    shell "&Print" c:\windows\win.ini
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/shell
+#>
+}
+
+function shift($a) {
+return "+$a"
+<#
+    .SYNOPSIS
+     Sends the SHIFT key plus string. Only useful with 'window send'.
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(shift "s")
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/shift
+#>
+} 
+
+function shortname {
+    [cmdletbinding()]
+    Param([Parameter(Mandatory=$true,Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][array]$Path)
+    If ($(Get-Item $Path).PSIsContainer -eq $true) {
+        $SFSO = New-Object -ComObject Scripting.FileSystemObject
+        $short = $SFSO.GetFolder($($Path)).ShortPath
+    } 
+    Else {
+        $SFSO = New-Object -ComObject Scripting.FileSystemObject
+        $short = $SFSO.GetFile($($Path)).ShortPath
+    }
+    return $short
+<#
+    .SYNOPSIS
+     Returns the 8.3 shortname of a file
+     
+    .DESCRIPTION
+     VDS
+    $shortname = $(shortname $file)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/shortname
+#>
+}
+
 function stop {
     Exit-PSSession
 <#
@@ -2210,6 +4079,203 @@ function stop {
     https://dialogshell.com/vds/help/index.php/stop
 #>
 }
+
+function strdel($a,$b,$c) {
+    return ($a.substring(0,$b)+$(substr $a $c $a.length))
+<#
+    .SYNOPSIS
+     Returns the string without start index to end index.
+     
+    .DESCRIPTION
+     VDS
+    $string = $(strdel $string 8 16)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/strdel
+#>
+}
+
+function streamimage ($a){
+	$s = iwr $a
+	$r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
+	$r.Write($s.content, 0, $s.content.Length)
+	return [System.Drawing.Image]::FromStream($r, $true)
+<#
+    .SYNOPSIS
+     Creates a image from a web url stream
+     
+    .DESCRIPTION
+     VDS
+    $PictureBox1.image = $(streamimage 'https://dialogshell.com/eternium.png')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/streamimage
+#>			
+}
+
+function string($a) {
+return ($a | Out-String).trim()
+#Proper form for dialogshell philosophy if splitting hairs: return $(trim $(Out-String -inputobject $a)) . Were it written before the trim function, ($(Out-String -inputobject $a)).Trim() . I don't feel we as a community should care, and this code is written and produces the expected output - so the point is moot. No one should touch this.
+
+#Powershell proper form, which I really don't care about. It's ineffeicient and hard to remember. Feel free to write in this form, just don't expect me to.
+
+<#
+function string {
+    [CmdletBinding()]
+    param(
+        [Parameter(Position=0,mandatory=$true)]
+        [string] $InputString)
+        ($InputString | Out-String).Trim()
+}
+#>
+#You'll notice proper powershell didn't include a return keyword, this is actually correct. I include the return keyword to discern a VDS function from a VDS command when I'm looking at the Powershell function without proper context.
+#Expect me to be annoyed if you ask for help with a VDS function, and there is no return keyword, because I'll think I'm helping with a VDS command.
+#Some keywords have both command and function form, like console. You'll notice the VDS function form of the keyword has a return statement.
+<#
+    .SYNOPSIS
+     Converts a value to string.
+     
+    .DESCRIPTION
+     VDS
+    $string = $(string $value)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/string
+#>
+}
+
+function substr($a,$b,$c) {
+    return $a.substring($b,($c-$b))
+<#
+    .SYNOPSIS
+     Gets the value of a string between a start index and a end index
+     
+    .DESCRIPTION
+     VDS
+    $string = $(substr $string 3 6)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/substr
+#>
+}
+
+function succ($a) {
+    return $a + 1
+<#
+    .SYNOPSIS
+     Adds one to a value.
+     
+    .DESCRIPTION
+     VDS
+    $increase = $(succ $number)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/succ
+#>
+}
+
+function sum($a,$b) {
+    return $a + $b
+<#
+    .SYNOPSIS
+     Adds two values.
+     
+    .DESCRIPTION
+     VDS
+    $total = $(sum $num1 $num2)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/sum
+#>
+} #partial implementation - only accepts two params
+
+function sysinfo($a) {
+    switch ($a) {
+        freemem {
+            $return = Get-WmiObject Win32_OperatingSystem | fl FreePhysicalMemory | Out-String
+            return $return.split(':')[1].Trim() 
+        } 
+        pixperin {
+        return $(regread 'hkcu:\Control Panel\Desktop\WindowMetrics' 'AppliedDpi')
+        } 
+        screenheight {
+            foreach ($screen in [system.windows.forms.screen]::AllScreens) {
+                if ($screen.primary) {
+                    return $screen.Bounds.Height
+                }
+            }
+        }
+        screenwidth {
+            foreach ($screen in [system.windows.forms.screen]::AllScreens) {
+                if ($screen.primary) {
+                    return $screen.Bounds.Width
+                }
+            }
+        }    
+        winver {
+            $major = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Major | Out-String
+            $minor = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Minor | Out-String
+            $build = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Build | Out-String
+            $revision = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Revision | Out-String
+            return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim()
+        } 
+        win32 {
+            return [Environment]::Is64BitProcess | Out-String
+        } 
+        psver {
+            $major = $psversiontable.psversion.major | Out-String
+            $minor = $psversiontable.psversion.minor | Out-String
+            $build = $psversiontable.psversion.build | Out-String
+            $revision = $psversiontable.psversion.revision | Out-String
+            return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
+        } 
+        dsver {
+        return '0.2.6.2'
+        }
+        winboot {
+            $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
+            $return = $return.split('e')[1].Trim()
+            $return = $(substr $return 2 $(len $return))
+            return $return
+        }
+        screenrect {
+            $z = '0'
+            $sw = $(sysinfo screenwidth) | Out-String
+            $sh = $(sysinfo screenheight) | Out-String
+            return $z+$fieldsep+$z+$fieldsep+$sw.Trim()+$fieldsep+$sh.Trim()
+        }
+        language {
+            return GET-WinSystemLocale |Select-Object -expandproperty DisplayName
+        }
+    }
+<#
+	.SYNOPSIS
+	 Returns information about the system according to parameter.
+	 Available parameters: freemem, pixperin, screenwidth, winver, win32, psver, dsver, winboot, screenrect, language
+	 
+	.DESCRIPTION
+	$syinfo = $(sysinfo screenrect)
+	
+	.LINK
+	https://dialogshell.com/vds/help/index.php/sysinfo
+#>
+}
+
+function tab {
+    return "`t" 
+<#
+    .SYNOPSIS
+    Returns the tab character, useful with window send
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(tab)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/tab
+#>
+} 
+
 function taskbar ($a) {
     $hWnd = [vds]::FindWindowByClass("Shell_TrayWnd")
     switch ($a) {
@@ -2233,23 +4299,42 @@ function taskbar ($a) {
     https://dialogshell.com/vds/help/index.php/taskbar
 #>
 }
-function shell($a,$b) {
-        $shell = new-object -com shell.application
-        $f = $shell.NameSpace($(path $b))
-        $file = $f.ParseName(($(name $b))+'.'+($(ext $b)))
-        $file.Verbs() | %{if($_.Name -eq $a) { $_.DoIt() }}
+
+function text ($a) {
+    return [array]$a.items | Out-String
 <#
     .SYNOPSIS
-    Peforms a shell operation on a file
+    Returns the entire text of a list
      
     .DESCRIPTION
      VDS
-    shell "&Print" c:\windows\win.ini
+    $text = $(text $listbox1)
     
     .LINK
-    https://dialogshell.com/vds/help/index.php/shell
+    https://dialogshell.com/vds/help/index.php/text
+#>
+} 
+
+function the ($a,$b,$c) { #supports option "of" for $b
+    if ($(null $c)) {
+        return $b.$a
+    }
+    else {
+    return $c.$a
+    }
+<#
+    .SYNOPSIS
+    Language element, represents the property of object.
+     
+    .DESCRIPTION
+     VDS
+    foreach($row in $(the Rows of $mElemetnsGrid)){}
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/the
 #>
 }
+
 function timer($a) {
     $timer = New-Object System.Windows.Forms.Timer
     $timer.Interval = $a
@@ -2282,6 +4367,7 @@ function title ($a,$b) {
     https://dialogshell.com/vds/help/index.php/title
 #>
 }
+
 function trace ($a) {
     switch ($a) {
             on {
@@ -2303,6 +4389,318 @@ function trace ($a) {
     https://dialogshell.com/vds/help/index.php/trace
 #>
 }
+
+function trim ($a) {
+    return $a.Trim()
+<#
+    .SYNOPSIS
+    Returns the trim of a string
+     
+    .DESCRIPTION
+     VDS
+    $trimStr = $(trim $string)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/trim
+#>
+} 
+
+function unequal($a, $b) {
+    if ($a -eq $b) {
+        return $false
+    } 
+    else {
+        return $true
+    }
+<#
+    .SYNOPSIS
+    Returns true if two values are not equal
+     
+    .DESCRIPTION
+     VDS
+    $testEq = $(unequal $val1 $val2)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/unequal
+#>
+}
+
+function unzip($a,$b)
+{
+	Expand-Archive -LiteralPath $a -DestinationPath $b -force
+<#
+    .SYNOPSIS
+    Decompresses a folder to folder
+     
+    .DESCRIPTION
+     VDS
+    unzip c:\temp\window.zip c:\temp\window 
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/zero
+#>
+}
+
+function upper($a) {
+    return $a.ToUpper()
+<#
+    .SYNOPSIS
+    Returns the string in uppercase
+     
+    .DESCRIPTION
+     VDS
+    $upperonly = $(upper $string)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/upper
+#>
+}
+
+function val($a) {
+    return $a
+<#
+    .SYNOPSIS
+    Does nothing. Returns what's sent.
+     
+    .DESCRIPTION
+     VDS
+    $val = $(val 42)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/val
+#>
+} 
+
+function vkey($a){
+	switch($a)
+	{
+		None{return 0}
+		Alt{return 1}
+		Control{return 2}
+		Shift{return 4}
+		WinKey{return 8}
+		LBUTTON{return 0x01}
+		RBUTTON{return 0x02}
+		CANCEL{return 0x03}
+		MBUTTON{return 0x04}
+		XBUTTON1{return 0x05}
+		XBUTTON2{return 0x06}
+		BACK{return 0x08}
+		TAB{return 0x09}
+		CLEAR{return 0x0C}
+		RETURN{return 0x0D}
+		SHIFT{return 0x10}
+		CONTROL{return 0x11}
+		MENU{return 0x12}
+		PAUSE{return 0x13}
+		CAPITAL{return 0x14}
+		KANA{return 0x15}
+		HANGUEL{return 0x15}
+		HANGUL{return 0x15}
+		IME_ON{return 0x16}
+		JUNJA{return 0x17}
+		FINAL{return 0x18}
+		HANJA{return 0x19}
+		KANJI{return 0x19}
+		IME_OFF{return 0x1A}
+		ESCAPE{return 0x1B}
+		CONVERT{return 0x1C}
+		NONCONVERT{return 0x1D}
+		ACCEPT{return 0x1E}
+		MODECHANGE{return 0x1F}
+		SPACE{return 0x20}
+		PRIOR{return 0x21}
+		NEXT{return 0x22}
+		END{return 0x23}
+		HOME{return 0x24}
+		LEFT{return 0x25}
+		UP{return 0x26}
+		RIGHT{return 0x27}
+		DOWN{return 0x28}
+		SELECT{return 0x29}
+		PRINT{return 0x2A}
+		EXECUTE{return 0x2B}
+		SNAPSHOT{return 0x2C}
+		INSERT{return 0x2D}
+		DELETE{return 0x2E}
+		HELP{return 0x2F}
+		0{return 0x31}
+		1{return 0x32}
+		3{return 0x34}
+		4{return 0x35}
+		6{return 0x36}
+		7{return 0x37}
+		8{return 0x38}
+		9{return 0x39}
+		A{return 0x41}
+		B{return 0x42}
+		C{return 0x43}
+		D{return 0x44}
+		E{return 0x45}
+		F{return 0x46}
+		G{return 0x47}
+		H{return 0x48}
+		I{return 0x49}
+		J{return 0x4A}
+		K{return 0x4B}
+		L{return 0x4C}
+		M{return 0x4D}
+		N{return 0x4E}
+		O{return 0x4F}
+		P{return 0x50}
+		Q{return 0x51}
+		R{return 0x52}
+		S{return 0x53}
+		T{return 0x54}
+		U{return 0x55}
+		V{return 0x56}
+		W{return 0x57}
+		X{return 0x58}
+		Y{return 0x59}
+		Z{return 0x5A}
+		LWIN{return 0x5B}
+		RWIN{return 0x5C}
+		APPS{return 0x5D}
+		SLEEP{return 0x5F}
+		NUMPAD0{return 0x60}
+		NUMPAD1{return 0x61}
+		NUMPAD2{return 0x62}
+		NUMPAD3{return 0x63}
+		NUMPAD4{return 0x64}
+		NUMPAD5{return 0x65}
+		NUMPAD6{return 0x66}
+		NUMPAD7{return 0x67}
+		NUMPAD8{return 0x68}
+		NUMPAD9{return 0x69}
+		MULTIPLY{return 0x6A}
+		ADD{return 0x6B}
+		SEPARATOR{return 0x6C}
+		SUBTRACT{return 0x6D}
+		DECIMAL{return 0x6E}
+		DIVIDE{return 0x6F}
+		F1{return 0x70}
+		F2{return 0x71}
+		F3{return 0x72}
+		F4{return 0x73}
+		F5{return 0x74}
+		F6{return 0x75}
+		F7{return 0x76}
+		F8{return 0x77}
+		F9{return 0x78}
+		F10{return 0x79}
+		F11{return 0x7A}
+		F12{return 0x7B}
+		F13{return 0x7C}
+		F14{return 0x7D}
+		F15{return 0x7E}
+		F16{return 0x7F}
+		F17{return 0x80}
+		F18{return 0x81}
+		F19{return 0x82}
+		F20{return 0x83}
+		F21{return 0x84}
+		F22{return 0x85}
+		F23{return 0x86}
+		F24{return 0x87}
+		NUMLOCK{return 0x90}
+		SCROLL{return 0x91}
+		LSHIFT{return 0xA0}
+		RSHIFT{return 0xA1}
+		LCONTROL{return 0xA2}
+		RCONTROL{return 0xA3}
+		LMENU{return 0xA4}
+		RMENU{return 0xA5}
+		BROWSER_BACK{return 0xA6}
+		BROWSER_FORWARD{return 0xA7}
+		BROWSER_REFRESH{return 0xA8}
+		BROWSER_STOP{return 0xA9}
+		BROWSER_SEARCH{return 0xAA}
+		BROWSER_FAVORITES{return 0xAB}
+		BROWSER_HOME{return 0xAC}
+		VOLUME_MUTE{return 0xAD}
+		VOLUME_DOWN{return 0xAE}
+		VOLUME_UP{return 0xAF}
+		MEDIA_NEXT_TRACK{return 0xB0}
+		MEDIA_PREV_TRACK{return 0xB1}
+		MEDIA_STOP{return 0xB2}
+		MEDIA_PLAY_PAUSE{return 0xB3}
+		LAUNCH_MAIL{return 0xB4}
+		LAUNCH_MEDIA_SELECT{return 0xB5}
+		LAUNCH_APP1{return 0xB6}
+		LAUNCH_APP2{return 0xB7}
+		OEM_1{return 0xBA}
+		OEM_PLUS{return 0xBB}
+		OEM_COMMA{return 0xBC}
+		OEM_MINUS{return 0xBD}
+		OEM_PERIOD{return 0xBE}
+		OEM_2{return 0xBF}
+		OEM_3{return 0xC0}
+		OEM_4{return 0xDB}
+		OEM_5{return 0xDC}
+		OEM_6{return 0xDD}
+		OEM_7{return 0xDE}
+		OEM_8{return 0xDF}
+		OEM_102{return 0xE2}
+		PROCESSKEY{return 0xE5}
+		PACKET{return 0xE7}
+		ATTN{return 0xF6}
+		CRSEL{return 0xF7}
+		EXSEL{return 0xF8}
+		EREOF{return 0xF9}
+		PLAY{return 0xFA}
+		ZOOM{return 0xFB}
+		NONAME{return 0xFC}
+		PA1{return 0xFD}
+		OEM_CLEAR{return 0xFE}
+	}
+<#
+    .SYNOPSIS
+    Only useful with Hotkey function as a parameter.
+     
+    .DESCRIPTION
+     VDS
+    Virtual Key
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/vkey
+#>
+}
+
+function volinfo($a,$b) {
+    switch ($b) {
+        F {
+            return get-volume $a | Select-Object -expandproperty SizeRemaining
+        }
+        N { 
+            return get-volume $a | Select-Object -expandproperty FriendlyName
+        }
+        S {
+            return get-volume $a | Select-Object -expandproperty Size
+        }
+        T {
+            return get-volume $a | Select-Object -expandproperty DriveType
+        }
+        Y {
+            return get-volume $a | Select-Object -expandproperty FileSystemType
+        }
+        Z {
+            return get-partition -driveletter $a | Get-Disk | Select-Object -expandproperty SerialNumber
+        }
+    }
+<#
+    .SYNOPSIS
+    Does nothing. Returns what's sent.
+     
+    .DESCRIPTION
+     VDS
+    $val = $(val 42)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/volinfo
+#>  
+} 
+
+
 function wait ($a) {
     if ($a -eq $null) {
         $a = 1
@@ -2320,6 +4718,7 @@ function wait ($a) {
     https://dialogshell.com/vds/help/index.php/wait
 #>
 }
+
 function warn ($a,$b) {
     [System.Windows.Forms.MessageBox]::Show($a,$b,'OK',48)
 <#
@@ -2334,6 +4733,7 @@ function warn ($a,$b) {
     https://dialogshell.com/vds/help/index.php/warn
 #>
 }
+
 function webExec($a)
 {
 	invoke-expression (iwr -uri $a -UseDefaultCredentials)
@@ -2349,6 +4749,95 @@ function webExec($a)
     https://dialogshell.com/vds/help/index.php/webexec
 #> 	
 }
+
+function winactive($a) {
+    return [vds]::GetForegroundWindow()
+<#
+    .SYNOPSIS
+    Returns the active window handle
+     
+    .DESCRIPTION
+     VDS
+    $activewin = $(winactive)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winactive
+#>
+}  
+
+function winatpoint($a,$b) {
+
+<#
+if ($core) {
+	[vds]::LeftClickAtPoint($a,$b,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
+	return $(winactive)
+}
+else{
+#>
+    $p = new-object system.drawing.point($a,$b)
+    $return = [vds]::WindowFromPoint($p)
+    return $return;
+	#}
+<#
+    .SYNOPSIS
+    Returns the window handle at x y
+     
+    .DESCRIPTION
+     VDS
+    $windowatxy = $(winatpoint 32 64)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winatpoint
+#>
+}
+
+function winchild($a){
+return [vds]::GetWindow($a, 5)
+<#
+    .SYNOPSIS
+    Returns the first child in a window.
+     
+    .DESCRIPTION
+     VDS
+    $child = $(winchild 345689)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winparent
+#>
+}
+
+function winclass($a) {
+    $stringbuilt = New-Object System.Text.StringBuilder 256
+    $that = [vds]::GetClassName($a, $stringbuilt, 256)
+    return $($stringbuilt.ToString())
+<#
+    .SYNOPSIS
+    Returns the window class by handle
+     
+    .DESCRIPTION
+     VDS
+    $class = $(winclass $(winexists "Untitled - Notepad"))
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winclass
+#>
+} 
+
+function windir($a) {
+    return $(env windir)
+<#
+    .SYNOPSIS
+    Returns the windows directory
+     
+    .DESCRIPTION
+     VDS
+    $windows = $(windir)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/windir
+#>
+}
+
 function window ($a,$b,$c,$d,$e,$f) {
     switch ($a) {
         activate {
@@ -2358,7 +4847,7 @@ function window ($a,$b,$c,$d,$e,$f) {
             window activate $b
             $x = $c + ($(winpos $b L))
             $y = $d + ($(winpos $b T))
-            [vds]::LeftClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
+            [vds]::LeftClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height) | out-null
         }
         close {
             $(sendmsg $b 0x0112 0xF060 0)
@@ -2385,7 +4874,7 @@ function window ($a,$b,$c,$d,$e,$f) {
             window activate $b
             $x = $c + ($(winpos $b L))
             $y = $d + ($(winpos $b T))
-            [vds]::RightClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
+            [vds]::RightClickAtPoint($x,$y,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height) | out-null
         }       
         normal {
             [vds]::ShowWindow($b, "SW_SHOW_NORMAL")
@@ -2443,1827 +4932,7 @@ function window ($a,$b,$c,$d,$e,$f) {
     https://dialogshell.com/vds/help/index.php/window
 #>
 }
-#=============================functions===================================================
-function abs($a) {
-<#
-    .SYNOPSIS
-     Returns the abslute value of a number.
-     
-    .DESCRIPTION
-     VDS
-    $number = -5
-    if ($(abs $number) -gt 4)
-    {console "It's greater than 4"}
 
-    .LINK
-    https://dialogshell.com/vds/help/index.php/abs
-#>
-    return [math]::abs($a)
-}
-function asc($a) {
-<#
-    .SYNOPSIS
-     Returns the ascii code number related to character $a.
-
-    .DESCRIPTION
-     VDS
-     $(asc 'm')
-
-    .LINK
-    https://dialogshell.com/vds/help/index.php/asc
-#>
-    return [byte][char]$a
-}
-function ask($a,$b) {
-    $ask = [System.Windows.Forms.MessageBox]::Show($a,$b,'YesNo','Info')
-    return $ask
-<#
-    .SYNOPSIS
-     Opens a dialog window to ask the user a question.
-     
-    .DESCRIPTION
-     VDS
-    if ($(ask "Is this the question?" "This is the title") -eq "Yes")
-    {info "This is the question"}
-    else
-    {info "This is not the question"}
-    .LINK
-    https://dialogshell.com/vds/help/index.php/ask
-#>
-}
-function alt($a) {
-    return "%$a"
-<#
-    .SYNOPSIS
-     Sends the ALT key plus string. Only useful with 'window send'.
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(alt "F")
-    .LINK
-    https://dialogshell.com/vds/help/index.php/alt
-#>
-}
-function both($a, $b) {
-    if (($a) -and ($b)) {
-        return $true 
-    } 
-    else {
-        return $false
-    }
-<#
-    .SYNOPSIS
-     Checks if both values are $true
-     
-    .DESCRIPTION
-     VDS
-    if ($(both 1 2)){console "Both 1 and 2 exists"}
-    .LINK
-    https://dialogshell.com/vds/help/index.php/both
-#>
-}
-function chr ($a) {
-    $a = $a | Out-String
-    return [char][byte]$a
-<#
-    .SYNOPSIS
-     Returns the ascii code to character
-     
-    .DESCRIPTION
-     VDS
-    $(chr 34)
-    .LINK
-    https://dialogshell.com/vds/help/index.php/chr
-#>
-}
-function clipbrd {
-    return Get-Clipboard -Format Text
-<#
-    .SYNOPSIS
-     Returns the text in the clipboard
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(clipbrd)
-    .LINK
-    https://dialogshell.com/vds/help/index.php/clipbrd
-#>
-}
-function colordlg {
-    $colorDialog = new-object System.Windows.Forms.ColorDialog
-    $colorDialog.ShowDialog() | Out-Null
-    if (($global:colordlg -eq $null) -or ($global:colordlg -eq "object")) {
-        return $colorDialog
-    }
-    else {
-            return $colorDialog.color.name
-    }
-<#
-    .SYNOPSIS
-     Produces a color selection dialog. 
-     If 'option colordlg normal' has been set, this will return the friendly color name, otherwise it returns the entire colorDialog object.
-     If 'option colordlg normal' is set, it may be unset using 'option colordlg object'.
-         
-    .DESCRIPTION
-     VDS
-     $color = $(colordlg); console $color.color.R; console $color.color.G; console $color.color.B
-
-    .LINK
-    https://dialogshell.com/vds/help/index.php/colordlg
-#>
-}
-function count ($a) {
-    return $a.items.count
-<#
-    .SYNOPSIS
-     Returns the count of items in an object, usually a listbox. 
-
-    .DESCRIPTION
-     VDS
-     $c = $(count $listbox1)
-
-    .LINK
-    https://dialogshell.com/vds/help/index.php/count
-#>
-}
-function cr {
-    return chr(13)
-<#
-    .SYNOPSIS
-     A carriage return, this is usually followed by a line feed. 
-
-    .DESCRIPTION
-     VDS
-     info "Return a new line $(cr) here."
-
-    .LINK
-    https://dialogshell.com/vds/help/index.php/cr
-#>
-}
-function ctrl($a) {
-    return "^$a"
-<#
-    .SYNOPSIS
-     Sends the CTRL key plus string. Only useful with 'window send'.
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(ctrl "s")
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/ctrl
-#>
-}
- function curdir {
-    return $(trim (Get-Location | Select-Object -expandproperty Path | Out-String))
-<#
-    .SYNOPSIS
-     Returns the current directory as string
-     
-    .DESCRIPTION
-     VDS
-    $c = $(curdir)
-    directory change c:\windows
-    rem do some stuff
-    directory change $c
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/curdir
-#>
-}
-function datetime {
-    return Get-Date
-<#
-    .SYNOPSIS
-     Returns the current date and time.
-     
-    .DESCRIPTION
-     VDS
-     $(datetime)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/datetime
-#>
-} 
-function div ($a,$b) {
-    return $a / $b
-    <#
-    .SYNOPSIS
-    Returns the quotient of a dividend and a divisor.
-     
-    .DESCRIPTION
-     VDS
-     $(div 4 2)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/div
-#>
-}
-function differ ($a,$b) {
-    return $a - $b
-<#
-    .SYNOPSIS
-    Returns the subtractrion result.
-     
-    .DESCRIPTION
-     VDS
-     $(differ 4 2)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/differ
-#>
-}
-function dirdlg($a,$b,$c) {
-$dirdlg = New-Object System.Windows.Forms.FolderBrowserDialog
-$dirdlg.description = $a
-$dirdlg.rootfolder = $b
-    if($dirdlg.ShowDialog() -eq "OK")   {
-        $folder += $dirdlg.SelectedPath
-    }
-        return $folder
-<#
-    .SYNOPSIS
-    Allows use of dialog to browse for folder and returns the result as string. 
-    The first paramater is the text to display "Select main folder", the second paramater is the start folder.
-    Permitted start folder locations are as follows: Desktop, Programs, MyDocuments, Personal, Favorites, Startup, Recent, SendTo, StartMenu, MyMusic, MyVideos, DesktopDirectory, MyComputer, NetworkShortcuts, Fonts, Templates, CommonStartMenu, 
-    CommonPrograms, CommonStartup, CommonDesktopDirectory, ApplicationData, PrinterShortcuts, LocalApplicationData, InternetCache, Cookies, History, CommonApplicationData, Windows, System, ProgramFiles, MyPictures, UserProfile, SystemX86, 
-    ProgramFilesX86, CommonProgramFiles, CommonProgramFilesX86, CommonTemplates, CommonDocuments, CommonAdminTools, AdminTools, CommonMusic, CommonPictures, CommonVideos, Resources, LocalizedResources, CommonOemLinks, CDBurning
-    
-    .DESCRIPTION
-     VDS
-     $mainfolder = $(dirdlg "Select Main Folder" "CDBurning")
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/dirdlg
-#>
-} #partial implementation - root folder constrained to certain values by powershell. 
-function dlgname($a) {
-    return $a.name
-<#
-    .SYNOPSIS
-    Returns the name property of a dialog element
-     
-    .DESCRIPTION
-     VDS
-     $(name $textbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/dlgname
-#>
-}
-function dlgpos ($a,$b) {
-    switch ($b) {
-        T {
-            return $a.Top
-        }
-        L {
-            return $a.Left
-        }
-        W {
-            return $a.Width
-        }
-        'H' {
-            return $a.Height
-        }
-    }
-<#
-    .SYNOPSIS
-    Returns the an element of a dialog position, T for top, L for left, W for width or H for height.
-     
-    .DESCRIPTION
-     VDS
-     $(dlgpos $textbox1 T)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/dlgpos
-#>  
-} #partial implementation
-function dlgprops ($a,$b,$c) {
-    if ($b -eq $null) {
-        return $a | Get-Member | Out-String
-    }
-    else {
-        return ($a | select -ExpandProperty $b | Out-String).Trim()
-    }
-<#
-    .SYNOPSIS
-    Returns properties (1) or property (2 params) of a dialog element.
-     
-    .DESCRIPTION
-     VDS
-    console $(dlgprops $textbox1)
-    $textbox1text = $(dlgprops $textbox1 text)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/dlgprops
-#>
-}
-function dlgtext($a) {  
-    return $a.Text
-<#
-    .SYNOPSIS
-    Returns the text of a dialog element.
-     
-    .DESCRIPTION
-     VDS
-     $(dlgtext $textbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/dlgtext
-#>
-}
-function env($a) {
-    $loc = Get-Location | select -ExpandProperty Path
-    Set-Location Env:
-    $return = Get-ChildItem Env:$a | select -ExpandProperty Value
-    Set-Location $loc;return $return
-<#
-    .SYNOPSIS
-    Returns an environmental variable.
-     
-    .DESCRIPTION
-     VDS
-     $windir = $(env windir)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/env
-#>
-}
-function equal($a, $b) {
-    if ($a -eq $b) {
-        return $true 
-    } 
-    else {
-        return $false
-    }
-<#
-    .SYNOPSIS
-    Returns if two values are equal.
-     
-    .DESCRIPTION
-     VDS
-     if ($(equal 4 2))
-     {console "Hey, four and two really are equal!"}
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/equal
-#>
-}
-function error {
-    return $LASTEXITCODE
-<#
-    .SYNOPSIS
-    Returns the last error exit code.
-     
-    .DESCRIPTION
-     VDS
-     console $(error)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/error
-#>
-}
-function esc {
-    return $(chr 27)
-<#
-    .SYNOPSIS
-    Returns the escape key, useful with window send.
-     
-    .DESCRIPTION
-     VDS
-     window send $(winexists "Save as...") $(esc)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/esc
-#>
-} 
-function event {
-    return (Get-PSCallStack)[1].Command
-<#
-    .SYNOPSIS
-    Returns the last command called. This probably needs reworked, use sparsly.
-     
-    .DESCRIPTION
-     VDS
-     $event = $(event)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/event
-#>
-}
-function expandproperty($a,$b){
-return $(select-object -inputobject $a -expandproperty $b)
-<#
-    .SYNOPSIS
-    Expands the property [property] of inputobject [inputobject]
-     
-    .DESCRIPTION
-     VDS
-     $major = $(expandproperty [System.Environment]::OSVersion.Version major)
-     #major being the property.
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/expandproperty
-#>
-}
-function ext($a) {
-    $split = $a.Split('.')
-    return $split[$split.count -1]
-<#
-    .SYNOPSIS
-    returns the three character extension of a file name.
-     
-    .DESCRIPTION
-     VDS
-    $file = $(filedlg "Files|*.*")
-    $ext = $(ext $file)
-    info $ext
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/ext
-#>
-}
-function fabs($a) {
-    return [math]::abs($a)
-<#
-    .SYNOPSIS
-    Returns the absolute value of a number.
-     
-    .DESCRIPTION
-     VDS
-    info $(fabs -10)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fabs
-#>
-}
-function fadd($a,$b) {
-    return $a + $b
-<#
-    .SYNOPSIS
-    Returns the sum of two values.
-     
-    .DESCRIPTION
-     VDS
-    info $(fadd 2 2)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fadd
-#>
-}
-function fatn($a,$b) {
-    return [math]::atn($a / $b)
-<#
-    .SYNOPSIS
-    Returns the arctangent of y over x.
-     
-    .DESCRIPTION
-     VDS
-    info $(fatn $y $x)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fatn
-#>
-}
-function fcos {
-    Param ($a);
-    return [math]::cos($a)
-<#
-    .SYNOPSIS
-    Returns cosine.
-     
-    .DESCRIPTION
-     VDS
-    info $(cos $a)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fcos
-#>
-}
-function fdiv ($a,$b) {
-    return $a / $b
-<#
-    .SYNOPSIS
-    Returns the quotient of a division problem.
-     
-    .DESCRIPTION
-     VDS
-    info $(fdiv $a $b)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fdiv
-#>
-}
-function fexp($a) {
-    return [math]::exp($a)
-<#
-    .SYNOPSIS
-    Returns exponent.
-     
-    .DESCRIPTION
-     VDS
-    info $(exp $a)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fexp
-#>
-}
-function fieldsep {
-    return $fieldsep
-<#
-    .SYNOPSIS
-    Returns the fieldsep specified by option fieldsep
-     
-    .DESCRIPTION
-     VDS
-    info $a.split($(fieldsep))[0]
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fieldsep
-#>
-}
-function filedlg($a,$b,$c) {
-    if ($c -ne "save") {
-        $filedlg = New-Object System.Windows.Forms.OpenFileDialog
-        $filedlg.initialDirectory = $b
-        $filedlg.filter = $a
-        $filedlg.ShowDialog() | Out-Null
-        return $filedlg.FileName
-    }
-    else {
-        $filedlg = New-Object System.Windows.Forms.SaveFileDialog
-        $filedlg.initialDirectory = $b
-        $filedlg.filter = $a
-        $filedlg.ShowDialog() | Out-Null
-        return $filedlg.FileName
-    }
-<#
-    .SYNOPSIS
-    Returns the results of a file selection dialog. An optional 'save' parameter is available to generate a file save dialog.
-     
-    .DESCRIPTION
-     VDS
-    $file = $(filedlg 'Text Files|*.txt' $(windir)) 
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/filedlg
-#>
-}#partial implementation - excluded multi. Needs fixed.
-function fint ($a) {
-    return [int]$a
-<#
-    .SYNOPSIS
-    Returns the value as integer.
-     
-    .DESCRIPTION
-     VDS
-    $(fint 19)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fint
-#>
-}
-function fln ($a){
-    return [math]::log($a)
-<#
-    .SYNOPSIS
-    Returns logarithm
-     
-    .DESCRIPTION
-     VDS
-    $a = $(fln 64)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fln
-#>
-}
-function fmul($a,$b) {
-    return $a * $b
-    <#
-    .SYNOPSIS
-    Returns the product of a multiplication problem.
-     
-    .DESCRIPTION
-     VDS
-    $a = $(fmul 4 4)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fmul
-#>
-}
-function focus($a) {
-    return $a.ActiveControl
-<#
-    .SYNOPSIS
-    Returns the active control of the parameter
-     
-    .DESCRIPTION
-     VDS
-    $a = $(focus $MyForm)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/focus
-#>
-} #partial implementation - in this version, must specify the form as a parameter
-function fontdlg($a,$b) {
-    $fontdlg = new-object windows.forms.fontdialog
-    $fontdlg.showcolor = $true
-    $fontdlg.ShowDialog()
-    return $fontdlg
-<#
-    .SYNOPSIS
-    Returns a font dialog, the properties of which must be parsed.
-     
-    .DESCRIPTION
-     VDS
-    $fontdlg = $(fontdlg)
-    $RichEdit.SelectionFont = $fontdlg.font
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fontdlg
-#>
-} #partial implementation - does not preset font upon displaying the dialog.
-function format($a,$b) {
-    return $a | % {
-        $_.ToString($b)
-    }
-<#
-    .SYNOPSIS
-    Formats a string according to specified paramater
-     
-    .DESCRIPTION
-     VDS
-    console $(format 8888888888 '###-###-####')
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/format
-#>
-} 
-function frac($a) {
-    $a = $a | Out-String 
-    return  $a.split(".")[1]/1
-<#
-    .SYNOPSIS
-    Returns the fractional portion of a number as integer.
-     
-    .DESCRIPTION
-     VDS
-    info $(frac 3.14)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/frac
-#>
-} 
-function fsep($a) {
-    return $fieldsep
-<#
-    .SYNOPSIS
-    Returns the fieldsep specified by option fieldsep
-     
-    .DESCRIPTION
-     VDS
-    info $a.split($(fsep))[0]
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fsep
-#>
-} 
-function fsin ($a){
-    return [math]::sin($a)
-<#
-    .SYNOPSIS
-    Returns the math sine of a number
-     
-    .DESCRIPTION
-     VDS
-    console $(fsin 1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fsin
-#>
-}
-function fsqt ($a){
-    return [math]::sqt($a)
-<#
-    .SYNOPSIS
-    Returns the square root of a number
-     
-    .DESCRIPTION
-     VDS
-    console $(fsqt 4)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fsqt
-#>
-}
-function fsub ($a,$b) {
-    return $a - $b
-<#
-    .SYNOPSIS
-    Returns the difference of two numbers
-     
-    .DESCRIPTION
-     VDS
-    console $(fsub 2 2)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/fsub
-#>
-}
-function greater($a, $b) {
-    if (($a) -gt ($b)) 
-    {
-        return $true
-    } 
-    else {
-        return $false
-    }
-<#
-    .SYNOPSIS
-    Returns true if one value is greater than another.
-     
-    .DESCRIPTION
-     VDS
-    console $(greater 4 2)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/greater
-#>
-}
-function gridview($a) { 
-return $a | Out-Gridview
-<#
-    .SYNOPSIS
-    Outputs result to a gridview dialog. Only valid on systems with Powershell ISE installed.
-     
-    .DESCRIPTION
-     VDS
-    gridview $(ls)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/gridview
-#>
-}
-function hex($a){
-    return $a | format-hex
-<#
-    .SYNOPSIS
-    Returns hex
-     
-    .DESCRIPTION
-     VDS
-    console $(hex 15)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/hex
-#>
-}
-function flog ($a) {
-    return [math]::log($a)
-<#
-    .SYNOPSIS
-    Returns log
-     
-    .DESCRIPTION
-     VDS
-    console $(log 15)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/flog
-#>
-}
-function index($a) {
-    return $a.SelectedIndex
-<#
-    .SYNOPSIS
-    Returns the selected index of a control
-     
-    .DESCRIPTION
-     VDS
-    $index = $(index $listbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/index
-#>
-}
-function iniread($a,$b) {
-    $Items = New-Object System.Collections.Generic.List[System.Object]
-    $content = get-content $global:inifile
-    if ($content) {
-        $Items.AddRange($content)
-    }
-    if ($Items.indexof("[$a]") -eq -1) {
-        $return = ""
-    }
-    else {
-        $return = ""
-        For ($i=$Items.indexof("[$a]")+1; $i -lt $Items.count; $i++) {
-            if ($Items[$i].length -gt $b.length) {
-                if ($Items[$i].substring(0,$b.length) -eq $b -and $gate -ne $true) {
-                        $return = $Items[$i].split("=")[1]
-                        $gate = $true
-                }
-            }
-            if ($Items[$i].length -gt 0) {
-                if (($Items[$i].substring(0,1) -eq "[") -and ($tgate -ne $true)) {
-                    $gate = $true
-                }
-            }
-        }
-    }
-    return $return
-<#
-    .SYNOPSIS
-    Returns a read from a file specified by inifile open.
-     
-    .DESCRIPTION
-     VDS
-    console $(iniread content value)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/iniread
-#>  
-}
-function input($a,$b) {
-    $input = [Microsoft.VisualBasic.Interaction]::InputBox($a,$b)
-    return $input
-<#
-    .SYNOPSIS
-    Produces a input dialog and returns the value.
-     
-    .DESCRIPTION
-     VDS
-    $input = $(input "Verify Address" "Verify Details")
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/input
-#>  
-} #partial implementation - Missing optional password parameter
-function item($a) {
-    return $a.SelectedItems
-<#
-    .SYNOPSIS
-    Returns the selected item from a list
-     
-    .DESCRIPTION
-     VDS
-    $item = $(item $listbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/item
-#>  
-}
-function items($a) {
-    return $a.SelectedItems
-<#
-    .SYNOPSIS
-    Returns the selected items from a list
-     
-    .DESCRIPTION
-     VDS
-    $items = $(items $listbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/items
-#>
-} #untested
-function key($a) {
-    return $(chr $(asc "{"))+$a+$(chr $(asc "}"))
-<#
-    .SYNOPSIS
-    Useful with window send, works with special keys. Esc, Enter, Up, Down etc.
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(key up)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/key
-#>
-} 
-function len($a) {
-    return $a.length
-<#
-    .SYNOPSIS
-    Returns the length of a string
-     
-    .DESCRIPTION
-     VDS
-    $length = $(len $textbox1.text)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/len
-#>
-}
-function lf {
-    return chr(10)
-<#
-    .SYNOPSIS
-    Returns a line feed
-     
-    .DESCRIPTION
-     VDS
-    $lf = $(lf)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/lf
-#>
-}
-function like ($a,$b) {
-    return $a -like $b
-<#
-    .SYNOPSIS
-    Returns the one item is like another
-     
-    .DESCRIPTION
-     VDS
-    $like = $(string $(like 'string' 'string'))
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/like
-#>
-}
-function lower($a) {
-    return $a.ToLower()
-<#
-    .SYNOPSIS
-    Returns the lower case string of a string
-     
-    .DESCRIPTION
-     VDS
-    $lower = $(lower $string)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/lower
-#>
-}
-function match($a,$b,$c) {
-    if ($c = $null){
-        $c = -1
-    }
-    else {
-        $c = $c
-    }
-    try{$return = $a.FindString($b,$c)}
-	catch{$return = $a.Items.IndexOf($b)}
-	    return $return
-<#
-    .SYNOPSIS
-    The index of the next match in a list, with an optional start point.
-     
-    .DESCRIPTION
-     VDS
-    $match = $(match $listbox1 $string 3)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/match
-#>
-}
-function mod($a,$b) {
-    return $a % $b
-<#
-    .SYNOPSIS
-    Returns the modulo of dividend and divisor
-     
-    .DESCRIPTION
-     VDS
-    $mod = $(mod 60 30)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/mod
-#>
-}
-function mousedown {
-    return [System.Windows.Forms.UserControl]::MouseButtons | Out-String
-<#
-	.SYNOPSIS
-	Returns the mousebutton that is pressed.
-	 
-	.DESCRIPTION
-	$mousedown = $(mousedown)
-	
-	.LINK
-	https://dialogshell.com/vds/help/index.php/mousedown
-#>
-} 
-function mousepos($a) {
-    switch ($a) {
-        x {
-            return [System.Windows.Forms.Cursor]::Position.X
-        }
-        y {
-            return [System.Windows.Forms.Cursor]::Position.Y
-        }
-        xy {
-        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
-        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
-        return $x.Trim()+$fieldsep+$y.Trim()
-        }
-        yx {
-        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
-        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
-        return $y.Trim()+$fieldsep+$x.Trim()
-        }
-        default {
-        $x = [System.Windows.Forms.Cursor]::Position.X | Out-String
-        $y = [System.Windows.Forms.Cursor]::Position.Y | Out-String
-        return $x.Trim()+$fieldsep+$y.Trim()
-        }
-    }
-<#
-    .SYNOPSIS
-    Returns the mouse position as string with options being x, y, xy or yx. Defaults to xy.
-     
-    .DESCRIPTION
-     VDS
-    $mousepos = $(mousepos xy)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/mousepos
-#>
-} 
-function msgbox($a,$b,$c,$d) {
-    $msgbox = [System.Windows.Forms.MessageBox]::Show($a,$b,$c,$d)
-    return $msgbox
-<#
-    .SYNOPSIS
-    Generates a messagebox according to provided paramaters. 
-    [param1 Message]
-    [param2 Title]
-    [param3 buttons, YesNo YesNoCancel OKCancel or OK]
-    [param4 Icon, can be 0 (none) ,16 (Hand) ,32 (Question) ,48 (Warning) or 64 (Information)]
-     
-    .DESCRIPTION
-     VDS
-    $msgbox = $(msgbox 'Do we agree?' 'Question' 'YesNoCancel' 64)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/msgbox
-#>  
-} 
-function name($a) {
-    return [io.path]::GetFileNameWithoutExtension($a)
-<#
-    .SYNOPSIS
-    Returns the file name without extension
-     
-    .DESCRIPTION
-     VDS
-    $name = $(name $file)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/name
-#>
-}
-function next($a) {
-    if ($a.items.count -gt $a.selectedIndex + 1) {
-        $a.selectedIndex = $a.selectedIndex + 1
-        return $a.selectedItems
-    }
-    else {
-    return $false
-    }
-<#
-    .SYNOPSIS
-    Progresses a list to the next item.
-     
-    .DESCRIPTION
-     VDS
-    $next = $(next $listbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/next
-#>
-}
-function not($a){
-    if ($a -eq $false) {
-        return $true
-    }
-    else {
-    return $false}
-<#
-    .SYNOPSIS
-    Returns true if false
-     
-    .DESCRIPTION
-     VDS
-    if ($(not $(null $value)))
-    {console "It ain't nothing"}
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/not
-#>
-}
-function null($a) {
-    if ($a -eq $null) {
-        return $true
-    }
-    else {
-        return $false
-    }
-<#
-    .SYNOPSIS
-    Returns true if null
-     
-    .DESCRIPTION
-     VDS
-    if ($(not $(null $value)))
-    {console "It ain't nothing"}
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/null
-#>
-}
-function numeric($a) {
-    return $a -is [int]
-<#
-    .SYNOPSIS
-    Returns true if numeric
-     
-    .DESCRIPTION
-     VDS
-    console $(numeric $isnumber)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/numeric
-#>
-}
-function ok {
-    return $?
-<#
-    .SYNOPSIS
-    Returns true if OK.
-     
-    .DESCRIPTION
-     VDS
-    console $(ok)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/ok
-#>
-} 
-function path($a) {
-    return Split-Path -Path $a
-<#
-    .SYNOPSIS
-    Returns the path of a file
-     
-    .DESCRIPTION
-     VDS
-    console $(path $file)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/path
-#>
-}
-function pos($a,$b) {
-    $regEx = [regex]$a
-    $pos = $regEx.Match($b)
-    if ($pos.Success){ 
-        return $pos.Index
-    }
-    else {
-        return false
-    }
-<#
-    .SYNOPSIS
-    Returns the position of [param1] in [param2]
-     
-    .DESCRIPTION
-     VDS
-    console $(pos b brandon)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/pos
-#>
-} #partial implementation - missing 'exact'
-function pred($a) {
-    return $a - 1
-<#
-    .SYNOPSIS
-    Returns the predecessor of number
-     
-    .DESCRIPTION
-     VDS
-    list seek $listbox1 $(pred $(index $listbox1))
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/pred
-#>
-}
-function prod($a) {
-    return $a + 1
-<#
-    .SYNOPSIS
-    Returns the prodecessor of number
-     
-    .DESCRIPTION
-     VDS
-    list seek $listbox1 $(prod $(index $listbox1))
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/prod
-#>
-}
-function query($a,$b) {
-    $query = [System.Windows.Forms.MessageBox]::Show($a,$b,"OKCancel",32)
-    return $query
-<#
-    .SYNOPSIS
-    Generates an OK Cancel dialog and returns the result.
-     
-    .DESCRIPTION
-     VDS
-    $question = $(query "Is it Monday?" "Select Day")
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/query
-#>
-} 
-function regexists($a,$b) {
-    $return = Get-ItemProperty -Path $a -Name $b
-    if ($return) {
-    return $true
-    }
-    else {
-    return $false
-    }
-<#
-    .SYNOPSIS
-    Returns true if the registry path exists
-     
-    .DESCRIPTION
-     VDS
-    console $(regexists hkcu:\software\dialogshell)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/regexists
-#>
-}
-function regread($a,$b) {
-    return Get-ItemProperty -Path $a -Name $b | Select -ExpandProperty $b
-<#
-    .SYNOPSIS
-    Returns the value of a registry entry
-     
-    .DESCRIPTION
-     VDS
-    $regread = $(regread hkcu:\software\dialogshell window)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/regread
-#>
-} #partial implementation - path names are slightly different, $a is path with a : in it, $b is property. No default return. 
-function regtype($a,$b) {
-    switch ((Get-ItemProperty -Path $a -Name $b).$b.gettype().Name){ 
-        "String" {
-            return "REG_SZ"
-        }
-        "Int32" {
-        return "REG_DWORD"
-        }
-        "Int64" {
-        return "REG_QWORD"
-        }
-        "String[]" {
-        return "REG_MULTI_SZ"
-        }
-        "Byte[]" {
-        return "REG_BINARY"
-        } 
-        default {
-        return "Unknown type"
-        }
-    }
-<#
-    .SYNOPSIS
-    Returns the type of value from a registry entry
-     
-    .DESCRIPTION
-     VDS
-    $regtype = $(regtype hkcu:\software\dialogshell window)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/regtype
-#>
-} #partial implementation
-function retcode() {
-return $LASTEXITCODE
-<#
-    .SYNOPSIS
-    Returns the last exit code
-     
-    .DESCRIPTION
-     VDS
-    console $(retcode)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/retcode
-#>
-}
-function savedlg($a,$b,$c){
-    $filedlg = New-Object System.Windows.Forms.SaveFileDialog
-    $filedlg.initialDirectory = $b
-    $filedlg.filter = $a
-    $filedlg.ShowDialog() | Out-Null
-    return $filedlg.FileName 
-<#
-    .SYNOPSIS
-    Returns the results of a file selection dialog.
-     
-    .DESCRIPTION
-     VDS
-    $save = $(saveedlg 'Text Files|*.txt' $(windir)) 
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/savedlg
-#>  
-}
-function selected($a) {
-    return CountRows($a.SelectedItems)
-<#
-    .SYNOPSIS
-    Returns the number of list items selected
-     
-    .DESCRIPTION
-     VDS
-    $selected = $(selected $listbox1)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/selected
-#>
-}
-function sendmsg($a,$b,$c,$d) {
-    [vds]::SendMessage($a, $b, $c, $d)
-<#
-    .SYNOPSIS
-    See SendMessage Win32 API
-    https://docs.microsoft.com/en-us/windows/desktop/api/winuser/nf-winuser-sendmessage
-     
-    .DESCRIPTION
-     VDS
-    $currentrow = $(sendmsg $(winexists $RichEdit) 0x00c1 $RichEdit.SelectionStart 0)
-     
-    .LINK
-    https://dialogshell.com/vds/help/index.php/sendmsg
-#>
-}
-function shift($a) {
-return "+$a"
-<#
-    .SYNOPSIS
-     Sends the SHIFT key plus string. Only useful with 'window send'.
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(shift "s")
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/shift
-#>
-} 
-function shortname {
-    [cmdletbinding()]
-    Param([Parameter(Mandatory=$true,Position=0,ValueFromPipeline=$true,ValueFromPipelineByPropertyName=$true)][array]$Path)
-    If ($(Get-Item $Path).PSIsContainer -eq $true) {
-        $SFSO = New-Object -ComObject Scripting.FileSystemObject
-        $short = $SFSO.GetFolder($($Path)).ShortPath
-    } 
-    Else {
-        $SFSO = New-Object -ComObject Scripting.FileSystemObject
-        $short = $SFSO.GetFile($($Path)).ShortPath
-    }
-    return $short
-<#
-    .SYNOPSIS
-     Returns the 8.3 shortname of a file
-     
-    .DESCRIPTION
-     VDS
-    $shortname = $(shortname $file)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/shortname
-#>
-}
-function strdel($a,$b,$c) {
-    return ($a.substring(0,$b)+$(substr $a $c $a.length))
-<#
-    .SYNOPSIS
-     Returns the string without start index to end index.
-     
-    .DESCRIPTION
-     VDS
-    $string = $(strdel $string 8 16)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/strdel
-#>
-}
-
-function streamimage ($a){
-                $s = iwr $a
-                
-                $r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
-                $r.Write($s.content, 0, $s.content.Length)
-                
-                return [System.Drawing.Image]::FromStream($r, $true)
-<#
-    .SYNOPSIS
-     Creates a image from a web url stream
-     
-    .DESCRIPTION
-     VDS
-    $PictureBox1.image = $(streamimage 'https://dialogshell.com/eternium.png')
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/streamimage
-#>			
-
-}
-
-function loaddll ($a){
-				if ($(substr $a 0 2) -eq 'ht') {
-				
-                $s = iwr $a
-                
-            #    $r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
-            #    $r.Write($s.content, 0, $s.content.Length)
-                
-                return [Reflection.Assembly]::Load($s.content) | out-null
-				}
-				else {
-				[Reflection.Assembly]::LoadFile($a) | Out-Null
-				}
-<#
-    .SYNOPSIS
-     Loads a dynamic link library
-     
-    .DESCRIPTION
-     VDS
-    loaddll c:\temp\dotnet.dll
-	loaddll https://mydomain.com/dotnet.dll
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/loaddll
-#>			
-
-}
-
-function string($a) {
-return ($a | Out-String).trim()
-#Proper form for dialogshell philosophy if splitting hairs: return $(trim $(Out-String -inputobject $a)) . Were it written before the trim function, ($(Out-String -inputobject $a)).Trim() . I don't feel we as a community should care, and this code is written and produces the expected output - so the point is moot. No one should touch this.
-
-#Powershell proper form, which I really don't care about. It's ineffeicient and hard to remember. Feel free to write in this form, just don't expect me to.
-
-<#
-function string {
-    [CmdletBinding()]
-    param(
-        [Parameter(Position=0,mandatory=$true)]
-        [string] $InputString)
-        ($InputString | Out-String).Trim()
-}
-#>
-#You'll notice proper powershell didn't include a return keyword, this is actually correct. I include the return keyword to discern a VDS function from a VDS command when I'm looking at the Powershell function without proper context.
-#Expect me to be annoyed if you ask for help with a VDS function, and there is no return keyword, because I'll think I'm helping with a VDS command.
-#Some keywords have both command and function form, like console. You'll notice the VDS function form of the keyword has a return statement.
-<#
-    .SYNOPSIS
-     Converts a value to string.
-     
-    .DESCRIPTION
-     VDS
-    $string = $(string $value)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/string
-#>
-}
-function substr($a,$b,$c) {
-    return $a.substring($b,($c-$b))
-<#
-    .SYNOPSIS
-     Gets the value of a string between a start index and a end index
-     
-    .DESCRIPTION
-     VDS
-    $string = $(substr $string 3 6)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/substr
-#>
-}
-function succ($a) {
-    return $a + 1
-<#
-    .SYNOPSIS
-     Adds one to a value.
-     
-    .DESCRIPTION
-     VDS
-    $increase = $(succ $number)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/succ
-#>
-}
-function sum($a,$b) {
-    return $a + $b
-<#
-    .SYNOPSIS
-     Adds two values.
-     
-    .DESCRIPTION
-     VDS
-    $total = $(sum $num1 $num2)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/sum
-#>
-} #partial implementation - only accepts two params
-function sysinfo($a) {
-    switch ($a) {
-        freemem {
-            $return = Get-WmiObject Win32_OperatingSystem | fl FreePhysicalMemory | Out-String
-            return $return.split(':')[1].Trim() 
-        } 
-        pixperin {
-        return $(regread 'hkcu:\Control Panel\Desktop\WindowMetrics' 'AppliedDpi')
-        } 
-        screenheight {
-            foreach ($screen in [system.windows.forms.screen]::AllScreens) {
-                if ($screen.primary) {
-                    return $screen.Bounds.Height
-                }
-            }
-        }
-        screenwidth {
-            foreach ($screen in [system.windows.forms.screen]::AllScreens) {
-                if ($screen.primary) {
-                    return $screen.Bounds.Width
-                }
-            }
-        }    
-        winver {
-            $major = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Major | Out-String
-            $minor = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Minor | Out-String
-            $build = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Build | Out-String
-            $revision = [System.Environment]::OSVersion.Version | Select-Object -expandproperty Revision | Out-String
-            return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim()
-        } 
-        win32 {
-            return [Environment]::Is64BitProcess | Out-String
-        } 
-        psver {
-            $major = $psversiontable.psversion.major | Out-String
-            $minor = $psversiontable.psversion.minor | Out-String
-            $build = $psversiontable.psversion.build | Out-String
-            $revision = $psversiontable.psversion.revision | Out-String
-            return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
-        } 
-        dsver {
-        return '0.2.6.1'
-        }
-        winboot {
-            $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
-            $return = $return.split('e')[1].Trim()
-            $return = $(substr $return 2 $(len $return))
-            return $return
-        }
-        screenrect {
-            $z = '0'
-            $sw = $(sysinfo screenwidth) | Out-String
-            $sh = $(sysinfo screenheight) | Out-String
-            return $z+$fieldsep+$z+$fieldsep+$sw.Trim()+$fieldsep+$sh.Trim()
-        }
-        language {
-            return GET-WinSystemLocale |Select-Object -expandproperty DisplayName
-        }
-    }
-<#
-	.SYNOPSIS
-	 Returns information about the system according to parameter.
-	 Available parameters: freemem, pixperin, screenwidth, winver, win32, psver, dsver, winboot, screenrect, language
-	 
-	.DESCRIPTION
-	$syinfo = $(sysinfo screenrect)
-	
-	.LINK
-	https://dialogshell.com/vds/help/index.php/sysinfo
-#>
-} 
-
-
-function tab {
-    return "`t" 
-<#
-    .SYNOPSIS
-    Returns the tab character, useful with window send
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(tab)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/tab
-#>
-} 
-function text ($a) {
-    return [array]$a.items | Out-String
-<#
-    .SYNOPSIS
-    Returns the entire text of a list
-     
-    .DESCRIPTION
-     VDS
-    $text = $(text $listbox1)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/text
-#>
-} 
-function the ($a,$b,$c) { #supports option "of" for $b
-    if ($(null $c)) {
-        return $b.$a
-    }
-    else {
-    return $c.$a
-    }
-<#
-    .SYNOPSIS
-    Language element, represents the property of object.
-     
-    .DESCRIPTION
-     VDS
-    foreach($row in $(the Rows of $mElemetnsGrid)){}
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/the
-#>
-}
-function trim ($a) {
-    return $a.Trim()
-<#
-    .SYNOPSIS
-    Returns the trim of a string
-     
-    .DESCRIPTION
-     VDS
-    $trimStr = $(trim $string)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/trim
-#>
-} 
-function unequal($a, $b) {
-    if ($a -eq $b) {
-        return $false
-    } 
-    else {
-        return $true
-    }
-<#
-    .SYNOPSIS
-    Returns true if two values are not equal
-     
-    .DESCRIPTION
-     VDS
-    $testEq = $(unequal $val1 $val2)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/unequal
-#>
-}
-function upper($a) {
-    return $a.ToUpper()
-<#
-    .SYNOPSIS
-    Returns the string in uppercase
-     
-    .DESCRIPTION
-     VDS
-    $upperonly = $(upper $string)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/upper
-#>
-}
-function val($a) {
-    return $a
-<#
-    .SYNOPSIS
-    Does nothing. Returns what's sent.
-     
-    .DESCRIPTION
-     VDS
-    $val = $(val 42)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/val
-#>
-} 
-function volinfo($a,$b) {
-    switch ($b) {
-        F {
-            return get-volume $a | Select-Object -expandproperty SizeRemaining
-        }
-        N { 
-            return get-volume $a | Select-Object -expandproperty FriendlyName
-        }
-        S {
-            return get-volume $a | Select-Object -expandproperty Size
-        }
-        T {
-            return get-volume $a | Select-Object -expandproperty DriveType
-        }
-        Y {
-            return get-volume $a | Select-Object -expandproperty FileSystemType
-        }
-        Z {
-            return get-partition -driveletter $a | Get-Disk | Select-Object -expandproperty SerialNumber
-        }
-    }
-<#
-    .SYNOPSIS
-    Does nothing. Returns what's sent.
-     
-    .DESCRIPTION
-     VDS
-    $val = $(val 42)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/volinfo
-#>  
-} 
-function winactive($a) {
-    return [vds]::GetForegroundWindow()
-<#
-    .SYNOPSIS
-    Returns the active window handle
-     
-    .DESCRIPTION
-     VDS
-    $activewin = $(winactive)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/winactive
-#>
-}  
-function winatpoint($a,$b) {
-
-if ($core) {
-	[vds]::LeftClickAtPoint($a,$b,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
-	return $(winactive)
-}
-else{
-    $p = new-object system.drawing.point($a,$b)
-    $return = [vdsForm]::WindowFromPoint($p)
-    return $return;
-	}
-<#
-    .SYNOPSIS
-    Returns the window handle at x y
-     
-    .DESCRIPTION
-     VDS
-    $windowatxy = $(winatpoint 32 64)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/winatpoint
-#>
-}
-function winclass($a) {
-    $stringbuilt = New-Object System.Text.StringBuilder 256
-    $that = [vds]::GetClassName($a, $stringbuilt, 256)
-    return $($stringbuilt.ToString())
-<#
-    .SYNOPSIS
-    Returns the window class by handle
-     
-    .DESCRIPTION
-     VDS
-    $class = $(winclass $(winexists "Untitled - Notepad"))
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/winclass
-#>
-} 
-
-function windir($a) {
-    return $(env windir)
-<#
-    .SYNOPSIS
-    Returns the windows directory
-     
-    .DESCRIPTION
-     VDS
-    $windows = $(windir)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/windir
-#>
-} 
 function winexists($a) {
     $class = [vds]::FindWindowByClass($a)
     if ($class) {
@@ -4292,6 +4961,22 @@ function winexists($a) {
     https://dialogshell.com/vds/help/index.php/winexists
 #>
 } 
+
+function winparent($a){
+return [vds]::GetParent($a)
+<#
+    .SYNOPSIS
+    Returns the parent handle of a handle.
+     
+    .DESCRIPTION
+     VDS
+    $parent = $(winparent 345689)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winparent
+#>
+}
+
 function winpos($a,$b) {
     $Rect = New-Object RECT
     [vds]::GetWindowRect($a,[ref]$Rect) | Out-Null
@@ -4323,6 +5008,23 @@ function winpos($a,$b) {
     https://dialogshell.com/vds/help/index.php/winpos
 #>
 }
+
+
+function winsibling($a){
+return [vds]::GetWindow($a, 2)
+<#
+    .SYNOPSIS
+    Returns the sibling of a window.
+     
+    .DESCRIPTION
+     VDS
+    $thirdBrother = $(winsibling $(winsibling $(winsibling $(winchild 345689))))
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winparent
+#>
+}
+
 function wintext($a) {
     $strbld = [vds]::GetWindowTextLength($a)
     $stringbuilt = New-Object System.Text.StringBuilder $strbld+1
@@ -4522,357 +5224,16 @@ function zip($a,$b,$c)
 		compress-archive -path $a -destinationpath $b
 		}
 	}
-}
-
-function unzip($a,$b)
-{
-	Expand-Archive -LiteralPath $a -DestinationPath $b -force
-}
-
-function excel($a,$b,$c,$d)
-{
-	if ($global:excelinit -eq $false){
-		$global:excelinit = $true
-		$global:excelVDS = new-object -comobject excel.application
-	}
-	switch ($a,$b){
-		connect {
-			return $global:excelinit
-		}
-		new {
-			return $global:excelVDS.Workbooks.add()
-		}
-		show {
-			$global:excelVDS.visible = $true
-		}
-		hide {
-			$global:excelVDS.visible = $false
-		}
-		AddWorksheet {
-			$b.Worksheets.Add()
-		}
-		Open {
-			$global:excelVDS.Workbooks.Open($b)
-		}
-		Save {
-			$global:excelVDS.Workbooks.Save()
-		}
-		SaveAs {
-			$global:excelVDS.ActiveWorkbook.SaveAs($b)
-		}
-		SelectSheet {
-			$global:excelVDS.Worksheets.Item($b).Select()
-		}
-		SetCell {
-			$global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
-		}
-		GetCell {
-				return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
-		}
-		DeleteColumn {
-				$global:excelVDS.ActiveSheet.Columns[$b].Delete()
-		}
-		DeleteRow {
-				$global:excelVDS.ActiveSheet.Rows[$b].Delete()
-		}
-		InsertColumn {
-				$global:excelVDS.ActiveSheet.Columns[$b].Insert()
-		}
-		InsertRow {
-				$global:excelVDS.ActiveSheet.Rows[$b].Insert()
-		}
-		ColumnCount {
-				return $global:excelVDS.ActiveSheet.UsedRange.Columns.Count
-		}
-		RowCount {
-				return $global:excelVDS.ActiveSheet.UsedRange.Rows.Count
-		}
-	}
-}
-
-function csv ($a,$b,$c,$d,$e,$f)
-{
-	switch ($a)
-	{
-		read{
-			if ($e){
-				while ($i -lt $e) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			$i = 0
-			$csv | %{
-			$i = $i+1
-				if ($i -eq $d){
-				return $_.$c
-				}
-			}
-		}
-		write {
-			if ($f){
-				while ($i -lt $f) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			$i = 0
-			$csv | %{
-			$i = $i+1
-				if ($i -eq $d){
-				$_.$c = $e
-				return $csv
-				}
-			}
-		}
-		count {
-			if ($c){
-				while ($i -lt $c) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			return $csv.count		
-		}
-		save {
-		$b | export-csv $c -NoTypeInformation
-		$Content = Get-content $c | select-object -skip 1
-		$Content | out-file $c -Encoding utf8		
-		}
-	}
-}
-
-function winparent($a){
-return [vds]::GetParent($a)
-}
-
-function winchild($a){
-return [vds]::GetWindow($a, 5)
-}
-
-function winsibling($a){
-return [vds]::GetWindow($a, 2)
-}
-
-function hotkey($a,$b,$c,$d) {
-[vdsForm]::RegisterHotKey($a.handle,$b,$c,$d) | out-null
-	if ($global:hotkeyobject -ne $true) {
-		$hotkey = dialog add $a label 0 0 0 0
-		dialog name $hotkey hotkey
-		$hotkey.add_TextChanged({
-			if ($this.text -ne ""){
-				hotkeyEvent $this.text
-			}
-			$this.text = ""
-		})
-	$global:hotkeyobject = $true
-	}
-}
-
-function vkey($a){
-	switch($a)
-	{
-		None{return 0}
-		Alt{return 1}
-		Control{return 2}
-		Shift{return 4}
-		WinKey{return 8}
-		LBUTTON{return 0x01}
-		RBUTTON{return 0x02}
-		CANCEL{return 0x03}
-		MBUTTON{return 0x04}
-		XBUTTON1{return 0x05}
-		XBUTTON2{return 0x06}
-		BACK{return 0x08}
-		TAB{return 0x09}
-		CLEAR{return 0x0C}
-		RETURN{return 0x0D}
-		SHIFT{return 0x10}
-		CONTROL{return 0x11}
-		MENU{return 0x12}
-		PAUSE{return 0x13}
-		CAPITAL{return 0x14}
-		KANA{return 0x15}
-		HANGUEL{return 0x15}
-		HANGUL{return 0x15}
-		IME_ON{return 0x16}
-		JUNJA{return 0x17}
-		FINAL{return 0x18}
-		HANJA{return 0x19}
-		KANJI{return 0x19}
-		IME_OFF{return 0x1A}
-		ESCAPE{return 0x1B}
-		CONVERT{return 0x1C}
-		NONCONVERT{return 0x1D}
-		ACCEPT{return 0x1E}
-		MODECHANGE{return 0x1F}
-		SPACE{return 0x20}
-		PRIOR{return 0x21}
-		NEXT{return 0x22}
-		END{return 0x23}
-		HOME{return 0x24}
-		LEFT{return 0x25}
-		UP{return 0x26}
-		RIGHT{return 0x27}
-		DOWN{return 0x28}
-		SELECT{return 0x29}
-		PRINT{return 0x2A}
-		EXECUTE{return 0x2B}
-		SNAPSHOT{return 0x2C}
-		INSERT{return 0x2D}
-		DELETE{return 0x2E}
-		HELP{return 0x2F}
-		0{return 0x31}
-		1{return 0x32}
-		3{return 0x34}
-		4{return 0x35}
-		6{return 0x36}
-		7{return 0x37}
-		8{return 0x38}
-		9{return 0x39}
-		A{return 0x41}
-		B{return 0x42}
-		C{return 0x43}
-		D{return 0x44}
-		E{return 0x45}
-		F{return 0x46}
-		G{return 0x47}
-		H{return 0x48}
-		I{return 0x49}
-		J{return 0x4A}
-		K{return 0x4B}
-		L{return 0x4C}
-		M{return 0x4D}
-		N{return 0x4E}
-		O{return 0x4F}
-		P{return 0x50}
-		Q{return 0x51}
-		R{return 0x52}
-		S{return 0x53}
-		T{return 0x54}
-		U{return 0x55}
-		V{return 0x56}
-		W{return 0x57}
-		X{return 0x58}
-		Y{return 0x59}
-		Z{return 0x5A}
-		LWIN{return 0x5B}
-		RWIN{return 0x5C}
-		APPS{return 0x5D}
-		SLEEP{return 0x5F}
-		NUMPAD0{return 0x60}
-		NUMPAD1{return 0x61}
-		NUMPAD2{return 0x62}
-		NUMPAD3{return 0x63}
-		NUMPAD4{return 0x64}
-		NUMPAD5{return 0x65}
-		NUMPAD6{return 0x66}
-		NUMPAD7{return 0x67}
-		NUMPAD8{return 0x68}
-		NUMPAD9{return 0x69}
-		MULTIPLY{return 0x6A}
-		ADD{return 0x6B}
-		SEPARATOR{return 0x6C}
-		SUBTRACT{return 0x6D}
-		DECIMAL{return 0x6E}
-		DIVIDE{return 0x6F}
-		F1{return 0x70}
-		F2{return 0x71}
-		F3{return 0x72}
-		F4{return 0x73}
-		F5{return 0x74}
-		F6{return 0x75}
-		F7{return 0x76}
-		F8{return 0x77}
-		F9{return 0x78}
-		F10{return 0x79}
-		F11{return 0x7A}
-		F12{return 0x7B}
-		F13{return 0x7C}
-		F14{return 0x7D}
-		F15{return 0x7E}
-		F16{return 0x7F}
-		F17{return 0x80}
-		F18{return 0x81}
-		F19{return 0x82}
-		F20{return 0x83}
-		F21{return 0x84}
-		F22{return 0x85}
-		F23{return 0x86}
-		F24{return 0x87}
-		NUMLOCK{return 0x90}
-		SCROLL{return 0x91}
-		LSHIFT{return 0xA0}
-		RSHIFT{return 0xA1}
-		LCONTROL{return 0xA2}
-		RCONTROL{return 0xA3}
-		LMENU{return 0xA4}
-		RMENU{return 0xA5}
-		BROWSER_BACK{return 0xA6}
-		BROWSER_FORWARD{return 0xA7}
-		BROWSER_REFRESH{return 0xA8}
-		BROWSER_STOP{return 0xA9}
-		BROWSER_SEARCH{return 0xAA}
-		BROWSER_FAVORITES{return 0xAB}
-		BROWSER_HOME{return 0xAC}
-		VOLUME_MUTE{return 0xAD}
-		VOLUME_DOWN{return 0xAE}
-		VOLUME_UP{return 0xAF}
-		MEDIA_NEXT_TRACK{return 0xB0}
-		MEDIA_PREV_TRACK{return 0xB1}
-		MEDIA_STOP{return 0xB2}
-		MEDIA_PLAY_PAUSE{return 0xB3}
-		LAUNCH_MAIL{return 0xB4}
-		LAUNCH_MEDIA_SELECT{return 0xB5}
-		LAUNCH_APP1{return 0xB6}
-		LAUNCH_APP2{return 0xB7}
-		OEM_1{return 0xBA}
-		OEM_PLUS{return 0xBB}
-		OEM_COMMA{return 0xBC}
-		OEM_MINUS{return 0xBD}
-		OEM_PERIOD{return 0xBE}
-		OEM_2{return 0xBF}
-		OEM_3{return 0xC0}
-		OEM_4{return 0xDB}
-		OEM_5{return 0xDC}
-		OEM_6{return 0xDD}
-		OEM_7{return 0xDE}
-		OEM_8{return 0xDF}
-		OEM_102{return 0xE2}
-		PROCESSKEY{return 0xE5}
-		PACKET{return 0xE7}
-		ATTN{return 0xF6}
-		CRSEL{return 0xF7}
-		EXSEL{return 0xF8}
-		EREOF{return 0xF9}
-		PLAY{return 0xFA}
-		ZOOM{return 0xFB}
-		NONAME{return 0xFC}
-		PA1{return 0xFD}
-		OEM_CLEAR{return 0xFE}
-	}
+<#
+    .SYNOPSIS
+    Compresses a folder or updates a compressed folder.
+     
+    .DESCRIPTION
+     VDS
+    zip c:\temp\window c:\temp\window.zip
+	zip update c:\temp\window c:\window.zip
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/zero
+#>
 }
