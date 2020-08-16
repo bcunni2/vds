@@ -1,12 +1,12 @@
 Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase, System.ComponentModel
-		$ep = $ErrorActionPreference
-		$ErrorActionPreference = "SilentlyContinue"
-try {
+
 Add-Type @"
+//" closing above quote for editing c# syntax in another editor.
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.ComponentModel;
 public class vdsForm:Form {
 [DllImport("user32.dll")]
 public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
@@ -24,19 +24,6 @@ public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 		}
 	}	
 }
-"@ -ReferencedAssemblies System.Windows.Forms,System.Drawing
-}
-catch {$core = $true}
-
-$ErrorActionPreference = $ep
-
-Add-Type @"
-//" closing above quote for editing c# syntax in another editor.
-using System;
-using System.Drawing;
-using System.Runtime.InteropServices;
-using System.Windows.Forms;
-using System.ComponentModel;
 
 public class vds {
 [DllImport("user32.dll")]
@@ -188,7 +175,7 @@ public static void RightClickAtPoint(int x, int y, int width, int height)
     public int Right;
     public int Bottom;
     }
-"@ -ReferencedAssemblies System.Windows.Forms,System.Drawing, System.Drawing.Primitives
+"@  -ReferencedAssemblies System.Windows.Forms,System.Drawing,System.Drawing.Primitives,System.Net.Primitives,System.ComponentModel.Primitives,Microsoft.Win32.Primitives
 
 
 
@@ -276,6 +263,20 @@ function abs($a) {
     return [math]::abs($a)
 }
 
+function alt($a) {
+    return "%$a"
+<#
+    .SYNOPSIS
+     Sends the ALT key plus string. Only useful with 'window send'.
+     
+    .DESCRIPTION
+     VDS
+    window send $(winexists notepad) $(alt "F")
+    .LINK
+    https://dialogshell.com/vds/help/index.php/alt
+#>
+}
+
 function asc($a) {
 <#
     .SYNOPSIS
@@ -289,20 +290,6 @@ function asc($a) {
     https://dialogshell.com/vds/help/index.php/asc
 #>
     return [byte][char]$a
-}
-
-function alt($a) {
-    return "%$a"
-<#
-    .SYNOPSIS
-     Sends the ALT key plus string. Only useful with 'window send'.
-     
-    .DESCRIPTION
-     VDS
-    window send $(winexists notepad) $(alt "F")
-    .LINK
-    https://dialogshell.com/vds/help/index.php/alt
-#>
 }
 
 function ask($a,$b) {
