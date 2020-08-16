@@ -27,11 +27,11 @@ Leave a comment under any task you'd like to be assigned to in the format [n][n]
 
 I believe in simplicity. If you want to update the project, but don't want to geek out, zip your solution and attach it to the issue comments. I'll review and commit it for you when time permits. You can bug me about it to get it done faster, I don't mind.
 
-## Getting Started
+# Getting Started
 Compile order: 
 make.bat (recently simplified)
 
-### Prerequisites
+## Prerequisites
 
 Windows 7 or above with Powershell is the primary prerequisite. 
 
