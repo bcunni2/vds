@@ -27,10 +27,7 @@ A great way to learn about .NET contols is through this PDF online: https://docs
 The web version lives here: https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/ and the part we are probably most interested in lives here: https://docs.microsoft.com/en-us/dotnet/framework/winforms/controls/windows-forms-controls-by-function
 
 Compile order: 
-vds/compile/compile/make.bat
-vds/compile/dialogshell.bat
-vds/compile/visual dialogshell.bat
-vds/dialog designer.bat
+make.bat (recently simplified)
 
 ### Prerequisites
 
