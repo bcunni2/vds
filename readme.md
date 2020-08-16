@@ -194,5 +194,6 @@ Serge
 vdsalchemist
 Dr. Dread
 CodeScript
-PGWARE, for encouraging me on this project
+PGWARE
+seeminglyscience
 ```
