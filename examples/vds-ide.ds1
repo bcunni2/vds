@@ -741,6 +741,9 @@ function aboutbox {
     $Buttonx = dialog add $AboutForm button 400 400 40 20 "OK"
     $Buttonx.BringToFront()
     $Buttonx.add_Click({dialog close $AboutForm})
+	
+	$AboutForm.icon = (curdir)+"\..\res\icon.ico"
+	
     dialog showmodal $AboutForm
 }
     
