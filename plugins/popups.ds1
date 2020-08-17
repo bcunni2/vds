@@ -1,0 +1,525 @@
+function global:menuitemmouseup ($menu) {
+switch (dlgname $menu) {
+"if"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
+}'}
+
+"if else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
+}
+else{
+
+}'}
+
+"if elseif"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
+}
+elseif ( -eq ){
+
+}'}
+
+"if elseif else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
+
+}
+elseif ( -eq ){
+
+}
+else{
+
+}'}
+
+"else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'else{
+
+}'}
+
+"elseif"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+
+}'}
+
+"elseif else"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
+
+}
+else{
+
+}'}
+
+"Click"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Click({
+
+})'}
+
+"Closing"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closing({
+
+})'}
+
+"Closed"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closed({
+
+})'}
+
+"DragEnter"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_DragEnter({
+<#.AllowDrop = $true
+.add_DragEnter({
+if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
+            foreach ($z in $_.Data.GetData([Windows.Forms.DataFormats]::FileDrop))  {
+                info $z
+            }
+            }
+})#>
+})'
+}
+
+"Tick"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Tick({
+#$timer = timer 1
+
+})'}
+
+"Resize"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Resize({
+
+})'}
+
+"MouseDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseDown({
+
+})'}
+
+"MouseMove"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseMove({
+
+})'}
+
+"MouseUp"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseUp({
+
+})'}
+
+"KeyUp"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyUp({
+#info ($_.KeyCode | out-string)
+})'}
+
+"KeyDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyDown({
+#info ($_.KeyCode | out-string)
+})'}
+
+"KeyPress"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyPress({
+#info ($_.KeyChar | out-string)
+})'}
+
+"dialog add"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "dialog add"}
+
+"clipboard set"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard set "}
+
+"clipboard append"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard append "}
+
+"clipboard clear"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "clipboard clear"}
+
+"console read"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "$(console read)"}
+
+"console write"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "console write "}
+
+"database open"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'database open ""'}
+
+"database close"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'database close'}
+
+"database execute"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$data = $(database execute "")'}
+
+"dialog add Button"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Button = dialog add $Form Button $top $left $width $height'}
+
+"dialog add CheckBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$CheckBox = dialog add $Form CheckBox $top $left $width $height'}
+
+"dialog add CheckedListBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$CheckedListBox = dialog add $Form CheckedListBox $top $left $width $height'}
+
+"dialog add ComboBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ComboBox = dialog add $Form ComboBox $top $left $width $height'}
+
+"dialog add DataGrid"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DataGrid = dialog add $Form DataGrid $top $left $width $height'}
+
+"dialog add DataGridView"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DataGridView = dialog add $Form DataGridView $top $left $width $height'}
+
+"dialog add DateTimePicker"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$DateTimePicker = dialog add $Form DateTimePicker $top $left $width $height'}
+
+"dialog add GroupBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$GroupBox = dialog add $Form GroupBox $top $left $width $height'}
+
+"dialog add HScrollBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$HScrollBar = dialog add $Form HScrollBar $top $left $width $height'}
+
+"dialog add Label"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Label = dialog add $Form Label $top $left $width $height'}
+
+"dialog add LinkLabel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$LinkLabel = dialog add $Form LinkLabel $top $left $width $height'}
+
+"dialog add ListBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ListBox = dialog add $Form ListBox $top $left $width $height'}
+
+"dialog add MaskedTextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MaskedTextBox = dialog add $Form MaskedTextBox $top $left $width $height'}
+
+"dialog add MenuStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MenuStrip = dialog add $Form MenuStrip "MenuStrip" ("Item1|CTRL+I|$(curdir)\Image1.png,-,Item2||$(curdir)\Image2.png,Item3|Ctrl+3,Item4")'}
+
+"dialog add MonthCalendar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$MonthCalendar = dialog add $Form MonthCalendar $top $left $width $height'}
+
+"dialog add NumericUpDown"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$NumericUpDown = dialog add $Form NumericUpDown $top $left $width $height'}
+
+"dialog add Panel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$Panel = dialog add $Form Panel $top $left $width $height
+dialog property $Panel dock "Top"
+dialog property $Panel border "Fixed3D"'}
+
+"dialog add PictureBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$PictureBox = dialog add $Form PictureBox $top $left $width $height'}
+
+"dialog add ProgressBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ProgressBar = dialog add $Form ProgressBar $top $left $width $height'}
+
+"dialog add RadioButton"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$RadioButton = dialog add $Form RadioButton $top $left $width $height'}
+
+"dialog add RichTextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$RichTextBox = dialog add $Form RichTextBox $top $left $width $height'}
+
+"dialog add StatusStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$StatusStrip = dialog add $Form StatusStrip'}
+
+"dialog add TextBox"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox = dialog add $Form TextBox $top $left $width $height'}
+
+"dialog add ToolStrip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$ToolStrip = dialog add $Form ToolStrip ("Item1|$(curdir)"\Image1.png,-,Item2|$(curdir)\Image2.png")
+dialog property $ToolStrip.Items["Item2"] tooltiptext "The second one is better."'}
+
+"dialog add TrackBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TrackBar = dialog add $Form TextBox $top $left $width $height'}
+
+"dialog add TreeView"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$TreeView = dialog add $Form TreeView $top $left $width $height'}
+
+"dialog add VScrollBar"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$VScrollBar = dialog add $Form VScrollBar $top $left $width $height'}
+
+"dialog add WebBrowser"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$WebBrowser = dialog add $Form WebBrowser $top $left $width $height'}
+
+"dialog BackGroundImage"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog BackGroundImage $Form $(curdir)\BackGroundImage.png # https://domain.com/BackGroundImage.png'}
+
+"dialog clear"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog clear $TextBox'}
+
+"dialog clearsel"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog clearsel $TextBox'}
+
+"dialog close"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog close $Form'}
+
+"dialog create"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog create'}
+
+"dialog cursor"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor'}
+
+"Arrow"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Arrow'}
+
+"Cross"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Cross'}
+
+"Default"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Default'}
+
+"Hand"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Hand'}
+
+"Help"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form Help'}
+
+"HSplit"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form HSplit'}
+
+"IBeam"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form IBeam'}
+
+"No"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form No'}
+
+"NoMove2D"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMove2D'}
+
+"NoMoveHoriz"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMoveHoriz'}
+
+"NoMoveVert"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form NoMoveVert'}
+
+"PanEast"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanEast'}
+
+"PanNE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNE'}
+
+"PanNorth"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNorth'}
+
+"PanNW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanNW'}
+
+"PanSE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSE'}
+
+"PanSouth"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSouth'}
+
+"PanSW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanSW'}
+
+"PanWest"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form PanWest'}
+
+"SizeAll"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeAll'}
+
+"SizeNESW"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNESW'}
+
+"SizeNS"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNS'}
+
+"SizeNWSE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeNWSE'}
+
+"SizeWE"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form SizeWE'}
+
+"UpArrow"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form UpArrow'}
+
+"VSplit"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form VSplit'}
+
+"WaitCursor"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog cursor $Form WaitCursor'}
+
+"dialog disable"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog disable $Control'}
+
+"dialog enable"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog enable $Control'}
+
+"dialog focus"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog focus $Control'}
+
+"dialog hide"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog hide $Control'}
+
+"dialog name"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog name $Control'}
+
+"dialog popup"
+{$FastTab.SelectedTab.Controls[0].SelectedText = '$PopUp = dialog popup $Form ("Item1|$(curdir)"\Image1.png,-,Item2|$(curdir)\Image2.png")'}
+
+"dialog property"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog property $control $property $value'}
+
+"dialog remove"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog remove $control'}
+
+"dialog run"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog run $Form'}
+
+"dialog set"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog set $control $text'}
+
+"dialog settip"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog settip $control $tip'}
+
+"dialog show"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog show $Form'}
+
+"dialog showmodal"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog showmodal $Form'}
+
+"dialog title"
+{$FastTab.SelectedTab.Controls[0].SelectedText = 'dialog title $Form $title'}
+
+"AliceBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name AliceBlue)'}
+"AntiqueWhite"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name AntiqueWhite)'}
+"Aqua"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Aqua)'}
+"Aquamarine"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Aquamarine)'}
+"Azure"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Azure)'}
+"Beige"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Beige)'}
+"Bisque"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Bisque)'}
+"Black"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Black)'}
+"BlanchedAlmond"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name BlanchedAlmond)'}
+"Blue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Blue)'}
+"BlueViolet"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name BlueViolet)'}
+"Brown"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Brown)'}
+"BurlyWood"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name BurlyWood)'}
+"CadetBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name CadetBlue)'}
+"Chartreuse"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Chartreuse)'}
+"Chocolate"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Chocolate)'}
+"Coral"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Coral)'}
+"CornflowerBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name CornflowerBlue)'}
+"Cornsilk"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Cornsilk)'}
+"Crimson"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Crimson)'}
+"Cyan"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Cyan)'}
+"DarkBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkBlue)'}
+"DarkCyan"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkCyan)'}
+"DarkGoldenrod"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkGoldenrod)'}
+"DarkGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkGray)'}
+"DarkGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkGreen)'}
+"DarkKhaki"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkKhaki)'}
+"DarkMagenta"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkMagenta)'}
+"DarkOliveGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkOliveGreen)'}
+"DarkOrange"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkOrange)'}
+"DarkOrchid"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkOrchid)'}
+"DarkRed"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkRed)'}
+"DarkSalmon"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkSalmon)'}
+"DarkSeaGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkSeaGreen)'}
+"DarkSlateBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkSlateBlue)'}
+"DarkSlateGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkSlateGray)'}
+"DarkTurquoise"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkTurquoise)'}
+"DarkViolet"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DarkViolet)'}
+"DeepPink"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DeepPink)'}
+"DeepSkyBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DeepSkyBlue)'}
+"DimGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DimGray)'}
+"DodgerBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name DodgerBlue)'}
+"Firebrick"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Firebrick)'}
+"FloralWhite"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name FloralWhite)'}
+"ForestGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name ForestGreen)'}
+"Fuchsia"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Fuchsia)'}
+"Gainsboro"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Gainsboro)'}
+"GhostWhite"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name GhostWhite)'}
+"Gold"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Gold)'}
+"Goldenrod"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Goldenrod)'}
+"Gray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Gray)'}
+"Green"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Green)'}
+"GreenYellow"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name GreenYellow)'}
+"Honeydew"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Honeydew)'}
+"HotPink"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name HotPink)'}
+"IndianRed"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name IndianRed)'}
+"Indigo"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Indigo)'}
+"IsEmpty"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name IsEmpty)'}
+"IsKnownColor"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name IsKnownColor)'}
+"IsNamedColor"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name IsNamedColor)'}
+"IsSystemColor"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name IsSystemColor)'}
+"Ivory"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Ivory)'}
+"Khaki"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Khaki)'}
+"Lavender"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Lavender)'}
+"LavenderBlush"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LavenderBlush)'}
+"LawnGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LawnGreen)'}
+"LemonChiffon"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LemonChiffon)'}
+"LightBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightBlue)'}
+"LightCoral"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightCoral)'}
+"LightCyan"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightCyan)'}
+"LightGoldenrodYellow"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightGoldenrodYellow)'}
+"LightGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightGray)'}
+"LightGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightGreen)'}
+"LightPink"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightPink)'}
+"LightSalmon"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightSalmon)'}
+"LightSeaGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightSeaGreen)'}
+"LightSkyBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightSkyBlue)'}
+"LightSlateGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightSlateGray)'}
+"LightSteelBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightSteelBlue)'}
+"LightYellow"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LightYellow)'}
+"Lime"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Lime)'}
+"LimeGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name LimeGreen)'}
+"Linen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Linen)'}
+"Magenta"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Magenta)'}
+"Maroon"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Maroon)'}
+"MediumAquamarine"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumAquamarine)'}
+"MediumBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumBlue)'}
+"MediumOrchid"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumOrchid)'}
+"MediumPurple"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumPurple)'}
+"MediumSeaGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumSeaGreen)'}
+"MediumSlateBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumSlateBlue)'}
+"MediumSpringGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumSpringGreen)'}
+"MediumTurquoise"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumTurquoise)'}
+"MediumVioletRed"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MediumVioletRed)'}
+"MidnightBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MidnightBlue)'}
+"MintCream"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MintCream)'}
+"MistyRose"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name MistyRose)'}
+"Moccasin"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Moccasin)'}
+"NavajoWhite"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name NavajoWhite)'}
+"Navy"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Navy)'}
+"OldLace"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name OldLace)'}
+"Olive"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Olive)'}
+"OliveDrab"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name OliveDrab)'}
+"Orange"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Orange)'}
+"OrangeRed"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name OrangeRed)'}
+"Orchid"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Orchid)'}
+"PaleGoldenrod"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PaleGoldenrod)'}
+"PaleGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PaleGreen)'}
+"PaleTurquoise"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PaleTurquoise)'}
+"PaleVioletRed"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PaleVioletRed)'}
+"PapayaWhip"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PapayaWhip)'}
+"PeachPuff"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PeachPuff)'}
+"Peru"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Peru)'}
+"Pink"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Pink)'}
+"Plum"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Plum)'}
+"PowderBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name PowderBlue)'}
+"Purple"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Purple)'}
+"Red"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Red)'}
+"RosyBrown"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name RosyBrown)'}
+"RoyalBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name RoyalBlue)'}
+"SaddleBrown"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SaddleBrown)'}
+"Salmon"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Salmon)'}
+"SandyBrown"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SandyBrown)'}
+"SeaGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SeaGreen)'}
+"SeaShell"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SeaShell)'}
+"Sienna"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Sienna)'}
+"Silver"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Silver)'}
+"SkyBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SkyBlue)'}
+"SlateBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SlateBlue)'}
+"SlateGray"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SlateGray)'}
+"Snow"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Snow)'}
+"SpringGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SpringGreen)'}
+"SteelBlue"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name SteelBlue)'}
+"Tan"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Tan)'}
+"Teal"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Teal)'}
+"Thistle"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Thistle)'}
+"Tomato"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Tomato)'}
+"Transparent"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Transparent)'}
+"Turquoise"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Turquoise)'}
+"Violet"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Violet)'}
+"Wheat"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Wheat)'}
+"White"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name White)'}
+"WhiteSmoke"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name WhiteSmoke)'}
+"Yellow"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name Yellow)'}
+"YellowGreen"{$FastTab.SelectedTab.Controls[0].SelectedText = '$(color name YellowGreen)'}
+
+}
+
+}

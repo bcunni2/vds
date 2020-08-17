@@ -785,6 +785,9 @@ function decrypt ($a, $b){
                              $item.Add_Click({
                                      &menuitemclick $this
                              })
+                             $item.Add_MouseUp({
+                                     &menuitemmouseup $this
+                             })								 
                          } 
                          else {
                              $item = new-object System.Windows.Forms.ToolStripSeparator
@@ -849,14 +852,8 @@ function decrypt ($a, $b){
              $b.Close()
          }
 		 create {
-			if ($core){
-				$Form = new-object system.windows.forms.form 
-			}
-			else {
-				$Form = [vdsForm] @{
-				ClientSize = New-Object System.Drawing.Point 0,0
-				}
-			}
+			 $Form = [vdsForm] @{
+			 ClientSize = New-Object System.Drawing.Point 0,0}
              $Form.Text = $b
              $Form.Top = $c
              $Form.Left = $d
@@ -901,6 +898,9 @@ function decrypt ($a, $b){
 							}
                              $item.text = $isplit[0]
                              $item.Add_Click({&menuitemclick $this})
+							 $item.Add_MouseUp({
+                                     &menuitemmouseup $this
+                             })	
                          }
                          else {
                              $item = new-object System.Windows.Forms.ToolStripSeparator
@@ -916,10 +916,9 @@ function decrypt ($a, $b){
              return $b | Get-Member
          } #Remains for backwards compatibility. Please use dlgprops
          property {
-			#	write-host $($c -match "color")
 				
-				if ($($c -match "color")) {
-					if ($d.GetType() -match "string") {
+				if ($d -notmatch "color"){
+					if ($($c -match "color")) {
 						$s = $d.split(",")
 						if ($s[1]){
 							$d = $(color rgb $s[0] $s[1] $s[2])
@@ -930,10 +929,10 @@ function decrypt ($a, $b){
 					}
 				}
 				
-				if ($c.toLower() -eq 'font') {
-					if ($d.GetType() -match "string") {
-						$s = $d.split(",")
-						$d = $(font $s[0] ($s[1]/1))
+				if ($d -notmatch "font"){
+					if ($c.toLower() -eq 'font') {
+							$s = $d.split(",")
+							$d = $(font $s[0] ($s[1]/1))
 					}
 				}
 				
@@ -4747,14 +4746,6 @@ function winactive($a) {
 }  
 
 function winatpoint($a,$b) {
-
-<#
-if ($core) {
-	[vds]::LeftClickAtPoint($a,$b,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.width,[System.Windows.Forms.Screen]::PrimaryScreen.bounds.height)
-	return $(winactive)
-}
-else{
-#>
     $p = new-object system.drawing.point($a,$b)
     $return = [vds]::WindowFromPoint($p)
     return $return;

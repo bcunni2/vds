@@ -15,7 +15,7 @@ console "DialogShell $(sysinfo dsver)"
 console "Open Source - vds/pwsh community."
 $host.ui.RawUI.WindowTitle = "DialogShell $(sysinfo dsver)"
 #>
-$timerz = timer 1000
+
 
 if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     directory create ("c:\users\$env:username\documents\DialogShell")
@@ -36,20 +36,13 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     }
 }
 
-
-
-
 $global:popuprtf = $true
-
-$global:tickz = $false
 
 $global:designribbon = $false
 
     $global:var
 
 $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
-$popmenupath = "C:\Users\$env:username\Documents\DialogShell\context\popups.ds1"
-$lexiconpath = "C:\Users\$env:username\Documents\DialogShell\context\lexicon.ds1"
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
 $plugins = "C:\Users\$env:username\Documents\DialogShell\plugins"
 $docpath = "C:\Users\$env:username\Documents\DialogShell"
@@ -130,8 +123,7 @@ $file               = dialog add $FastTextForm menustrip "$localefile" ("$locale
 $edit               = dialog add $FastTextForm menustrip "$localeedit" ("$localeundo|Ctrl+Z|$(curdir)\..\res\arrow_undo.png,-,$localecut|Ctrl+X|$(curdir)\..\res\cut.png,$localecopy|Ctrl+C|$(curdir)\..\res\page_copy.png,$localepaste|Ctrl+V|$(curdir)\..\res\paste_plain.png,-,$localefind|Ctrl+F|$(curdir)\..\res\page_find.png,$localereplace|Ctrl+H,&Go To...|Ctrl+G,$localeselectall|Ctrl+A,$localetimedate|F5")
 $view               = dialog add $FastTextForm menustrip "$localeview" "$localestatusbar,-,50%|Ctrl+5,100%|Ctrl+0,200%|Ctrl+2" 
 $build              = dialog add $FastTextForm menustrip "$localebuild" ("$localedialogshell|F3|$(curdir)\..\res\terminal.ico,$localedesigner|F2|$(curdir)\..\res\icon.ico,$localedebug|F8|$(curdir)\..\res\bug_go.png,$localecompile|F9|$(curdir)\..\res\compile.ico")
-$examples           = dialog add $FastTextForm menustrip "$localeexamples" # ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
-$testmenu           = dialog add $FastTextForm menustrip "&Wizards"
+#$examples           = dialog add $FastTextForm menustrip "$localeexamples" # ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
 $help               = dialog add $FastTextForm menustrip "$localehelp" ("$localehelp|F1|$(curdir)\..\res\help.png,$localeabout")               
 $FastTab            = dialog add $FastTextForm TabControl 50 0 480 360
 dialog image $closetab ((curdir)+'\..\res\tab_delete.png')
@@ -166,14 +158,6 @@ function hotkeyEvent ($a) {
 	}
 }
 
-$testmenu.add_Click({
-    $curdir = $(curdir)
-    $fileOpenvds = (filedlg "DialogShell Script|*.ds1" "$wizardpath")
-    if ($fileOpenvds) {
-        iex (get-content $fileOpenvds | out-string)
-        }
-})
-
 $FastTab.Add_Click({
 		$mAssignList.items.clear()
 		$content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
@@ -183,45 +167,6 @@ $FastTab.Add_Click({
 		$mFormList.items.AddRange($content)
 })
 
-$examples.add_Click({
-    $curdir = $(curdir)
-    $fileOpen = (filedlg "$localedialog" "$docpath")
-    if ($fileOpen) {
-                if (equal (ext $fileOpen) "dsproj"){
-				$content = (get-content $fileOpen | select-object -skip 1)
-				$mAssignList.items.AddRange($content)
-                    $fileOpen = (get-content $fileOpen | Out-String).split((cr))[0]
-                }
-                $FastTab.TabPages.Add("$fileOpen")
-                $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-                $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-                dialog property $FastText language "DialogShell"
-                dialog property $FastText dock "Fill"
-                $FastTab.SelectedTab.Controls.Add($FastText)    
-                $FastText.OpenFile($fileOpen)
-                $script:curdoc = (string $fileOpen)
-            }
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-                                        $FastText.add_SelectionChangedDelayed({
-                $timerz.enabled = $false
-                $timerz.enabled = $true
-                $t = $FastTab.SelectedTab.Controls[0].Selection
-                $lex = $t.text.toLower()
-           
-                if ($(file $lexiconpath))
-                {
-                    iex (get-content $lexiconpath | out-string)
-                }
-                
-                $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
-
-                
-                
-            })
-})
-
-                
 $FastTextForm.add_Closing({
     while ($FastTab.TabPages.Count -gt 0) {
         if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
@@ -507,25 +452,6 @@ $mForm.Show()
             dialog property $FastText language "DialogShell"
             dialog property $FastText dock "Fill"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
-
-  
-            $FastText.add_SelectionChangedDelayed({
-                $timerz.enabled = $false
-                $timerz.enabled = $true
-                $t = $FastTab.SelectedTab.Controls[0].Selection
-                $lex = $t.text.toLower()
-           
-                if ($(file $lexiconpath))
-                {
-                    iex (get-content $lexiconpath | out-string)
-                    
-                }
-                
-          $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
-
-                
-                
-            })
             $FastTab.SelectedTab.Controls.Add($FastText)
             $init.enabled = $true
         }
@@ -656,21 +582,6 @@ $mForm.Show()
             }
             $FastTab.SelectedTab.Controls[0].IsChanged = $false
             $init.enabled = $true
-            
-                            $FastText.add_SelectionChangedDelayed({
-                $timerz.enabled = $false
-                $timerz.enabled = $true
-                $t = $FastTab.SelectedTab.Controls[0].Selection
-                $lex = $t.text.toLower()
-           
-                if ($(file $lexiconpath))
-                {
-                    iex (get-content $lexiconpath | out-string)
-                }
-                
-                $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")   
-                
-            })
         }
         
         "$localesave" {
