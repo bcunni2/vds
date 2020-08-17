@@ -1,5 +1,5 @@
 directory change "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\compile"
-$MyForm = dialog create "Project Compile" 0 0 389 345
+$MyForm = dialog create "Project Compile" 0 0 389 395
 $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\res\compile.ico"
     $TextBox1 = dialog add $MyForm TextBox 25 20 250 20 
     dialog settip $textbox1 "Inputfile" 
@@ -99,12 +99,18 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
         $CheckBox5 = dialog add $MyForm CheckBox 175 250 100 20 "No Console" 
                 dialog property $CheckBox5 Appearance "Normal" 
                 dialog property $CheckBox5 Threestate ""  
-        $CheckBox6 = dialog add $MyForm CheckBox 200 16 335 20 "Require Admin"
-                $Button4 = dialog add $MyForm Button 225 16 335 20 "Load .pil"
-                $Button5 = dialog add $MyForm Button 250 16 335 20 "Save .pil"      
-                $Button6 = dialog add $MyForm Button 275 16 335 20 "Compile" 
+                $CheckBox6 = dialog add $MyForm CheckBox 200 16 335 20 "Require Admin"
+                $CheckBox7 = dialog add $MyForm CheckBox 225 16 335 20 ".Net Core / Pwsh 7"
+                $TextBox11 = dialog add $MyForm TextBox 250 16 335 20
+                dialog settip $TextBox11 "Altnernative Pwsh Path (or just pwsh)"
+                dialog disable $TextBox11
+                $Button4 = dialog add $MyForm Button 275 16 335 20 "Load .pil"
+                $Button5 = dialog add $MyForm Button 300 16 335 20 "Save .pil"      
+                $Button6 = dialog add $MyForm Button 325 16 335 20 "Compile" 
         dialog property $CheckBox6 appearance "Button"
         dialog property $CheckBox6 textalign "MiddleCenter"
+        dialog property $CheckBox7 appearance "Button"
+        dialog property $CheckBox7 textalign "MiddleCenter"
         if ($args[0])
         {
                 inifile open $args[0]
@@ -118,16 +124,26 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
         $textbox8.text = $(iniread compile copyright)
         $textbox9.text = $(iniread compile trademark)
         $textbox10.text = $(iniread compile version)
+        $textbox11.text = $(iniread compile core)
         if ($(iniread compile x86) -eq 'False'){$checkbox1.checked = $false}else{if ($(iniread compile x86) -eq 'True'){$checkbox1.checked = $true}}
         if ($(iniread compile x64) -eq 'False'){$checkbox2.checked = $false}else{if ($(iniread compile x64) -eq 'True'){$checkbox2.checked = $true}}
         if ($(iniread compile sta) -eq 'False'){$checkbox3.checked = $false}else{if ($(iniread compile sta) -eq 'True'){$checkbox3.checked = $true}}
         if ($(iniread compile mta) -eq 'False'){$checkbox4.checked = $false}else{if ($(iniread compile mta) -eq 'True'){$checkbox4.checked = $true}}
         if ($(iniread compile noconsole) -eq 'False'){$checkbox5.checked = $false}else{if ($(iniread compile noconsole) -eq 'True'){$checkbox5.checked = $true}}
         if ($(iniread compile requireadmin) -eq 'False'){$checkbox6.checked = $false}else{if ($(iniread compile requireadmin) -eq 'True'){$checkbox6.checked = $true}}
+        if ($(iniread compile pwsh7) -eq 'False'){$checkbox7.checked = $false}else{if ($(iniread compile pwsh7) -eq 'True'){$checkbox7.checked = $true}}
 }
 
 if ($args[1])
 {directory change $args[1]}
+
+$CheckBox7.Add_Click({
+    if ($CheckBox7.checked -eq $true)
+    {dialog enable $TextBox11}
+    else{
+        dialog clear $TextBox11
+    dialog disable $TextBox11}
+})
         
         $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1|PowerShell|*.ps1')
         dialog set $textbox1 $in
@@ -152,12 +168,14 @@ if ($args[1])
         $textbox8.text = $(iniread compile copyright)
         $textbox9.text = $(iniread compile trademark)
         $textbox10.text = $(iniread compile version)
+        $textbox11.text = $(iniread compile core)
         if ($(iniread compile x86) -eq 'False'){$checkbox1.checked = $false}else{if ($(iniread compile x86) -eq 'True'){$checkbox1.checked = $true}}
         if ($(iniread compile x64) -eq 'False'){$checkbox2.checked = $false}else{if ($(iniread compile x64) -eq 'True'){$checkbox2.checked = $true}}
         if ($(iniread compile sta) -eq 'False'){$checkbox3.checked = $false}else{if ($(iniread compile sta) -eq 'True'){$checkbox3.checked = $true}}
         if ($(iniread compile mta) -eq 'False'){$checkbox4.checked = $false}else{if ($(iniread compile mta) -eq 'True'){$checkbox4.checked = $true}}
         if ($(iniread compile noconsole) -eq 'False'){$checkbox5.checked = $false}else{if ($(iniread compile noconsole) -eq 'True'){$checkbox5.checked = $true}}
         if ($(iniread compile requireadmin) -eq 'False'){$checkbox6.checked = $false}else{if ($(iniread compile requireadmin) -eq 'True'){$checkbox6.checked = $true}}
+        if ($(iniread compile pwsh7) -eq 'False'){$checkbox7.checked = $false}else{if ($(iniread compile pwsh7) -eq 'True'){$checkbox7.checked = $true}}
         })
         
         $Button5.add_Click({
@@ -173,12 +191,14 @@ if ($args[1])
         inifile write compile copyright $textbox8.text
         inifile write compile trademark $textbox9.text
         inifile write compile version $textbox10.text
+        inifile write compile core $textbox11.text
         inifile write compile x86 $checkbox1.checked
         inifile write compile x64 $checkbox2.checked
         inifile write compile sta $checkbox3.checked
         inifile write compile mta $checkbox4.checked
         inifile write compile noconsole $checkbox5.checked
         inifile write compile requireadmin $checkbox6.checked
+        inifile write compile pwsh7 $checkbox7.checked
         })
         
         
@@ -202,6 +222,8 @@ if ($args[1])
         {$runbuild = "$runbuild -trademark '$(string $textbox9.text)'"}
         if ($textbox10.text)
         {$runbuild = "$runbuild -version '$(string $textbox10.text)'"}
+        if ($textbox11.text)
+        {$runbuild = "$runbuild -7 '$(string $textbox10.text)'"}
         if ($checkbox1.checked -eq $true)
         {$runbuild = "$runbuild -x86"}
         if ($checkbox2.checked -eq $true)
@@ -214,6 +236,8 @@ if ($args[1])
         {$runbuild = "$runbuild -noconsole"}
         if ($checkbox6.checked -eq $true)
         {$runbuild = "$runbuild -requireadmin"}
+        if ($checkbox7.checked -eq $true)
+        {$runbuild = "$runbuild -core"}
         run " & $runbuild"
         })
         
