@@ -285,16 +285,164 @@ $statusupdate = timer 200
 $statusupdate.enabled = $true
 $statusupdate.add_Tick({
     if ($FastTab.TabPages.Count -gt 0) {
+			$FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $true
+			$FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $true
+			$FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $true
+		#disable 50%
+		#disable 100%
+		#disable 200%
+		#disable macro buttons
+		$toolstrip1.items[14].enabled = $true
+		$toolstrip1.items[15].enabled = $true
+		
+		#paste
+			$FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $true
+			$toolstrip1.items[10].enabled = $true
+			
+			#time/date
+			$FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $true
+			
+			if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
+		$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $true
+		$toolstrip1.items[4].enabled = $true
+			}
+			else{
+					$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
+		$toolstrip1.items[4].enabled = $false}
+		
+		if ($FastTab.SelectedTab.Controls[0].UndoEnabled)
+		{
+			$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $true
+			$toolstrip1.items[6].enabled = $true
+		}
+		else
+		{$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
+		$toolstrip1.items[6].enabled = $false
+		$FastTab.SelectedTab.Controls[0].IsChanged = $false
+		}
+	
         if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
             $StatusStrip1.items[0].Text = "$localemodified     "+"$localezoom "+$FastTab.SelectedTab.Controls[0].zoom+"%"
+			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+			$toolstrip1.items[19].enabled = $false
+			$toolstrip1.items[20].enabled = $false
+			#disable debug
+			#disable compile
         }
         else {
             $StatusStrip1.items[0].Text = $localezoom+": "+$FastTab.SelectedTab.Controls[0].zoom+"%"
+			$toolstrip1.items[2].enabled = $false
+			$toolstrip1.items[2].enabled = $true
+			$FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $true
+			#disable save button
+			$FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
+			#disable save menu
+			if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
+			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $true
+			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $true
+			$toolstrip1.items[19].enabled = $true
+			$toolstrip1.items[20].enabled = $true
+			}
         }
+		
+		if ($FastTab.SelectedTab.Controls[0].selectionlength -eq 0) {
+			#disable copy
+			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
+			$toolstrip1.items[8].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
+			$toolstrip1.items[9].enabled = $false
+			#disable cut
+		}
+		else {
+			#enable copy
+			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $true
+			$toolstrip1.items[8].enabled = $true
+			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $true
+			$toolstrip1.items[9].enabled = $true
+			#enable cut
+		}
+		if ($FastTab.SelectedTab.Controls[0].TextLength -eq 0)
+		{
+			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
+			$toolstrip1.items[12].enabled = $false	
+		#disable find
+		#disable replace
+		#disable go to
+		#disable select all
+			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+			$toolstrip1.items[19].enabled = $false
+			$toolstrip1.items[20].enabled = $false		
+		#disable debug
+		#disable compile
+		}
+		else{
+			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $true
+			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $true
+			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $true
+			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $true
+			$toolstrip1.items[12].enabled = $true	
+		}
+		
     }
     else {
         $StatusStrip1.items[0].Text = ""
-    }
+				#disable save button
+		$toolstrip1.items[2].enabled = $false
+		$FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
+		#disable save as button
+		$FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $false
+		#disable print button
+		$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
+		$toolstrip1.items[4].enabled = $false
+		#disable undo
+		$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
+		$toolstrip1.items[6].enabled = $false
+		#disable cut
+		#disable copy
+			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
+			$toolstrip1.items[8].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
+			$toolstrip1.items[9].enabled = $false
+		#disable paste
+			$FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $false
+			$toolstrip1.items[10].enabled = $false
+		#disable find
+		#disable replace
+		#disable go to
+		#disable select all
+		#disable time/date
+			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
+			$FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $false
+			$toolstrip1.items[12].enabled = $false	
+
+		#Create issue to have Dialog Designer create a new document if count is 0 [New]
+		
+			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+			$toolstrip1.items[19].enabled = $false
+			$toolstrip1.items[20].enabled = $false
+		#disable debug
+		#disable compile
+		
+			$FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $false
+			$FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $false
+			$FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $false
+		#disable 50%
+		#disable 100%
+		#disable 200%
+		#disable macro buttons
+		$toolstrip1.items[14].enabled = $false	
+		$toolstrip1.items[15].enabled = $false	
+		
+    }	
 })
             
 $FastTextForm.add_Resize({
@@ -338,6 +486,18 @@ function global:menuitemclick ($menu) {
             run 'start https://dialogshell.com/vds/help/index.php/Special:AllPages'
         }
         "$localedesigner" {
+
+		if ($FastTab.TabPages.Count -eq 0) {
+            $FastTab.TabPages.Add("[$localenewtt]")
+            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+            dialog property $FastText language "DialogShell"
+            dialog property $FastText dock "Fill"
+          #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
+            $FastTab.SelectedTab.Controls.Add($FastText)
+            $init.enabled = $true
+}
+		
       <#   run (get-content "'$(curdir)\..\DialogShell Designer.ds1'") | out-string
           $inv = "'$(curdir)\..\DialogShell Designer.exe'"
         run "&" $inv" #>
@@ -355,6 +515,7 @@ $mForm.Show()
 [vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
 [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
 [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
+
 }
         }
         "$localecompile" {
