@@ -27,6 +27,9 @@ Leave a comment under any task you'd like to be assigned to in the format [n][n]
 
 I believe in simplicity. If you want to update the project, but don't want to geek out, zip your solution and attach it to the issue comments. I'll review and commit it for you when time permits. You can bug me about it to get it done faster, I don't mind.
 
+# Release Schedule
+Final testing begins 8/24/2020. (We may or may not change the versioning to 0.9.x.x, this is being discussed). Release 1.0 is January 8th, 2021
+
 # Getting Started
 Compile order: 
 make.bat (recently simplified)
