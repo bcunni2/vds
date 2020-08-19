@@ -1,4 +1,4 @@
-$lexiconpath = "C:\Users\$env:username\Documents\DialogShell\plugins\lexicon.ds1"
+$lexiconpath = "C:\Users\$env:username\Documents\DialogShell\plugins\01 lexicon.ds1"
 if ($global:lexinit -eq $null) {
 $timerz = timer 1000
 $global:tickz = $false
