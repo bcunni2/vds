@@ -1,4 +1,11 @@
-$examples           = dialog add $FastTextForm menustrip "$localeexamples" # ("Template,Admin Calculator,Clock,Database,RichEdit,Setup,Visual DialogShell IDE,Compile GUI,DialogShell Designer")
+$sep = new-object System.Windows.Forms.ToolStripSeparator
+$build.DropDownItems.Add($sep) | Out-Null 
+
+$examples = new-object System.Windows.Forms.ToolStripMenuItem
+$examples.name = "$localeexamples"
+$examples.Text = "$localeexamples"
+$build.DropDownItems.Add($examples) | Out-Null
+
 
 $examples.add_Click({
     $curdir = $(curdir)

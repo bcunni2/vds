@@ -1,9 +1,0 @@
-$testmenu           = dialog add $FastTextForm menustrip "&Wizards"
-
-$testmenu.add_Click({
-    $curdir = $(curdir)
-    $fileOpenvds = (filedlg "DialogShell Script|*.ds1" "$wizardpath")
-    if ($fileOpenvds) {
-        iex (get-content $fileOpenvds | out-string)
-        }
-})

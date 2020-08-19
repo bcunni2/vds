@@ -1,0 +1,15 @@
+$sep = new-object System.Windows.Forms.ToolStripSeparator
+$build.DropDownItems.Add($sep) | Out-Null 
+
+$testmenu = new-object System.Windows.Forms.ToolStripMenuItem
+$testmenu.name = "Wizards"
+$testmenu.Text = "Wizards"
+$build.DropDownItems.Add($testmenu) | Out-Null
+
+$testmenu.add_Click({
+    $curdir = $(curdir)
+    $fileOpenvds = (filedlg "DialogShell Script|*.ds1" "$wizardpath")
+    if ($fileOpenvds) {
+        iex (get-content $fileOpenvds | out-string)
+        }
+})
