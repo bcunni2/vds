@@ -86,12 +86,12 @@ function dark {
     if ($FastTab.TabPages.Count -gt 0) {
 $global:themenotify = $true
 info "When switching themes you may need to reopen files for transform to complete. If you are unhappy with the coloration, try the theme again."}}
-$global:rd = $(random 0 127)
-$global:gd = $(random 0 127)
-$global:bd = $(random 0 127)
-$global:rl = $(random 128 255)
-$global:gl = $(random 128 255)
-$global:bl = $(random 128 255)
+$global:rd = $(random 0 95)
+$global:gd = $(random 0 95)
+$global:bd = $(random 0 95)
+$global:rl = $(random 160 255)
+$global:gl = $(random 160 255)
+$global:bl = $(random 160 255)
 $global:dark = $(color rgb $global:rd $global:gd $global:bd)
 $global:light = $(color rgb $global:rl $global:gl $global:bl)
 inifile open .\themes.theme
@@ -134,12 +134,12 @@ $page.Controls[0].Language = "DialogShellDark"
     if ($FastTab.TabPages.Count -gt 0) {
 $global:themenotify = $true
 info "When switching themes you may need to reopen files for transform to complete. If you are unhappy with the coloration, try the theme again."}}
-$global:rd = $(random 0 127)
-$global:gd = $(random 0 127)
-$global:bd = $(random 0 127)
-$global:rl = $(random 128 255)
-$global:gl = $(random 128 255)
-$global:bl = $(random 128 255)
+$global:rd = $(random 0 95)
+$global:gd = $(random 0 95)
+$global:bd = $(random 0 95)
+$global:rl = $(random 160 255)
+$global:gl = $(random 160 255)
+$global:bl = $(random 160 255)
 $global:dark = $(color rgb $global:rd $global:gd $global:bd)
 $global:light = $(color rgb $global:rl $global:gl $global:bl)
 			inifile open .\themes.theme
