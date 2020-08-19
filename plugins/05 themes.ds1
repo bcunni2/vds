@@ -5,13 +5,29 @@ $dark.Text = "Go Dark"
 $light = new-object System.Windows.Forms.ToolStripMenuItem
 $light.name = "Light"
 $light.Text = "Go Light"
-$norm = new-object System.Windows.Forms.ToolStripMenuItem
-$norm.name = "Normal"
-$norm.Text = "Normal on Next Start"
+
 $sep = new-object System.Windows.Forms.ToolStripSeparator
 $view.DropDownItems.Add($sep) | Out-Null  
 $view.DropDownItems.Add($dark) | Out-Null  
 $view.DropDownItems.Add($light) | Out-Null  
+$sep = new-object System.Windows.Forms.ToolStripSeparator
+$view.DropDownItems.Add($sep) | Out-Null  
+
+$loadtheme = new-object System.Windows.Forms.ToolStripMenuItem
+$loadtheme.name = "Load Theme"
+$loadtheme.Text = "Load Theme"
+$view.DropDownItems.Add($loadtheme) | Out-Null  
+
+$savetheme = new-object System.Windows.Forms.ToolStripMenuItem
+$savetheme.name = "Save Theme"
+$savetheme.Text = "Save Theme"
+$view.DropDownItems.Add($savetheme) | Out-Null  
+
+$sep = new-object System.Windows.Forms.ToolStripSeparator
+$view.DropDownItems.Add($sep) | Out-Null  
+$norm = new-object System.Windows.Forms.ToolStripMenuItem
+$norm.name = "Normal"
+$norm.Text = "Normal on Next Start"
 $view.DropDownItems.Add($norm) | Out-Null  
 
 $dark.Add_Click({
@@ -23,9 +39,45 @@ light})
 $norm.Add_Click({
 normal})
 
+$loadtheme.add_Click({
+$filedlg = $(filedlg "Theme Files|*.theme")
+if ($filedlg) {
+inifile open $filedlg
+loadtheme
+}
+})
+
+$savetheme.add_Click({
+$savedlg = $(savedlg "Theme Files|*.theme")
+if ($savedlg){
+inifile open $savedlg
+if ($global:theme -eq "Dark")
+{
+inifile write theme theme dark
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
+}
+if ($global:theme -eq "Light")
+{
+inifile write theme theme light
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
+}
+
+}
+})
+
 	
 function normal {
-	inifile open .\themes.ini
+	inifile open .\themes.theme
 	inifile write theme theme normal
 }
 
@@ -34,22 +86,22 @@ function dark {
     if ($FastTab.TabPages.Count -gt 0) {
 $global:themenotify = $true
 info "When switching themes you may need to reopen files for transform to complete. If you are unhappy with the coloration, try the theme again."}}
-$rd = $(random 1 55)
-$gd = $(random 1 55)
-$bd = $(random 1 55)
-$rl = $(random 200 255)
-$gl = $(random 200 255)
-$bl = $(random 200 255)
-$global:dark = $(color rgb $rd $gd $bd)
-$global:light = $(color rgb $rl $gl $bl)
-inifile open .\themes.ini
+$global:rd = $(random 0 127)
+$global:gd = $(random 0 127)
+$global:bd = $(random 0 127)
+$global:rl = $(random 128 255)
+$global:gl = $(random 128 255)
+$global:bl = $(random 128 255)
+$global:dark = $(color rgb $global:rd $global:gd $global:bd)
+$global:light = $(color rgb $global:rl $global:gl $global:bl)
+inifile open .\themes.theme
 inifile write theme theme dark
-inifile write theme rd $rd
-inifile write theme gd $gd
-inifile write theme bd $bd
-inifile write theme rl $rl
-inifile write theme gl $gl
-inifile write theme bl $bl
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
 
 foreach ($control in $FastTextForm.Controls) {
 $control.ForeColor = $light
@@ -82,22 +134,22 @@ $page.Controls[0].Language = "DialogShellDark"
     if ($FastTab.TabPages.Count -gt 0) {
 $global:themenotify = $true
 info "When switching themes you may need to reopen files for transform to complete. If you are unhappy with the coloration, try the theme again."}}
-$rd = $(random 1 55)
-$gd = $(random 1 55)
-$bd = $(random 1 55)
-$rl = $(random 200 255)
-$gl = $(random 200 255)
-$bl = $(random 200 255)
-$global:dark = $(color rgb $rd $gd $bd)
-$global:light = $(color rgb $rl $gl $bl)
-			inifile open .\themes.ini
+$global:rd = $(random 0 127)
+$global:gd = $(random 0 127)
+$global:bd = $(random 0 127)
+$global:rl = $(random 128 255)
+$global:gl = $(random 128 255)
+$global:bl = $(random 128 255)
+$global:dark = $(color rgb $global:rd $global:gd $global:bd)
+$global:light = $(color rgb $global:rl $global:gl $global:bl)
+			inifile open .\themes.theme
 inifile write theme theme light
-inifile write theme rd $rd
-inifile write theme gd $gd
-inifile write theme bd $bd
-inifile write theme rl $rl
-inifile write theme gl $gl
-inifile write theme bl $bl
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
 
 
 			foreach ($control in $FastTextForm.Controls)
@@ -153,18 +205,26 @@ $fastcovertime.add_Tick({
 	$FastCover			= dialog add $FastTextForm label 50 0 480 460 ""
 $FastCover.BringToFront()
 
-	inifile open .\themes.ini
+function loadtheme {
 	if (($(iniread theme theme)) -eq "light")
 	{
-	$rd = (($(iniread theme rd))/1)
-	$gd = (($(iniread theme gd))/1)
-	$bd = (($(iniread theme bd))/1)
-	$rl = (($(iniread theme rl))/1)
-	$gl = (($(iniread theme gl))/1)
-	$bl = (($(iniread theme bl))/1)
+	$global:rd = (($(iniread theme rd))/1)
+	$global:gd = (($(iniread theme gd))/1)
+	$global:bd = (($(iniread theme bd))/1)
+	$global:rl = (($(iniread theme rl))/1)
+	$global:gl = (($(iniread theme gl))/1)
+	$global:bl = (($(iniread theme bl))/1)
+inifile open .\themes.theme
+inifile write theme theme light
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
 	
-$global:dark = $(color rgb $rd $gd $bd)
-$global:light = $(color rgb $rl $gl $bl)
+$global:dark = $(color rgb $global:rd $global:gd $global:bd)
+$global:light = $(color rgb $global:rl $global:gl $global:bl)
 
 			foreach ($control in $FastTextForm.Controls)
 			{$control.ForeColor = $dark
@@ -195,15 +255,23 @@ $ditem.BackColor = $light
 	}
 		if (($(iniread theme theme)) -eq "dark")
 			{
-	$rd = (($(iniread theme rd))/1)
-	$gd = (($(iniread theme gd))/1)
-	$bd = (($(iniread theme bd))/1)
-	$rl = (($(iniread theme rl))/1)
-	$gl = (($(iniread theme gl))/1)
-	$bl = (($(iniread theme bl))/1)
+	$global:rd = (($(iniread theme rd))/1)
+	$global:gd = (($(iniread theme gd))/1)
+	$global:bd = (($(iniread theme bd))/1)
+	$global:rl = (($(iniread theme rl))/1)
+	$global:gl = (($(iniread theme gl))/1)
+	$global:bl = (($(iniread theme bl))/1)
+inifile open .\themes.theme
+inifile write theme theme dark
+inifile write theme rd $global:rd
+inifile write theme gd $global:gd
+inifile write theme bd $global:bd
+inifile write theme rl $global:rl
+inifile write theme gl $global:gl
+inifile write theme bl $global:bl
 	
-$global:dark = $(color rgb $rd $gd $bd)
-$global:light = $(color rgb $rl $gl $bl)
+$global:dark = $(color rgb $global:rd $global:gd $global:bd)
+$global:light = $(color rgb $global:rl $global:gl $global:bl)
 	
 
 foreach ($control in $FastTextForm.Controls) {
@@ -229,8 +297,11 @@ $page.Controls[0].BackColor = $dark
 $page.Controls[0].IndentBackColor = $dark
 $page.Controls[0].Language = "DialogShellDark"
 }
-	
+	}
 		}
+
+inifile open .\themes.theme		
+loadtheme
 
 
 
