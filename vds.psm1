@@ -27,6 +27,9 @@ public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
 public class vds {
 [DllImport("user32.dll")]
+public static extern bool InvertRect(IntPtr hDC, [In] ref RECT lprc);
+
+[DllImport("user32.dll")]
 public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
 // Now working in pwsh 7 thanks to advice from seeminglyscience#2404 on Discord
 [DllImport("user32.dll")]
@@ -4981,6 +4984,28 @@ function winpos($a,$b) {
 #>
 }
 
+function invertWindow($a) {
+    $Rect = New-Object RECT
+	$Rect.Top = $(winpos $a T)
+	$Rect.Left = $(winpos $a L)
+	$Rect.Right = (($(winpos $a W)) + ($(winpos $a L)))
+	$Rect.Bottom = (($(winpos $a H)) + ($(winpos $a T)))
+	info "$($Rect.Top) $($Rect.Left) $($Rect.Right) $($Rect.Bottom)" 
+    [vds]::InvertRect($a, [ref]$Rect) | Out-Null
+
+<#
+    .SYNOPSIS
+    Returns a position element of a window by paramater
+    Available parameters: T, L, W, H (Top, Left, Width, Height)
+     
+    .DESCRIPTION
+     VDS
+    $wintop = $(winpos $(winactive) T)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/winpos
+#>
+}
 
 function winsibling($a){
 return [vds]::GetWindow($a, 2)

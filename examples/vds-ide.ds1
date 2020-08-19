@@ -16,6 +16,8 @@ console "Open Source - vds/pwsh community."
 $host.ui.RawUI.WindowTitle = "DialogShell $(sysinfo dsver)"
 #>
 
+$global:language = "DialogShell"
+$global:theme = "none"
 
 if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     directory create ("c:\users\$env:username\documents\DialogShell")
@@ -151,20 +153,20 @@ iex $(get-content "$plugins\$_" | out-string)
 
 hotkey $FastTextForm 1 ((vkey alt)+(vkey control)) (vkey v)
 function hotkeyEvent ($a) {
-	switch ($a){
-		1 {
-		$FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
-		}
-	}
+    switch ($a){
+        1 {
+        $FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
+        }
+    }
 }
 
 $FastTab.Add_Click({
-		$mAssignList.items.clear()
-		$content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
-		$mAssignList.items.AddRange($content)
-		$mFormList.items.clear()
-		$content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
-		$mFormList.items.AddRange($content)
+        $mAssignList.items.clear()
+        $content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
+        $mAssignList.items.AddRange($content)
+        $mFormList.items.clear()
+        $content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
+        $mFormList.items.AddRange($content)
 })
 
 $FastTextForm.add_Closing({
@@ -177,37 +179,37 @@ $FastTextForm.add_Closing({
                     if ($saveFile) {
                         if (equal (ext $saveFile) "dsproj") {
                                 $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-						}
+                        }
                                 $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-								add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                                add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
                          
-							
-						$ascii = new-object System.Text.ASCIIEncoding
-						$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-						$FastTab.SelectedTab.Controls[0].IsChanged = $false
-						$FastTab.SelectedTab.Text = $saveFile
-									
-						}
-					}
-					else {
-					      $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-								add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                            
+                        $ascii = new-object System.Text.ASCIIEncoding
+                        $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                        $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                        $FastTab.SelectedTab.Text = $saveFile
+                                    
+                        }
+                    }
+                    else {
+                          $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                                add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
                          
-					$saveFile = $FastTab.SelectedTab.Text
+                    $saveFile = $FastTab.SelectedTab.Text
                     $ascii = new-object System.Text.ASCIIEncoding
                     $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                     $FastTab.SelectedTab.Controls[0].IsChanged = $false
-					}
+                    }
             $FastTab.SelectedTab.Controls[0].dispose()
             $FastTab.SelectedTab.dispose()
             $init.enabled = $true
-			}
-			else {
-				$FastTab.SelectedTab.Controls[0].dispose()
-				$FastTab.SelectedTab.dispose()
-				$init.enabled = $true
-			}
-		}
+            }
+            else {
+                $FastTab.SelectedTab.Controls[0].dispose()
+                $FastTab.SelectedTab.dispose()
+                $init.enabled = $true
+            }
+        }
         else {
             $FastTab.SelectedTab.Controls[0].dispose()
             $FastTab.SelectedTab.dispose()
@@ -222,36 +224,36 @@ $closetab.add_Click({
         $ask = (ask "$localesavechanges" $FastTab.SelectedTab.Text)
             if ($ask -eq "Yes") {
                 if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
-					$saveFile = (savedlg "$localedialog")
-					if (equal (ext $saveFile) "dsproj") {
-							$saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-							}
-							$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-							
+                    $saveFile = (savedlg "$localedialog")
+                    if (equal (ext $saveFile) "dsproj") {
+                            $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
+                            }
+                            $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                            
                             $ascii = new-object System.Text.ASCIIEncoding
                             $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                             $FastTab.SelectedTab.Controls[0].IsChanged = $false
                     }
-					else {
-					$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-						$saveFile = $FastTab.SelectedTab.Text
-						$ascii = new-object System.Text.ASCIIEncoding
-						$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-						#  $FastTab.SelectedTab.Controls[0].SaveToFile($FastTab.SelectedTab.Text,$ascii)
-						$FastTab.SelectedTab.Controls[0].IsChanged = $false
-					}
-				}
+                    else {
+                    $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                        $saveFile = $FastTab.SelectedTab.Text
+                        $ascii = new-object System.Text.ASCIIEncoding
+                        $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                        #  $FastTab.SelectedTab.Controls[0].SaveToFile($FastTab.SelectedTab.Text,$ascii)
+                        $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                    }
+                }
             $FastTab.SelectedTab.Controls[0].dispose()
             $FastTab.SelectedTab.dispose()
             $init.enabled = $true
-	}
-	else {
-		$FastTab.SelectedTab.Controls[0].dispose()
-		$FastTab.SelectedTab.dispose()
-		$init.enabled = $true
-	}
+    }
+    else {
+        $FastTab.SelectedTab.Controls[0].dispose()
+        $FastTab.SelectedTab.dispose()
+        $init.enabled = $true
+    }
     if (($FastTab.TabPages.Count) -gt $indexoftab)
     {$FastTab.SelectedIndex = $indexoftab}
     else{
@@ -285,165 +287,166 @@ $statusupdate = timer 200
 $statusupdate.enabled = $true
 $statusupdate.add_Tick({
     if ($FastTab.TabPages.Count -gt 0) {
-			$FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $true
-			$FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $true
-			$FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $true
-		#disable 50%
-		#disable 100%
-		#disable 200%
-		#disable macro buttons
-		$toolstrip1.items[14].enabled = $true
-		$toolstrip1.items[15].enabled = $true
-		
-		#paste
-			$FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $true
-			$toolstrip1.items[10].enabled = $true
-			
-			#time/date
-			$FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $true
-			
-			if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
-		$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $true
-		$toolstrip1.items[4].enabled = $true
-			}
-			else{
-					$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
-		$toolstrip1.items[4].enabled = $false}
-		
-		if ($FastTab.SelectedTab.Controls[0].UndoEnabled)
-		{
-			$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $true
-			$toolstrip1.items[6].enabled = $true
-		}
-		else
-		{$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
-		$toolstrip1.items[6].enabled = $false
-		$FastTab.SelectedTab.Controls[0].IsChanged = $false
-		}
-	
+            $FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $true
+            $FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $true
+            $FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $true
+        #disable 50%
+        #disable 100%
+        #disable 200%
+        #disable macro buttons
+        $toolstrip1.items[14].enabled = $true
+        $toolstrip1.items[15].enabled = $true
+        
+        #paste
+            $FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $true
+            $toolstrip1.items[10].enabled = $true
+            
+            #time/date
+            $FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $true
+            
+            if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
+        $FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $true
+        $toolstrip1.items[4].enabled = $true
+            }
+            else{
+                    $FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
+        $toolstrip1.items[4].enabled = $false}
+        
+        if ($FastTab.SelectedTab.Controls[0].UndoEnabled)
+        {
+            $FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $true
+            $toolstrip1.items[6].enabled = $true
+        }
+        else
+        {$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
+        $toolstrip1.items[6].enabled = $false
+        $FastTab.SelectedTab.Controls[0].IsChanged = $false
+        }
+    
         if ($FastTab.SelectedTab.Controls[0].IsChanged -eq $true) {
             $StatusStrip1.items[0].Text = "$localemodified     "+"$localezoom "+$FastTab.SelectedTab.Controls[0].zoom+"%"
-			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
-			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
-			$toolstrip1.items[19].enabled = $false
-			$toolstrip1.items[20].enabled = $false
-			#disable debug
-			#disable compile
+            $FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+            $FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+            $toolstrip1.items[19].enabled = $false
+            $toolstrip1.items[20].enabled = $false
+            #disable debug
+            #disable compile
         }
         else {
             $StatusStrip1.items[0].Text = $localezoom+": "+$FastTab.SelectedTab.Controls[0].zoom+"%"
-			$toolstrip1.items[2].enabled = $false
-			$toolstrip1.items[2].enabled = $true
-			$FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $true
-			#disable save button
-			$FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
-			#disable save menu
-			if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
-			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $true
-			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $true
-			$toolstrip1.items[19].enabled = $true
-			$toolstrip1.items[20].enabled = $true
-			}
+            $toolstrip1.items[2].enabled = $false
+            $toolstrip1.items[2].enabled = $true
+            $FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $true
+            #disable save button
+            $FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
+            #disable save menu
+            if ($FastTab.SelectedTab.Controls[0].TextLength -gt 0) {
+            $FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $true
+            $FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $true
+            $toolstrip1.items[19].enabled = $true
+            $toolstrip1.items[20].enabled = $true
+            }
         }
-		
-		if ($FastTab.SelectedTab.Controls[0].selectionlength -eq 0) {
-			#disable copy
-			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
-			$toolstrip1.items[8].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
-			$toolstrip1.items[9].enabled = $false
-			#disable cut
-		}
-		else {
-			#enable copy
-			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $true
-			$toolstrip1.items[8].enabled = $true
-			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $true
-			$toolstrip1.items[9].enabled = $true
-			#enable cut
-		}
-		if ($FastTab.SelectedTab.Controls[0].TextLength -eq 0)
-		{
-			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
-			$toolstrip1.items[12].enabled = $false	
-		#disable find
-		#disable replace
-		#disable go to
-		#disable select all
-			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
-			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
-			$toolstrip1.items[19].enabled = $false
-			$toolstrip1.items[20].enabled = $false		
-		#disable debug
-		#disable compile
-		}
-		else{
-			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $true
-			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $true
-			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $true
-			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $true
-			$toolstrip1.items[12].enabled = $true	
-		}
-		
+        
+        if ($FastTab.SelectedTab.Controls[0].selectionlength -eq 0) {
+            #disable copy
+            $FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
+            $toolstrip1.items[8].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
+            $toolstrip1.items[9].enabled = $false
+            #disable cut
+        }
+        else {
+            #enable copy
+            $FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $true
+            $toolstrip1.items[8].enabled = $true
+            $FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $true
+            $toolstrip1.items[9].enabled = $true
+            #enable cut
+        }
+        if ($FastTab.SelectedTab.Controls[0].TextLength -eq 0)
+        {
+            $FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
+            $toolstrip1.items[12].enabled = $false  
+        #disable find
+        #disable replace
+        #disable go to
+        #disable select all
+            $FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+            $FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+            $toolstrip1.items[19].enabled = $false
+            $toolstrip1.items[20].enabled = $false      
+        #disable debug
+        #disable compile
+        }
+        else{
+            $FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $true
+            $FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $true
+            $FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $true
+            $FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $true
+            $toolstrip1.items[12].enabled = $true   
+        }
+        
     }
     else {
         $StatusStrip1.items[0].Text = ""
-				#disable save button
-		$toolstrip1.items[2].enabled = $false
-		$FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
-		#disable save as button
-		$FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $false
-		#disable print button
-		$FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
-		$toolstrip1.items[4].enabled = $false
-		#disable undo
-		$FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
-		$toolstrip1.items[6].enabled = $false
-		#disable cut
-		#disable copy
-			$FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
-			$toolstrip1.items[8].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
-			$toolstrip1.items[9].enabled = $false
-		#disable paste
-			$FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $false
-			$toolstrip1.items[10].enabled = $false
-		#disable find
-		#disable replace
-		#disable go to
-		#disable select all
-		#disable time/date
-			$FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
-			$FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $false
-			$toolstrip1.items[12].enabled = $false	
+                #disable save button
+        $toolstrip1.items[2].enabled = $false
+        $FastTextForm.Controls[4].items[0].dropdownitems[2].enabled = $false
+        #disable save as button
+        $FastTextForm.Controls[4].items[0].dropdownitems[3].enabled = $false
+        #disable print button
+        $FastTextForm.Controls[4].items[0].dropdownitems[5].enabled = $false
+        $toolstrip1.items[4].enabled = $false
+        #disable undo
+        $FastTextForm.Controls[4].items[1].dropdownitems[0].enabled = $false
+        $toolstrip1.items[6].enabled = $false
+        #disable cut
+        #disable copy
+            $FastTextForm.Controls[4].items[1].dropdownitems[2].enabled = $false
+            $toolstrip1.items[8].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[3].enabled = $false
+            $toolstrip1.items[9].enabled = $false
+        #disable paste
+            $FastTextForm.Controls[4].items[1].dropdownitems[4].enabled = $false
+            $toolstrip1.items[10].enabled = $false
+        #disable find
+        #disable replace
+        #disable go to
+        #disable select all
+        #disable time/date
+            $FastTextForm.Controls[4].items[1].dropdownitems[6].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[7].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[8].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[9].enabled = $false
+            $FastTextForm.Controls[4].items[1].dropdownitems[10].enabled = $false
+            $toolstrip1.items[12].enabled = $false  
 
-		#Create issue to have Dialog Designer create a new document if count is 0 [New]
-		
-			$FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
-			$FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
-			$toolstrip1.items[19].enabled = $false
-			$toolstrip1.items[20].enabled = $false
-		#disable debug
-		#disable compile
-		
-			$FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $false
-			$FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $false
-			$FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $false
-		#disable 50%
-		#disable 100%
-		#disable 200%
-		#disable macro buttons
-		$toolstrip1.items[14].enabled = $false	
-		$toolstrip1.items[15].enabled = $false	
-		
-    }	
+        
+            $FastTextForm.Controls[4].items[3].dropdownitems[2].enabled = $false
+            $FastTextForm.Controls[4].items[3].dropdownitems[3].enabled = $false
+            $toolstrip1.items[19].enabled = $false
+            $toolstrip1.items[20].enabled = $false
+        #disable debug
+        #disable compile
+        
+            $FastTextForm.Controls[4].items[2].dropdownitems[2].enabled = $false
+            $FastTextForm.Controls[4].items[2].dropdownitems[3].enabled = $false
+            $FastTextForm.Controls[4].items[2].dropdownitems[4].enabled = $false
+        #disable 50%
+        #disable 100%
+        #disable 200%
+        #disable macro buttons
+        $toolstrip1.items[14].enabled = $false  
+        $toolstrip1.items[15].enabled = $false  
+        
+    }   
 })
+
+
             
 $FastTextForm.add_Resize({
     if (equal $script:statusstripvisible $true) {
@@ -487,17 +490,25 @@ function global:menuitemclick ($menu) {
         }
         "$localedesigner" {
 
-		if ($FastTab.TabPages.Count -eq 0) {
+        if ($FastTab.TabPages.Count -eq 0) {
             $FastTab.TabPages.Add("[$localenewtt]")
             $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
             $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
+            dialog property $FastText language $language
             dialog property $FastText dock "Fill"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
             $FastTab.SelectedTab.Controls.Add($FastText)
+			if ($global:theme -eq "Dark")
+			{$FastText.ForeColor = $light
+			$FastText.BackColor = $dark
+			$FastText.IndentBackColor = $dark}
+			if ($global:theme -eq "Light"){
+			$FastText.ForeColor = $dark
+			$FastText.BackColor = $light
+			$FastText.IndentBackColor = $light}
             $init.enabled = $true
 }
-		
+        
       <#   run (get-content "'$(curdir)\..\DialogShell Designer.ds1'") | out-string
           $inv = "'$(curdir)\..\DialogShell Designer.exe'"
         run "&" $inv" #>
@@ -509,9 +520,9 @@ $global:dd = "true"
 DesignWindow
 elementswindow
 $mForm.Show()
-		$mFormList.items.clear()
-		$content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
-		$mFormList.items.AddRange($content)
+        $mFormList.items.clear()
+        $content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
+        $mFormList.items.AddRange($content)
 [vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
 [vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
 [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
@@ -573,28 +584,28 @@ $mForm.Show()
                     if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
                     $saveFile = (savedlg "$localedialog")
                         if ($saveFile) {
-							if (equal (ext $saveFile) "dsproj") {
-									$saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-									}
-									$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-									add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-							
-								$ascii = new-object System.Text.ASCIIEncoding
-								$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-								$FastTab.SelectedTab.Controls[0].IsChanged = $false
-								$FastTab.SelectedTab.Text = $saveFile
-							
-						}
-					}	
+                            if (equal (ext $saveFile) "dsproj") {
+                                    $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
+                                    }
+                                    $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                                    add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                            
+                                $ascii = new-object System.Text.ASCIIEncoding
+                                $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                                $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                                $FastTab.SelectedTab.Text = $saveFile
+                            
+                        }
+                    }   
                     else {
-					$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-						$saveFile = $FastTab.SelectedTab.Text
+                    $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                        $saveFile = $FastTab.SelectedTab.Text
                         $ascii = new-object System.Text.ASCIIEncoding
                         $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                         $FastTab.SelectedTab.Controls[0].IsChanged = $false
                     }
-				} 
+                } 
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
@@ -610,134 +621,43 @@ $mForm.Show()
             $FastTab.TabPages.Add("[$localenewtt]")
             $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
             $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
+            dialog property $FastText language $language
             dialog property $FastText dock "Fill"
+          #  dialog property $FastText backcolor "Silver"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
             $FastTab.SelectedTab.Controls.Add($FastText)
-            $init.enabled = $true
-        }
-        "Template" {
-            $fileOpen = "$examplepath\template.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Admin Calculator" {
-            $fileOpen = "$examplepath\calc.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Clock" {
-            $fileOpen = "$examplepath\clock.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Database" {
-            $fileOpen = "$examplepath\database.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "RichEdit" {
-            $fileOpen = "$examplepath\RichEdit.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Setup" {
-            $fileOpen = "$examplepath\setup.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Visual DialogShell IDE" {
-            $fileOpen = "$examplepath\vds-ide.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "Compile GUI" {
-            $fileOpen = "$examplepath\compile-gui.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
-            $init.enabled = $true
-        }
-        "DialogShell Designer" {
-            $fileOpen = "$examplepath\DialogShell Designer.ds1"
-            $FastTab.TabPages.Add("$fileOpen")
-            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-            dialog property $FastText language "DialogShell"
-            dialog property $FastText dock "Fill"
-            $FastTab.SelectedTab.Controls.Add($FastText)    
-            $FastText.OpenFile($fileOpen)
-            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+			if ($global:theme -eq "Dark")
+			{$FastText.ForeColor = $light
+			$FastText.BackColor = $dark
+			$FastText.IndentBackColor = $dark}
+			if ($global:theme -eq "Light"){
+			$FastText.ForeColor = $dark
+			$FastText.BackColor = $light
+			$FastText.IndentBackColor = $light}
             $init.enabled = $true
         }
         "$localeopen" {
             $fileOpen = (filedlg "$localedialog")
             if ($fileOpen) {
                 if (equal (ext $fileOpen) "dsproj"){
-				$content = (get-content $fileOpen | select-object -skip 1)
-				$mAssignList.items.AddRange($content)
+                $content = (get-content $fileOpen | select-object -skip 1)
+                $mAssignList.items.AddRange($content)
                     $fileOpen = (get-content $fileOpen | Out-String).split((cr))[0]
                 }
                 $FastTab.TabPages.Add("$fileOpen")
                 $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
                 $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-                dialog property $FastText language "DialogShell"
+                dialog property $FastText language $language
                 dialog property $FastText dock "Fill"
                 $FastTab.SelectedTab.Controls.Add($FastText)    
+			if ($global:theme -eq "Dark")
+			{$FastText.ForeColor = $light
+			$FastText.BackColor = $dark
+			$FastText.IndentBackColor = $dark}
+			if ($global:theme -eq "Light"){
+			$FastText.ForeColor = $dark
+			$FastText.BackColor = $light
+			$FastText.IndentBackColor = $light}
                 $FastText.OpenFile($fileOpen)
                 $script:curdoc = (string $fileOpen)
             }
@@ -750,23 +670,23 @@ $mForm.Show()
                 $saveFile = (savedlg "$localedialog")
                 if ($saveFile) {
                         if (equal (ext $saveFile) "dsproj") {
-							$saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-							}
-							$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-							
-							$ascii = new-object System.Text.ASCIIEncoding
-							$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-							$FastTab.SelectedTab.Controls[0].IsChanged = $false
-							$FastTab.SelectedTab.Text = $saveFile
-						}
-				}
+                            $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
+                            }
+                            $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                            
+                            $ascii = new-object System.Text.ASCIIEncoding
+                            $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                            $FastTab.SelectedTab.Text = $saveFile
+                        }
+                }
                     
-			
+            
             else {
-			$saveFile = $FastTab.SelectedTab.Text
-			$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+            $saveFile = $FastTab.SelectedTab.Text
+            $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
                 $ascii = new-object System.Text.ASCIIEncoding
                 $FastTab.SelectedTab.Controls[0].SaveToFile($FastTab.SelectedTab.Text,$ascii)
                 $FastTab.SelectedTab.Controls[0].IsChanged = $false
@@ -777,11 +697,11 @@ $mForm.Show()
             $saveFile = (savedlg "$localedialog")
                 if ($saveFile) {
                     if (equal (ext $saveFile) "dsproj") {
-						$saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-						}
-						$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-						add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.items | out-string
-					
+                        $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
+                        }
+                        $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                        add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.items | out-string
+                    
                     $ascii = new-object System.Text.ASCIIEncoding
                     $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
                     $FastTab.SelectedTab.Controls[0].IsChanged = $false
@@ -798,42 +718,42 @@ $mForm.Show()
                     $ask = (ask "$localesavechanges" $FastTab.SelectedTab.Text)
                     if ($ask -eq "Yes") {
                         if (equal $FastTab.SelectedTab.Text "[$localenewtt]") {
-							$saveFile = (savedlg "$localedialog")
+                            $saveFile = (savedlg "$localedialog")
                             if ($saveFile) {
-								if (equal (ext $saveFile) "dsproj") {
-									$saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
-									}
-									$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-									add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-								
-						
-									$ascii = new-object System.Text.ASCIIEncoding
-									$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-									$FastTab.SelectedTab.Controls[0].IsChanged = $false
-								
-							}
-						}
-						else {
-						$saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
-							add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
-							$saveFile = $FastTab.SelectedTab.Text
-							$ascii = new-object System.Text.ASCIIEncoding
-							$FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
-							$FastTab.SelectedTab.Controls[0].IsChanged = $false
-						}
-						$FastTab.SelectedTab.Controls[0].dispose()
-						$FastTab.SelectedTab.dispose()
-						$init.enabled = $true
-					}
-					else {
-						$FastTab.SelectedTab.Controls[0].dispose()
-						$FastTab.SelectedTab.dispose()
-						$init.enabled = $true
-					}
-				}
+                                if (equal (ext $saveFile) "dsproj") {
+                                    $saveFile = "$(path $saveFile)\$(name $saveFile).ds1"
+                                    }
+                                    $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                                    add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                                
+                        
+                                    $ascii = new-object System.Text.ASCIIEncoding
+                                    $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                                    $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                                
+                            }
+                        }
+                        else {
+                        $saveFile | Out-File "$(path $saveFile)\$(name $saveFile).dsproj"
+                            add-content -path "$(path $saveFile)\$(name $saveFile).dsproj" -value $mAssignList.Items | out-string
+                            $saveFile = $FastTab.SelectedTab.Text
+                            $ascii = new-object System.Text.ASCIIEncoding
+                            $FastTab.SelectedTab.Controls[0].SaveToFile($saveFile,$ascii)
+                            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+                        }
+                        $FastTab.SelectedTab.Controls[0].dispose()
+                        $FastTab.SelectedTab.dispose()
+                        $init.enabled = $true
+                    }
+                    else {
+                        $FastTab.SelectedTab.Controls[0].dispose()
+                        $FastTab.SelectedTab.dispose()
+                        $init.enabled = $true
+                    }
+                }
             dialog close $FastTextForm
-			}
-		}
+            }
+        }
         "$localeundo" {$FastTab.SelectedTab.Controls[0].Undo()}
         "$localecut" {$FastTab.SelectedTab.Controls[0].Cut()}
         "$localecopy" {$FastTab.SelectedTab.Controls[0].Copy()}
@@ -893,18 +813,18 @@ function aboutbox {
     dialog property $PictureBox4 BorderStyle "Fixed3D"  
     dialog property $PictureBox1 backcolor lightblue
     dialog property $PictureBox2 backcolor lightblue
-	dialog property $PictureBox3 backcolor lightblue
+    dialog property $PictureBox3 backcolor lightblue
  #   dialog property $PictureBox3 backcolor $(color rgb 0 0 255)
     $string = "Visual DialogShell $(cr)$(lf)$(cr)$(lf)Unless otherwise mentioned, this is the fruit of an MIT Open sourced project located at https://github.com/brandoncomputer/vds, some portions are CC by SA, others are lgplv3, and some are MSPL.$(cr)$(lf)This software is meant for the quickest freshest on the fly windows programs ever. Get more done, in less time, by using simpler tools. $(cr)$(lf)PowerShell compatible.$(cr)$(lf) A very special thanks to Julian Moss, the creator of DialogScript, for introducing me to the world of computer programming.$(cr)$(lf)$(cr)$(lf)Copyright 2019 Brandon Cunningham$(cr)$(lf)Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the $(chr 34)Software$(chr 34)), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:$(cr)$(lf)The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.$(cr)$(lf)THE SOFTWARE IS PROVIDED $(chr 34)AS IS$(chr 34), WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."  
     #  $string = "$localeaboutdialog"
     $Label1 = dialog add $AboutForm label 21 188 500 500 $string
-	dialog property $Label1 font "Segoe UI Black, 8"
+    dialog property $Label1 font "Segoe UI Black, 8"
     $Buttonx = dialog add $AboutForm button 400 400 40 20 "OK"
     $Buttonx.BringToFront()
     $Buttonx.add_Click({dialog close $AboutForm})
-	
-	$AboutForm.icon = (curdir)+"\..\res\icon.ico"
-	
+    
+    $AboutForm.icon = (curdir)+"\..\res\icon.ico"
+    
     dialog showmodal $AboutForm
 }
     
@@ -1570,12 +1490,12 @@ Function repaintForm {
  $global:designribbon = $false
     
     $mFormGroupBox.controls.clear() 
-	
-	# $mFormObj.Elements | Export-Clixml c:\temp\ele.xml
-	
+    
+    # $mFormObj.Elements | Export-Clixml c:\temp\ele.xml
+    
     Foreach ($mElement in $mFormObj.Elements){ 
-	
-	# write-host $mElement | Get-member
+    
+    # write-host $mElement | Get-member
  
       $mFormGroupBox.controls.add((AddControl $mElement)) 
                
@@ -1587,7 +1507,7 @@ if ($row.Cells[1].Value -ne "") {
  $mFormGroupBox.($row.Cells[0].Value)=($row.Cells[1].Value)}
  if ($row.Cells[1].Value.toLower() -eq '$false') {
  $mFormGroupBox.($row.Cells[0].Value)=$false}
-}	
+}   
  
 }
 
@@ -1603,7 +1523,7 @@ Function EditFormSize ($x,$y){
  
  
 function ExportForm {
-	$mFormObj  
+    $mFormObj  
     $mExportString = ''
     $mFooterString = ''
     $mFooterString2 = ''
@@ -1611,8 +1531,8 @@ function ExportForm {
     $ts = $false
     $mExportString+= $mFormXTextBox2.Text+' = dialog create "'+$mFormGroupBox.Text+'" 0 0 '+$mFormGroupBox.Width+' '+$mFormGroupBox.Height+'
     ' 
-	
-	foreach ($row in $FormPropertiesGrid.Rows)
+    
+    foreach ($row in $FormPropertiesGrid.Rows)
 {
 if ($row.Cells[1].Value -ne $null){
 if ($row.Cells[1].Value -ne "") {
@@ -1620,138 +1540,138 @@ $mExportString+='dialog property '+$mFormXTextBox2.Text+' '+($row.Cells[0].Value
 ' 
  }
  }}
-	
+    
     foreach ($mElement in $mFormObj.Elements){ 
-		switch($mElement.Type){
-			"ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
-			default {$mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type}
-		}
+        switch($mElement.Type){
+            "ToolStrip" { $mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type }
+            default {$mExportString+='$'+$mElement.Name+' = dialog add '+$mFormXTextBox2.Text+' '+$mElement.Type}
+        }
 
-		switch ($mElement.Type){
-			"ToolStrip" {
-				if ($ts -eq $false) {
-				$ts = $true
-				$mFooterString2 = '
+        switch ($mElement.Type){
+            "ToolStrip" {
+                if ($ts -eq $false) {
+                $ts = $true
+                $mFooterString2 = '
 function global:toolstripitemclick ($name) {
     switch (dlgname $name) {'
-				}
+                }
                
-				$mExportString+=" $(chr 34)"
-				foreach ($mProperty in $mElement.Properties) {
-					if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "") 
-					{
-						$mExportString+=$mProperty.Value+','
-						$fsplit = $mProperty.Value.split("|")
-						if ($fsplit[0] -ne "-") {
-						$mFooterString2+= "
+                $mExportString+=" $(chr 34)"
+                foreach ($mProperty in $mElement.Properties) {
+                    if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "") 
+                    {
+                        $mExportString+=$mProperty.Value+','
+                        $fsplit = $mProperty.Value.split("|")
+                        if ($fsplit[0] -ne "-") {
+                        $mFooterString2+= "
         $(chr 34)$($fsplit[0])$(chr 34){
 
         }"
-						}
-					}
-				}
-				$mExportString = $(substr $mExportString 0 ($mExportString.length -1))
-				$mExportString+=$mProperty.Value+(chr 34)+'
-				'
-			}
+                        }
+                    }
+                }
+                $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+                $mExportString+=$mProperty.Value+(chr 34)+'
+                '
+            }
            
-			"MenuStrip" {
-				if ($ms -eq $false) {
-					$ms = $true
-					$mFooterString = '
+            "MenuStrip" {
+                if ($ms -eq $false) {
+                    $ms = $true
+                    $mFooterString = '
 function global:menuitemclick ($menu) {
     switch (dlgname $menu) {'
-				}
-				$mExportString+=" $($mElement.Name) $(chr 34)"
-				foreach ($mProperty in $mElement.Properties) {
-					if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
-					{
-						$mExportString+=$mProperty.Value+','
-						$fsplit = $mProperty.Value.split("|")
-						if ($fsplit[0] -ne "-") {
-							$mFooterString+= "
+                }
+                $mExportString+=" $($mElement.Name) $(chr 34)"
+                foreach ($mProperty in $mElement.Properties) {
+                    if ($mProperty.Value -ne $null)# -and $mProperty.Value -ne "")
+                    {
+                        $mExportString+=$mProperty.Value+','
+                        $fsplit = $mProperty.Value.split("|")
+                        if ($fsplit[0] -ne "-") {
+                            $mFooterString+= "
         $(chr 34)$($fsplit[0])$(chr 34){
 
         }"
-						}
+                        }
               
-					}
-				}
-			$mExportString = $(substr $mExportString 0 ($mExportString.length -1))
-			$mExportString+=$mProperty.Value+(chr 34)+'
-			'
-			}
+                    }
+                }
+            $mExportString = $(substr $mExportString 0 ($mExportString.length -1))
+            $mExportString+=$mProperty.Value+(chr 34)+'
+            '
+            }
    
         
-			default{
-				foreach ($mProperty in $mElement.Properties){
-						If ($mProperty.Name -eq 'Top'){ 
-							$mExportString+=' '+$mProperty.Value 
-						}
-				} 
-				foreach ($mProperty in $mElement.Properties){
-						If ($mProperty.Name -eq 'Left'){ 
-						$mExportString+=' '+$mProperty.Value 
-						}
-				} 
-				foreach ($mProperty in $mElement.Properties){
-					If ($mProperty.Name -eq 'Width'){ 
-					$mExportString+=' '+$mProperty.Value 
-					}
-				} 
+            default{
+                foreach ($mProperty in $mElement.Properties){
+                        If ($mProperty.Name -eq 'Top'){ 
+                            $mExportString+=' '+$mProperty.Value 
+                        }
+                } 
+                foreach ($mProperty in $mElement.Properties){
+                        If ($mProperty.Name -eq 'Left'){ 
+                        $mExportString+=' '+$mProperty.Value 
+                        }
+                } 
+                foreach ($mProperty in $mElement.Properties){
+                    If ($mProperty.Name -eq 'Width'){ 
+                    $mExportString+=' '+$mProperty.Value 
+                    }
+                } 
 
-				foreach ($mProperty in $mElement.Properties){
-					If ($mProperty.Name -eq 'Height'){ 
-						$mExportString+=' '+$mProperty.Value 
-					}
-				} 
-				foreach ($mProperty in $mElement.Properties){
-					If ($mProperty.Name -eq 'Text'){ 
-					$mExportString+=' "'+$mProperty.Value+'"'
-					}
-				} 
-				$mPrSizeX='' 
-				$mPrSizeY='' 
-				foreach ($mProperty in $mElement.Properties){ 
-					switch ($mProperty.Name) {
-						Top {}
-						Left {}
-						Width {}
-						Height {}
-						Text {}
-						default { 
-							if ($mProperty.Value -ne $null){
-								$mExportString+=' 
-		dialog property $'+$mElement.Name+' '+$mProperty.Name +' "'+$mProperty.Value+'"' 
-							}
-						}
-					} 
-				} 
-			$mExportString+='  
-			' 
-			} 
-		}
-	}
-	if ($ts -eq $true) {
+                foreach ($mProperty in $mElement.Properties){
+                    If ($mProperty.Name -eq 'Height'){ 
+                        $mExportString+=' '+$mProperty.Value 
+                    }
+                } 
+                foreach ($mProperty in $mElement.Properties){
+                    If ($mProperty.Name -eq 'Text'){ 
+                    $mExportString+=' "'+$mProperty.Value+'"'
+                    }
+                } 
+                $mPrSizeX='' 
+                $mPrSizeY='' 
+                foreach ($mProperty in $mElement.Properties){ 
+                    switch ($mProperty.Name) {
+                        Top {}
+                        Left {}
+                        Width {}
+                        Height {}
+                        Text {}
+                        default { 
+                            if ($mProperty.Value -ne $null){
+                                $mExportString+=' 
+        dialog property $'+$mElement.Name+' '+$mProperty.Name +' "'+$mProperty.Value+'"' 
+                            }
+                        }
+                    } 
+                } 
+            $mExportString+='  
+            ' 
+            } 
+        }
+    }
+    if ($ts -eq $true) {
     $mFooterString2+= "
     }
 }
 "
-	}
-	if ($ms -eq $true) {
+    }
+    if ($ms -eq $true) {
 $mFooterString+= "
     }
 }
 "
-	}
-	$mExportString+= $mFooterString+$mFooterString2+'dialog show '+$mFormXTextBox2.Text 
-	$FastTab.SelectedTab.Controls[0].InsertText($mExportString)
-	$mFormGroupBox.Dispose()
-	$eleOK = "false"
-	$elements.Dispose()
-	window close $(winexists "Dialog Elements")
-	$mForm.Hide()
-	$global:dd = "false"
+    }
+    $mExportString+= $mFooterString+$mFooterString2+'dialog show '+$mFormXTextBox2.Text 
+    $FastTab.SelectedTab.Controls[0].InsertText($mExportString)
+    $mFormGroupBox.Dispose()
+    $eleOK = "false"
+    $elements.Dispose()
+    window close $(winexists "Dialog Elements")
+    $mForm.Hide()
+    $global:dd = "false"
 } 
  
 
@@ -1907,18 +1827,18 @@ $a = $(sendmsg $mFormList.handle 352 480 0)
 
 $mFormList.add_SelectedValueChanged({
 $openform = $mFormList.selecteditem
-			$mFormObj.Elements = Import-Clixml $openform
-			inifile open $openform
-			$mFormXTextBox2.Text = $(iniread Form Object)
-			$mFormXTextBox.Text = $(iniread Form Text)
-			$mFormGroupBox.Height = $(iniread Form Height)
-			$mFormGroupBox.Width = $(iniread Form Width)
-			$mFormGroupBox.Text = $mFormXTextBox.text
-			
-			$FormPropertiesGrid.rows.Clear()
-			
-		
-			
+            $mFormObj.Elements = Import-Clixml $openform
+            inifile open $openform
+            $mFormXTextBox2.Text = $(iniread Form Object)
+            $mFormXTextBox.Text = $(iniread Form Text)
+            $mFormGroupBox.Height = $(iniread Form Height)
+            $mFormGroupBox.Width = $(iniread Form Width)
+            $mFormGroupBox.Text = $mFormXTextBox.text
+            
+            $FormPropertiesGrid.rows.Clear()
+            
+        
+            
 $FormPropertiesGrid.Rows.Add("AcceptButton",$(iniread Form AcceptButton))
 $FormPropertiesGrid.Rows.Add("ActiveControl",$(iniread Form ActiveControl))
 $FormPropertiesGrid.Rows.Add("ActiveMdiChild",$(iniread Form ActiveMdiChild))
@@ -2005,13 +1925,13 @@ $FormPropertiesGrid.Rows.Add("VerticalScroll",$(iniread Form VerticalScroll))
 $FormPropertiesGrid.Rows.Add("Visible",$(iniread Form Visible))
 $.Rows.Add("WindowState",$(iniread Form WindowState))
 
-			
-			# $mFormObj.Elements = Import-Csv $openform
-		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
-			   renewGrids #$mElemetnsGrid.SelectedCells.value | out-string
+            
+            # $mFormObj.Elements = Import-Csv $openform
+        #   $mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
+               renewGrids #$mElemetnsGrid.SelectedCells.value | out-string
 ElementsChanged
 repaintForm
-			
+            
 
 
 })
@@ -2029,16 +1949,16 @@ $mCancelButton = dialog add $mform button (638+35) 5 300 33 'Cancel'
 $mSaveButton = dialog add $mform button (638+35) 335 150 33 'Save Form'
 $mSaveButton.add_Click({
 $saveform = (savedlg "DialogShell Form|*.dsform")
-	if ($saveForm) {
-#	$mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
-		 $mFormObj.Elements | Export-Clixml $saveForm 
-		 				 $find = $mFormList.FindString($saveForm)
-				 if ($find -eq -1){
-				 $mFormList.items.Add($saveForm)}
-		 list clear $mAssignList
-		 list assign $mAssignList $mFormList
-		 		 
-		 Add-Content $saveForm "<!--
+    if ($saveForm) {
+#   $mFormObj.Elements | ConvertTo-Json -depth 1- | Set-Content -Path $saveform 
+         $mFormObj.Elements | Export-Clixml $saveForm 
+                         $find = $mFormList.FindString($saveForm)
+                 if ($find -eq -1){
+                 $mFormList.items.Add($saveForm)}
+         list clear $mAssignList
+         list assign $mAssignList $mFormList
+                 
+         Add-Content $saveForm "<!--
 [Form]
 Object=$($mFormXTextBox2.Text)
 Text=$($mFormXTextBox.Text)
@@ -2050,31 +1970,31 @@ foreach ($row in $FormPropertiesGrid.Rows)
 Add-Content $saveForm "$($row.Cells[0].Value)=$($row.Cells[1].Value)"
 }
 Add-Content $saveForm "-->"
-		
-		# $mForm.Obj.Elements | export-csv $saveform -NoTypeInformation
-	}
+        
+        # $mForm.Obj.Elements | export-csv $saveform -NoTypeInformation
+    }
 })
 $mOpenButton = dialog add $mform button (638+35) 485 150 33 'Open Form'
 $mOpenButton.add_Click({
-	$openform = filedlg("DialogShell Form|*.dsform")
-		if ($openform){
-				 $find = $mFormList.FindString($openform)
-				 if ($find -eq -1){
-				 $mFormList.items.Add($openform)}
-				list clear $mAssignList
-				list assign $mAssignList $mFormList
-			$mFormObj.Elements = Import-Clixml $openform
-			inifile open $openform
-			$mFormXTextBox2.Text = $(iniread Form Object)
-			$mFormXTextBox.Text = $(iniread Form Text)
-			$mFormGroupBox.Height = $(iniread Form Height)
-			$mFormGroupBox.Width = $(iniread Form Width)
-			$mFormGroupBox.Text = $mFormXTextBox.text
-			
-			$FormPropertiesGrid.rows.Clear()
-			
-		
-			
+    $openform = filedlg("DialogShell Form|*.dsform")
+        if ($openform){
+                 $find = $mFormList.FindString($openform)
+                 if ($find -eq -1){
+                 $mFormList.items.Add($openform)}
+                list clear $mAssignList
+                list assign $mAssignList $mFormList
+            $mFormObj.Elements = Import-Clixml $openform
+            inifile open $openform
+            $mFormXTextBox2.Text = $(iniread Form Object)
+            $mFormXTextBox.Text = $(iniread Form Text)
+            $mFormGroupBox.Height = $(iniread Form Height)
+            $mFormGroupBox.Width = $(iniread Form Width)
+            $mFormGroupBox.Text = $mFormXTextBox.text
+            
+            $FormPropertiesGrid.rows.Clear()
+            
+        
+            
 $FormPropertiesGrid.Rows.Add("AcceptButton",$(iniread Form AcceptButton))
 $FormPropertiesGrid.Rows.Add("ActiveControl",$(iniread Form ActiveControl))
 $FormPropertiesGrid.Rows.Add("ActiveMdiChild",$(iniread Form ActiveMdiChild))
@@ -2161,14 +2081,14 @@ $FormPropertiesGrid.Rows.Add("VerticalScroll",$(iniread Form VerticalScroll))
 $FormPropertiesGrid.Rows.Add("Visible",$(iniread Form Visible))
 $.Rows.Add("WindowState",$(iniread Form WindowState))
 
-			
-			# $mFormObj.Elements = Import-Csv $openform
-		#	$mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
-			   renewGrids #$mElemetnsGrid.SelectedCells.value | out-string
+            
+            # $mFormObj.Elements = Import-Csv $openform
+        #   $mFormObj.Elements = Get-Content -Path $openform | ConvertFrom-Json
+               renewGrids #$mElemetnsGrid.SelectedCells.value | out-string
 ElementsChanged
 repaintForm
-			
-		}
+            
+        }
 })
  
  $mNewButton.add_Click({
@@ -2297,7 +2217,7 @@ if ($FormPropertiesGrid.Rows.count -eq 1)
 'WindowTarget' {}
 
             default{ 
-		#	write-host $mFormGroupBox.($mProperty.name) | out-string
+        #   write-host $mFormGroupBox.($mProperty.name) | out-string
 #$FormPropertiesGrid.Rows.Add($mProperty.Name,$mFormGroupBox.($mProperty.name))
 $FormPropertiesGrid.Rows.Add($mProperty.Name,"")
 }
@@ -2351,48 +2271,64 @@ $global:mfgbx = 600
 
 
 switch(ext $args[0]) {
-	dsproj {
-			$scfile = (get-content $args[0] | Out-String).split((cr))[0]
-			$content = (get-content $scfile | select-object -skip 1)
-			$mAssignList.items.AddRange($content)
-			$FastTab.TabPages.Add($scfile)
-			$FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-			$FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-			dialog property $FastText language "DialogShell"
-			dialog property $FastText dock "Fill"
-			$FastTab.SelectedTab.Controls.Add($FastText)    
-			$FastText.OpenFile($scfile)
-			$script:curdoc = (string $scfile)
-			$FastTab.SelectedTab.Controls[0].IsChanged = $false
-			$init.enabled = $true
-	}
-	dsform {
-		$global:eleOK = "true"
-		if ($global:dd -eq "false") {
-			$global:dd = "true"
-			DesignWindow | out-null
-			elementswindow | out-null
-			$mForm.Show()
-			$a =[vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
-			$a =[vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
-			$a = [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
-			$mFormObj.Elements = Import-Clixml $args[0]
-			repaintForm | out-null
-		}
-	}
+    dsproj {
+            $scfile = (get-content $args[0] | Out-String).split((cr))[0]
+            $content = (get-content $scfile | select-object -skip 1)
+            $mAssignList.items.AddRange($content)
+            $FastTab.TabPages.Add($scfile)
+            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+            dialog property $FastText language $language
+            dialog property $FastText dock "Fill"
+            $FastTab.SelectedTab.Controls.Add($FastText)  
+			if ($global:theme -eq "Dark")
+			{$FastText.ForeColor = $light
+			$FastText.BackColor = $dark
+			$FastText.IndentBackColor = $dark}
+			if ($global:theme -eq "Light"){
+			$FastText.ForeColor = $dark
+			$FastText.BackColor = $light
+			$FastText.IndentBackColor = $light}			
+            $FastText.OpenFile($scfile)
+            $script:curdoc = (string $scfile)
+            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+            $init.enabled = $true
+    }
+    dsform {
+        $global:eleOK = "true"
+        if ($global:dd -eq "false") {
+            $global:dd = "true"
+            DesignWindow | out-null
+            elementswindow | out-null
+            $mForm.Show()
+            $a =[vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
+            $a =[vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
+            $a = [vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
+            $mFormObj.Elements = Import-Clixml $args[0]
+            repaintForm | out-null
+        }
+    }
 
-	default {
-			$FastTab.TabPages.Add($args[0])
-			$FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
-			$FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
-			dialog property $FastText language "DialogShell"
-			dialog property $FastText dock "Fill"
-			$FastTab.SelectedTab.Controls.Add($FastText)    
-			$FastText.OpenFile($args[0])
-			$script:curdoc = (string $args[0])
-			$FastTab.SelectedTab.Controls[0].IsChanged = $false
-			$init.enabled = $true
-	}
+    default {
+            $FastTab.TabPages.Add($args[0])
+            $FastTab.SelectedIndex = ($FastTab.TabPages.Count - 1)
+            $FastText = New-Object FastColoredTextBoxNS.FastColoredTextBox
+            dialog property $FastText language $language
+            dialog property $FastText dock "Fill"
+            $FastTab.SelectedTab.Controls.Add($FastText) 
+			if ($global:theme -eq "Dark")
+			{$FastText.ForeColor = $light
+			$FastText.BackColor = $dark
+			$FastText.IndentBackColor = $dark}
+			if ($global:theme -eq "Light"){
+			$FastText.ForeColor = $dark
+			$FastText.BackColor = $light
+			$FastText.IndentBackColor = $light}			
+            $FastText.OpenFile($args[0])
+            $script:curdoc = (string $args[0])
+            $FastTab.SelectedTab.Controls[0].IsChanged = $false
+            $init.enabled = $true
+    }
 }
 
 dialog show $FastTextForm
