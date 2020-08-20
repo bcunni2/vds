@@ -847,6 +847,7 @@ function mouseMove ($mControlName) {
         $mDifX = $(differ $Global:mCurFirstX $mCurMoveX)  
         $mDifY = $(differ $Global:mCurFirstY $mCurMoveY) 
           
+		  dialog cursor $mFormGroupBox SizeAll
         dialog setpos $this $(differ $this.top $mDifY) $(differ $this.left $mDifX) $this.width $this.height
   
          $Global:mCurFirstX = $mCurMoveX  
@@ -858,6 +859,7 @@ function mouseMove ($mControlName) {
  
 function mouseUP ($mControlObj) { 
  
+ dialog cursor $mFormGroupBox Arrow
     $mCurUpX = $(mousepos x) 
     $mCurUpY = $(mousepos y) 
  
