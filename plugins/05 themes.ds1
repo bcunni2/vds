@@ -182,6 +182,14 @@ $ditem.BackColor = $light
 
 $fastcovertime = timer 500
 $fastcovertime.add_Tick({
+
+if ($global:theme -eq "Light")
+{$popup.backcolor = $light
+$popup.forecolor = $dark}
+if ($global:theme -eq "Dark")
+{$popup.backcolor = $dark
+$popup.forecolor = $light}
+
     if (equal $script:statusstripvisible $true) {
         dialog setpos $FastTab 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)
 		dialog setpos $FastCover 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)

@@ -23,7 +23,12 @@ $global:ticky = $true
 							}
 							
 					  $popup = dialog popup $FastTextForm ("$localeundo|$(curdir)\..\res\arrow_undo.png,-,$localecut|$(curdir)\..\res\cut.png,$localecopy|$(curdir)\..\res\page_copy.png,$localepaste|$(curdir)\..\res\paste_plain.png,-,$localefind|$(curdir)\..\res\page_find.png,$localereplace,&Go To...,$localeselectall,$localetimedate")
-					   
+if ($global:theme -eq "Light")
+{$popup.backcolor = $light
+$popup.forecolor = $dark}
+if ($global:theme -eq "Dark")
+{$popup.backcolor = $dark
+$popup.forecolor = $light}
 						})
 		}
 		$regtabs[$FastTab.SelectedIndex] = "true"
@@ -189,6 +194,14 @@ $mFormList.items.AddRange($content)
 	$popupr = dialog popup $FastTextForm ("Arrow,Cross,Default,Hand,Help,HSplit,IBeam,No,NoMove2D,NoMoveHoriz,NoMoveVert,PanEast,PanNE,PanNorth,PanNW,PanSE,PanSouth,PanSW,PanWest,SizeAll,SizeNESW,SizeNS,SizeNWSE,SizeWE,UpArrow,VSplit,WaitCursor")
 	}
 }
+
+if ($global:theme -eq "Light")
+{$popupr.backcolor = $light
+$popupr.forecolor = $dark}
+if ($global:theme -eq "Dark")
+{$popupr.backcolor = $dark
+$popupr.forecolor = $light}
+
 if ($popupr.handle){
 $popupr.show($(mousepos x),$(mousepos y))
 #write-host $popupr.handle
