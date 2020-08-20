@@ -245,6 +245,7 @@ $closetab.add_Click({
                         $FastTab.SelectedTab.Controls[0].IsChanged = $false
                     }
                 }
+                             
             $FastTab.SelectedTab.Controls[0].dispose()
             $FastTab.SelectedTab.dispose()
             $init.enabled = $true
@@ -259,6 +260,7 @@ $closetab.add_Click({
     else{
         if($FastTab.TabPages.Count -gt 0){$FastTab.SelectedIndex = $FastTab.TabPages.Count -1}
     }
+    $regtabs[$FastTab.TabPages.Count] = "false"
 })
                     
 $script:statusstripvisible = $true      
@@ -498,14 +500,14 @@ function global:menuitemclick ($menu) {
             dialog property $FastText dock "Fill"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
             $FastTab.SelectedTab.Controls.Add($FastText)
-			if ($global:theme -eq "Dark")
-			{$FastText.ForeColor = $light
-			$FastText.BackColor = $dark
-			$FastText.IndentBackColor = $dark}
-			if ($global:theme -eq "Light"){
-			$FastText.ForeColor = $dark
-			$FastText.BackColor = $light
-			$FastText.IndentBackColor = $light}
+            if ($global:theme -eq "Dark")
+            {$FastText.ForeColor = $light
+            $FastText.BackColor = $dark
+            $FastText.IndentBackColor = $dark}
+            if ($global:theme -eq "Light"){
+            $FastText.ForeColor = $dark
+            $FastText.BackColor = $light
+            $FastText.IndentBackColor = $light}
             $init.enabled = $true
 }
         
@@ -626,14 +628,14 @@ $mForm.Show()
           #  dialog property $FastText backcolor "Silver"
           #  (dialog properties $FastText | Out-File c:\temp\FastText.txt)
             $FastTab.SelectedTab.Controls.Add($FastText)
-			if ($global:theme -eq "Dark")
-			{$FastText.ForeColor = $light
-			$FastText.BackColor = $dark
-			$FastText.IndentBackColor = $dark}
-			if ($global:theme -eq "Light"){
-			$FastText.ForeColor = $dark
-			$FastText.BackColor = $light
-			$FastText.IndentBackColor = $light}
+            if ($global:theme -eq "Dark")
+            {$FastText.ForeColor = $light
+            $FastText.BackColor = $dark
+            $FastText.IndentBackColor = $dark}
+            if ($global:theme -eq "Light"){
+            $FastText.ForeColor = $dark
+            $FastText.BackColor = $light
+            $FastText.IndentBackColor = $light}
             $init.enabled = $true
         }
         "$localeopen" {
@@ -650,14 +652,14 @@ $mForm.Show()
                 dialog property $FastText language $language
                 dialog property $FastText dock "Fill"
                 $FastTab.SelectedTab.Controls.Add($FastText)    
-			if ($global:theme -eq "Dark")
-			{$FastText.ForeColor = $light
-			$FastText.BackColor = $dark
-			$FastText.IndentBackColor = $dark}
-			if ($global:theme -eq "Light"){
-			$FastText.ForeColor = $dark
-			$FastText.BackColor = $light
-			$FastText.IndentBackColor = $light}
+            if ($global:theme -eq "Dark")
+            {$FastText.ForeColor = $light
+            $FastText.BackColor = $dark
+            $FastText.IndentBackColor = $dark}
+            if ($global:theme -eq "Light"){
+            $FastText.ForeColor = $dark
+            $FastText.BackColor = $light
+            $FastText.IndentBackColor = $light}
                 $FastText.OpenFile($fileOpen)
                 $script:curdoc = (string $fileOpen)
             }
@@ -847,7 +849,7 @@ function mouseMove ($mControlName) {
         $mDifX = $(differ $Global:mCurFirstX $mCurMoveX)  
         $mDifY = $(differ $Global:mCurFirstY $mCurMoveY) 
           
-		  dialog cursor $mFormGroupBox SizeAll
+          dialog cursor $mFormGroupBox SizeAll
         dialog setpos $this $(differ $this.top $mDifY) $(differ $this.left $mDifX) $this.width $this.height
   
          $Global:mCurFirstX = $mCurMoveX  
@@ -2283,14 +2285,14 @@ switch(ext $args[0]) {
             dialog property $FastText language $language
             dialog property $FastText dock "Fill"
             $FastTab.SelectedTab.Controls.Add($FastText)  
-			if ($global:theme -eq "Dark")
-			{$FastText.ForeColor = $light
-			$FastText.BackColor = $dark
-			$FastText.IndentBackColor = $dark}
-			if ($global:theme -eq "Light"){
-			$FastText.ForeColor = $dark
-			$FastText.BackColor = $light
-			$FastText.IndentBackColor = $light}			
+            if ($global:theme -eq "Dark")
+            {$FastText.ForeColor = $light
+            $FastText.BackColor = $dark
+            $FastText.IndentBackColor = $dark}
+            if ($global:theme -eq "Light"){
+            $FastText.ForeColor = $dark
+            $FastText.BackColor = $light
+            $FastText.IndentBackColor = $light}         
             $FastText.OpenFile($scfile)
             $script:curdoc = (string $scfile)
             $FastTab.SelectedTab.Controls[0].IsChanged = $false
@@ -2318,14 +2320,14 @@ switch(ext $args[0]) {
             dialog property $FastText language $language
             dialog property $FastText dock "Fill"
             $FastTab.SelectedTab.Controls.Add($FastText) 
-			if ($global:theme -eq "Dark")
-			{$FastText.ForeColor = $light
-			$FastText.BackColor = $dark
-			$FastText.IndentBackColor = $dark}
-			if ($global:theme -eq "Light"){
-			$FastText.ForeColor = $dark
-			$FastText.BackColor = $light
-			$FastText.IndentBackColor = $light}			
+            if ($global:theme -eq "Dark")
+            {$FastText.ForeColor = $light
+            $FastText.BackColor = $dark
+            $FastText.IndentBackColor = $dark}
+            if ($global:theme -eq "Light"){
+            $FastText.ForeColor = $dark
+            $FastText.BackColor = $light
+            $FastText.IndentBackColor = $light}         
             $FastText.OpenFile($args[0])
             $script:curdoc = (string $args[0])
             $FastTab.SelectedTab.Controls[0].IsChanged = $false
