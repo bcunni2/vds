@@ -1,4 +1,10 @@
 
+
+$mTheme = new-object System.Windows.Forms.ToolStripMenuItem
+$mTheme.name = "Themes"
+$mTheme.Text = "Themes"
+$view.DropDownItems.Add($mTheme) | Out-Null  
+
 $dark = new-object System.Windows.Forms.ToolStripMenuItem
 $dark.name = "Dark"
 $dark.Text = "Go Dark"
@@ -6,29 +12,28 @@ $light = new-object System.Windows.Forms.ToolStripMenuItem
 $light.name = "Light"
 $light.Text = "Go Light"
 
+
+$mTheme.DropDownItems.Add($dark) | Out-Null  
+$mTheme.DropDownItems.Add($light) | Out-Null  
 $sep = new-object System.Windows.Forms.ToolStripSeparator
-$view.DropDownItems.Add($sep) | Out-Null  
-$view.DropDownItems.Add($dark) | Out-Null  
-$view.DropDownItems.Add($light) | Out-Null  
-$sep = new-object System.Windows.Forms.ToolStripSeparator
-$view.DropDownItems.Add($sep) | Out-Null  
+$mTheme.DropDownItems.Add($sep) | Out-Null  
 
 $loadtheme = new-object System.Windows.Forms.ToolStripMenuItem
 $loadtheme.name = "Load Theme"
 $loadtheme.Text = "Load Theme"
-$view.DropDownItems.Add($loadtheme) | Out-Null  
+$mTheme.DropDownItems.Add($loadtheme) | Out-Null  
 
 $savetheme = new-object System.Windows.Forms.ToolStripMenuItem
 $savetheme.name = "Save Theme"
 $savetheme.Text = "Save Theme"
-$view.DropDownItems.Add($savetheme) | Out-Null  
+$mTheme.DropDownItems.Add($savetheme) | Out-Null  
 
 $sep = new-object System.Windows.Forms.ToolStripSeparator
-$view.DropDownItems.Add($sep) | Out-Null  
+$mTheme.DropDownItems.Add($sep) | Out-Null  
 $norm = new-object System.Windows.Forms.ToolStripMenuItem
 $norm.name = "Normal"
 $norm.Text = "Normal on Next Start"
-$view.DropDownItems.Add($norm) | Out-Null  
+$mTheme.DropDownItems.Add($norm) | Out-Null  
 
 $dark.Add_Click({
 dark})
@@ -114,7 +119,13 @@ foreach ($item in $control.items)
 foreach ($ditem in $item.dropdownitems){
 $ditem.ForeColor = $light
 $ditem.BackColor = $dark
-}			
+}	
+
+foreach ($dditem in $mTheme.dropdownitems){
+$dditem.ForeColor = $light
+$dditem.BackColor = $dark
+}
+		
 }
 }
 $global:theme = "Dark"
@@ -164,7 +175,13 @@ foreach ($item in $control.items)
 foreach ($ditem in $item.dropdownitems){
 $ditem.ForeColor = $dark
 $ditem.BackColor = $light
-}			
+}
+
+foreach ($dditem in $mTheme.dropdownitems){
+$dditem.ForeColor = $dark
+$dditem.BackColor = $light
+}
+			
 }
 }
 			
@@ -246,7 +263,13 @@ foreach ($item in $control.items)
 foreach ($ditem in $item.dropdownitems){
 $ditem.ForeColor = $dark
 $ditem.BackColor = $light
-}			
+}
+
+foreach ($dditem in $mTheme.dropdownitems){
+$dditem.ForeColor = $dark
+$dditem.BackColor = $light
+}
+			
 }
 }
 			
@@ -293,7 +316,13 @@ foreach ($item in $control.items)
 foreach ($ditem in $item.dropdownitems){
 $ditem.ForeColor = $light
 $ditem.BackColor = $dark
-}			
+}
+
+foreach ($dditem in $mTheme.dropdownitems){
+$dditem.ForeColor = $light
+$dditem.BackColor = $dark
+}
+
 }
 }
 $global:theme = "Dark"
