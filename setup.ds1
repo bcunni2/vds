@@ -91,9 +91,6 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     directory create ("c:\users\$env:username\documents\DialogShell")
                     directory create ("c:\users\$env:username\documents\DialogShell\examples")
                     directory create ("c:\users\$env:username\documents\DialogShell\examples\en-US")
-                    directory create ("c:\users\$env:username\documents\DialogShell\wizards")
-                    directory create ("c:\users\$env:username\documents\DialogShell\context")
-					directory create ("c:\users\$env:username\documents\DialogShell\plugins")
                     directory create ("c:\users\$env:username\documents\DialogShell\res")
                     directory create ("c:\users\$env:username\documents\DialogShell\elements")
                     file copy ("$(string $Label2.Text)\res\*") ("c:\users\$env:username\documents\DialogShell\res")
@@ -101,9 +98,6 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     file copy ("$(string $Label2.Text)\examples\*.ds1") ("c:\users\$env:username\documents\DialogShell\examples")
                     file copy ("$(string $Label2.Text)\examples\*.mdb") ("c:\users\$env:username\documents\DialogShell\examples")
                     file copy ("$(string $Label2.Text)\examples\en-us\*") ("c:\users\$env:username\documents\DialogShell\examples\en-us")
-                    file copy ("$(string $Label2.Text)\wizards\*") ("c:\users\$env:username\documents\DialogShell\wizards")
-                    file copy ("$(string $Label2.Text)\context\*") ("c:\users\$env:username\documents\DialogShell\context")
-					file copy ("$(string $Label2.Text)\plugins\*") ("c:\users\$env:username\documents\DialogShell\plugins")
                     
                     $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples")
                     foreach ($item in $items) {
@@ -118,14 +112,14 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation" String "$(string $Label2.Text)"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "c:\windows\installer\dialogshell\setup.exe -uninstall"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "Publisher" String "vds/pwsh community"
-				if ($(regexists "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"))
-				   {registry modifyitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" "0.2.6.3"
-				   registry modifyitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" $(datetime).ToString('yyyyMMdd')
-				   }
-				   
-				   else{
-       			   registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" String $(datetime).ToString('yyyyMMdd')
-				   registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.6.3"}
+                if ($(regexists "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"))
+                   {registry modifyitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" "0.2.6.3"
+                   registry modifyitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" $(datetime).ToString('yyyyMMdd')
+                   }
+                   
+                   else{
+                   registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallDate" String $(datetime).ToString('yyyyMMdd')
+                   registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" String "0.2.6.3"}
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayIcon" String "$(string $Label2.Text)\res\icon.ico"
                   #  Uncomment these lines if unhappy with scaling blur. I'm leaving these commented at release, because devs need to be aware of the scaling issues.
                   #  There is a future task scheduled to fix this in the .manifest within the compiler, but it's at least 90 days out unless not-me works on it. 
@@ -146,12 +140,12 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newkey "HKCR:\DialogShell.Project\Shell\" "Open"
                     registry newkey "HKCR:\DialogShell.Project\Shell\Open\" "Command"
                     registry newitem "HKCR:\DialogShell.Project\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\examples\vds-ide.exe $(chr 34)%1$(chr 34)"
-					registry newkey "HKCR:\" .dsform
+                    registry newkey "HKCR:\" .dsform
                     registry newitem "HKCR:\.dsform\" "(Default)" String "DialogShell.Form"
                     registry newkey "HKCR:\" "DialogShell.Form"
                     registry newkey "HKCR:\DialogShell.Form\" "Shell"
-					registry newkey "HKCR:\DialogShell.Form\" "DefaultIcon"
-					registry newitem "HKCR:\DialogShell.Form\DefaultIcon" "(Default)" String "$(string $Label2.Text)\res\application.ico"
+                    registry newkey "HKCR:\DialogShell.Form\" "DefaultIcon"
+                    registry newitem "HKCR:\DialogShell.Form\DefaultIcon" "(Default)" String "$(string $Label2.Text)\res\application.ico"
                     registry newkey "HKCR:\DialogShell.Form\Shell\" "Open"
                     registry newkey "HKCR:\DialogShell.Form\Shell\Open\" "Command"
                     registry newitem "HKCR:\DialogShell.Form\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\examples\vds-ide.exe $(chr 34)%1$(chr 34)"
