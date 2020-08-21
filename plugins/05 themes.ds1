@@ -206,7 +206,9 @@ $popup.forecolor = $dark}
 if ($global:theme -eq "Dark")
 {$popup.backcolor = $dark
 $popup.forecolor = $light}
-    if (($StatusStrip1.Visible | out-string) -eq "True") {
+#write-host ($StatusStrip1.Visible | out-string).trim()
+#write-host ($StatusStrip1.Visible | out-string)
+    if ($StatusStrip1.Visible -eq $True) {
         dialog setpos $FastTab 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)
 		dialog setpos $FastCover 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)
     }
