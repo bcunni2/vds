@@ -49,8 +49,8 @@ $global:designribbon = $false
 
 $examplepath = "C:\Users\$env:username\Documents\DialogShell\examples"
 $wizardpath = "C:\Users\$env:username\Documents\DialogShell\wizards"
-if ($(file "c:\vds\trunk\plugins"))
-{$plugins = "c:\vds\trunk\plugins"}
+if ($(file "c:\vds\trunk\plugins")){
+$plugins = "c:\vds\trunk\plugins"}
 else
 {$plugins = "$(curdir)\..\plugins"}
 $docpath = "C:\Users\$env:username\Documents\DialogShell"

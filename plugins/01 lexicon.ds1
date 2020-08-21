@@ -1,4 +1,4 @@
-$lexiconpath = "C:\Users\$env:username\Documents\DialogShell\plugins\01 lexicon.ds1"
+$lexiconpath = "$plugins\01 lexicon.ds1"
 if ($global:lexinit -eq $null) {
 $timerz = timer 1000
 $global:tickz = $false
@@ -147,7 +147,10 @@ if ($global:tickz -ne $true){
 switch ($FastTab.SelectedTab.Controls[0].Selection.text.toLower())
 {
     "if"{
-    $popupr = dialog popup $FastTextForm ("if,if else,if elseif,if elseif else,else,elseif,elseif else")
+    window send $(winexists $(winactive)) "if {(}{)}{{}
+    
+{}}$(key up)$(key up)"
+    #$popupr = dialog popup $FastTextForm ("if,if else,if elseif,if elseif else,else,elseif,elseif else")
     }
     "color"{
     $popupr = dialog popup $FastTextForm ("AliceBlue,AntiqueWhite,Aqua,Aquamarine,Azure,Beige,Bisque,Black,BlanchedAlmond,Blue,BlueViolet,Brown,BurlyWood,CadetBlue,Chartreuse,Chocolate,Coral,CornflowerBlue,Cornsilk,Crimson,Cyan,DarkBlue,DarkCyan,DarkGoldenrod,DarkGray,DarkGreen,DarkKhaki,DarkMagenta,DarkOliveGreen,DarkOrange,DarkOrchid,DarkRed,DarkSalmon,DarkSeaGreen,DarkSlateBlue,DarkSlateGray,DarkTurquoise,DarkViolet,DeepPink,DeepSkyBlue,DimGray,DodgerBlue,Firebrick,FloralWhite,ForestGreen,Fuchsia,Gainsboro,GhostWhite,Gold,Goldenrod,Gray,Green,GreenYellow,Honeydew,HotPink,IndianRed,Indigo,IsEmpty,IsKnownColor,IsNamedColor,IsSystemColor,Ivory,Khaki,Lavender,LavenderBlush,LawnGreen,LemonChiffon,LightBlue,LightCoral,LightCyan,LightGoldenrodYellow,LightGray,LightGreen,LightPink,LightSalmon,LightSeaGreen,LightSkyBlue,LightSlateGray,LightSteelBlue,LightYellow,Lime,LimeGreen,Linen,Magenta,Maroon,MediumAquamarine,MediumBlue,MediumOrchid,MediumPurple,MediumSeaGreen,MediumSlateBlue,MediumSpringGreen,MediumTurquoise,MediumVioletRed,MidnightBlue,MintCream,MistyRose,Moccasin,Name,NavajoWhite,Navy,OldLace,Olive,OliveDrab,Orange,OrangeRed,Orchid,PaleGoldenrod,PaleGreen,PaleTurquoise,PaleVioletRed,PapayaWhip,PeachPuff,Peru,Pink,Plum,PowderBlue,Purple,Red,RosyBrown,RoyalBlue,SaddleBrown,Salmon,SandyBrown,SeaGreen,SeaShell,Sienna,Silver,SkyBlue,SlateBlue,SlateGray,Snow,SpringGreen,SteelBlue,Tan,Teal,Thistle,Tomato,Transparent,Turquoise,Violet,Wheat,White,WhiteSmoke,Yellow,YellowGreen")
