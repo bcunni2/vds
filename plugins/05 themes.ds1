@@ -3,7 +3,7 @@
 $mTheme = new-object System.Windows.Forms.ToolStripMenuItem
 $mTheme.name = "Themes"
 $mTheme.Text = "Themes"
-$view.DropDownItems.Add($mTheme) | Out-Null  
+$mPlugins.DropDownItems.Add($mTheme) | Out-Null  
 
 $dark = new-object System.Windows.Forms.ToolStripMenuItem
 $dark.name = "Dark"

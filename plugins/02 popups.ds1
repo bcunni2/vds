@@ -1,123 +1,104 @@
 function global:menuitemmouseup ($menu) {
 switch (dlgname $menu) {
 "if"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
-
-}'}
+{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
 
 "if else"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
-
-}
-else{
-
-}'}
+{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)else {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
 
 "if elseif"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
-
-}
-elseif ( -eq ){
-
-}'}
+{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)elseif {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
 
 "if elseif else"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'if ( -eq ){
-
-}
-elseif ( -eq ){
-
-}
-else{
-
-}'}
+{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)elseif {{}$(cr)$(cr){}}$(cr)else{{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)$(key up)"}
 
 "else"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'else{
-
-}'}
+{window send $(winexists $(winactive)) "else {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
 
 "elseif"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
-
-}'}
+{window send $(winexists $(winactive)) "elseif {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
 
 "elseif else"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'elseif ( -eq ){
-
-}
-else{
-
-}'}
+{window send $(winexists $(winactive)) "elseif {(} -eq {)}{{}$(cr)$(cr){}}$(cr)else {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
 
 "Click"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Click({
-
-})'}
+{window send $(winexists $(winactive)) "add_Click{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "Closing"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closing({
-
-})'}
+{window send $(winexists $(winactive)) "add_Closing{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "Closed"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Closed({
-
-})'}
+{window send $(winexists $(winactive)) "add_Closed{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "DragEnter"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_DragEnter({
-<#.AllowDrop = $true
-.add_DragEnter({
-if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
-            foreach ($z in $_.Data.GetData([Windows.Forms.DataFormats]::FileDrop))  {
-                info $z
-            }
-            }
-})#>
-})'
+{window send $(winexists $(winactive)) "add_DragEnter{(}{{}
+#.AllowDrop = $(chr 36)true
+	if {(}$(chr 36)_.Data.GetDataPresent{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)} {{}
+	foreach {(}$(chr 36)z in $(chr 36)_.Data.GetData{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)}  {{}
+	
+{}}
+$(shift $(tab)){}}
+$(shift $(tab)){}}{)}$(key up)$(key up)$(key up)$(key end)"
 }
 
 "Tick"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Tick({
-#$timer = timer 1
+{window send $(winexists $(winactive)) "add_Tick{(}{{}
+#$(chr 36)timer = timer 1
 
-})'}
+{}}{)}$(key up)$(key end)"}
 
 "Resize"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_Resize({
-
-})'}
+{window send $(winexists $(winactive)) "add_Resize{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "MouseDown"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseDown({
-
-})'}
+{window send $(winexists $(winactive)) "add_MouseDown{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "MouseMove"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseMove({
-
-})'}
+{window send $(winexists $(winactive)) "add_MouseMove{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "MouseUp"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_MouseUp({
-
-})'}
+{window send $(winexists $(winactive)) "add_MouseUp{(}{{}
+	
+{}}{)}$(key up)$(key end)"}
 
 "KeyUp"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyUp({
-#info ($_.KeyCode | out-string)
-})'}
+{window send $(winexists $(winactive)) "add_KeyUp{(}{{}
+#info ($(chr 36)_.KeyCode | out-string)
+	
+{}}{)}$(key up)$(key end)"}
 
 "KeyDown"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyDown({
-#info ($_.KeyCode | out-string)
-})'}
+{window send $(winexists $(winactive)) "add_KeyDown{(}{{}
+#info ($(chr 36)_.KeyCode | out-string)
+	
+{}}{)}$(key up)$(key end)"}
 
 "KeyPress"
-{$FastTab.SelectedTab.Controls[0].SelectedText = 'add_KeyPress({
-#info ($_.KeyChar | out-string)
-})'}
+{window send $(winexists $(winactive)) "add_KeyPress{(}{{}
+#info ($(chr 36)_.KeyChar | out-string)
+	
+{}}{)}$(key up)$(key end)"}
+
+"dialog add Panel"
+{window send $(winexists $(winactive)) "$(chr 36)Panel = dialog add $(chr 36)Form Panel $(chr 36)top $(chr 36)left $(chr 36)width $(chr 36)height
+dialog property $(chr 36)Panel dock $(chr 34)Top$(chr 34)
+dialog property $(chr 36)Panel border $(chr 34)Fixed3D$(chr 34)"}
+
+"dialog add ToolStrip"
+{window send $(winexists $(winactive)) "$(chr 36)ToolStrip = dialog add $(chr 36)Form ToolStrip {(}$(chr 34)Item1|$(chr 36){(}curdir{)}$(chr 34)\Image1.png,-,Item2|$(chr 36){(}curdir{)}\Image2.png$(chr 34){)}
+dialog property $(chr 36)ToolStrip.Items{[}$(chr 34)Item2$(chr 34){]} tooltiptext $(chr 34)The second one is better.$(chr 34)"}
 
 "dialog add"
 {$FastTab.SelectedTab.Controls[0].SelectedText = "dialog add"}
@@ -194,11 +175,6 @@ if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
 "dialog add NumericUpDown"
 {$FastTab.SelectedTab.Controls[0].SelectedText = '$NumericUpDown = dialog add $Form NumericUpDown $top $left $width $height'}
 
-"dialog add Panel"
-{$FastTab.SelectedTab.Controls[0].SelectedText = '$Panel = dialog add $Form Panel $top $left $width $height
-dialog property $Panel dock "Top"
-dialog property $Panel border "Fixed3D"'}
-
 "dialog add PictureBox"
 {$FastTab.SelectedTab.Controls[0].SelectedText = '$PictureBox = dialog add $Form PictureBox $top $left $width $height'}
 
@@ -216,10 +192,6 @@ dialog property $Panel border "Fixed3D"'}
 
 "dialog add TextBox"
 {$FastTab.SelectedTab.Controls[0].SelectedText = '$TextBox = dialog add $Form TextBox $top $left $width $height'}
-
-"dialog add ToolStrip"
-{$FastTab.SelectedTab.Controls[0].SelectedText = '$ToolStrip = dialog add $Form ToolStrip ("Item1|$(curdir)"\Image1.png,-,Item2|$(curdir)\Image2.png")
-dialog property $ToolStrip.Items["Item2"] tooltiptext "The second one is better."'}
 
 "dialog add TrackBar"
 {$FastTab.SelectedTab.Controls[0].SelectedText = '$TrackBar = dialog add $Form TextBox $top $left $width $height'}

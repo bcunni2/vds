@@ -12,17 +12,17 @@ public class vdsForm:Form {
 public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
 [DllImport("user32.dll")]
 public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
-	protected override void WndProc(ref Message m) {
-		base.WndProc(ref m);
-		if (m.Msg == 0x0312) {
-			int id = m.WParam.ToInt32();	
-			foreach (Control item in this.Controls) {
-				if (item.Name == "hotkey") {
-					item.Text = id.ToString();
-				}
-			}
-		}
-	}	
+    protected override void WndProc(ref Message m) {
+        base.WndProc(ref m);
+        if (m.Msg == 0x0312) {
+            int id = m.WParam.ToInt32();    
+            foreach (Control item in this.Controls) {
+                if (item.Name == "hotkey") {
+                    item.Text = id.ToString();
+                }
+            }
+        }
+    }   
 }
 
 public class vds {
@@ -79,7 +79,7 @@ public static extern IntPtr GetWindow(int hWnd, uint uCmd);
 
 [DllImport("user32.dll")]    
      public static extern int GetWindowTextLength(int hWnd);
-	 
+     
 [DllImport("user32.dll")]
 public static extern IntPtr GetWindowText(IntPtr hWnd, System.Text.StringBuilder text, int count);
 
@@ -401,10 +401,10 @@ function clipbrd {
 }
 
 function color ($a,$b,$c,$d) {
-	switch ($a.toLower()) {
-		name {return [System.Drawing.Color]::FromName($b)}
-		rgb {return  [System.Drawing.Color]::FromArgb($b,$c,$d)}
-		}
+    switch ($a.toLower()) {
+        name {return [System.Drawing.Color]::FromName($b)}
+        rgb {return  [System.Drawing.Color]::FromArgb($b,$c,$d)}
+        }
 <#
     .SYNOPSIS
      Returns color by name or rgb
@@ -497,102 +497,102 @@ function cr {
 
 function csv ($a,$b,$c,$d,$e,$f)
 {
-	switch ($a)
-	{
-		read{
-			if ($e){
-				while ($i -lt $e) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
+    switch ($a)
+    {
+        read{
+            if ($e){
+                while ($i -lt $e) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
+            else {
+                while ($i -lt 256) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
 
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			$i = 0
-			$csv | %{
-			$i = $i+1
-				if ($i -eq $d){
-				return $_.$c
-				}
-			}
-		}
-		write {
-			if ($f){
-				while ($i -lt $f) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
+            $csv = Import-Csv $b -header $build.ForEach({ $_ })
+            $i = 0
+            $csv | %{
+            $i = $i+1
+                if ($i -eq $d){
+                return $_.$c
+                }
+            }
+        }
+        write {
+            if ($f){
+                while ($i -lt $f) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
+            else {
+                while ($i -lt 256) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
 
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			$i = 0
-			$csv | %{
-			$i = $i+1
-				if ($i -eq $d){
-				$_.$c = $e
-				return $csv
-				}
-			}
-		}
-		count {
-			if ($c){
-				while ($i -lt $c) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
-			else {
-				while ($i -lt 256) {
-				$build += ($i+1),($i+2)
-				$i = $i+2
-				}
-			}
+            $csv = Import-Csv $b -header $build.ForEach({ $_ })
+            $i = 0
+            $csv | %{
+            $i = $i+1
+                if ($i -eq $d){
+                $_.$c = $e
+                return $csv
+                }
+            }
+        }
+        count {
+            if ($c){
+                while ($i -lt $c) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
+            else {
+                while ($i -lt 256) {
+                $build += ($i+1),($i+2)
+                $i = $i+2
+                }
+            }
 
-			$csv = Import-Csv $b -header $build.ForEach({ $_ })
-			return $csv.count		
-		}
-		save {
-		$b | export-csv $c -NoTypeInformation
-		$Content = Get-content $c | select-object -skip 1
-		$Content | out-file $c -Encoding utf8		
-		}
-	}
-	 <#
+            $csv = Import-Csv $b -header $build.ForEach({ $_ })
+            return $csv.count       
+        }
+        save {
+        $b | export-csv $c -NoTypeInformation
+        $Content = Get-content $c | select-object -skip 1
+        $Content | out-file $c -Encoding utf8       
+        }
+    }
+     <#
      .SYNOPSIS
      Manipulate CSV files 
       
      .DESCRIPTION
       VDS
       #There are 300 columns. Read cell A1
-	  $csv = $(csv read c:\temp\temp.csv 1 1 300)
-	  
-	  #There are less than 255 columns. Read cell B2
-	  $csv = $(csv read c:\temp\temp.csv 2 2)
-	  
-	  #There are 300 columns. Write to cell A1, return the whole CSV back.
-	  $csv = $(csv read c:\temp\temp.csv 1 1 NotMyCow 300)
-	  
-	  #There are less than 255 columns. Write cell B2, return the whole CSV back.
-	  $csv = $(csv read c:\temp\temp.csv 2 2 Beans)
-	  
-	  #Get the row count of a CSV
-	  $csv = $(csv count c:\temp\temp.csv)
-	  
-	  #Save CSV file
-	  csv save $csv c:\temp\temp.csv
-	 
+      $csv = $(csv read c:\temp\temp.csv 1 1 300)
+      
+      #There are less than 255 columns. Read cell B2
+      $csv = $(csv read c:\temp\temp.csv 2 2)
+      
+      #There are 300 columns. Write to cell A1, return the whole CSV back.
+      $csv = $(csv read c:\temp\temp.csv 1 1 NotMyCow 300)
+      
+      #There are less than 255 columns. Write cell B2, return the whole CSV back.
+      $csv = $(csv read c:\temp\temp.csv 2 2 Beans)
+      
+      #Get the row count of a CSV
+      $csv = $(csv count c:\temp\temp.csv)
+      
+      #Save CSV file
+      csv save $csv c:\temp\temp.csv
+     
      .LINK
      https://dialogshell.com/vds/help/index.php?title=csv
  #>
@@ -692,19 +692,19 @@ function ctrl($a) {
 } 
 
 function decrypt ($a, $b){
-	if ($b){
-		[byte[]]$b = $b.split(" ")
-		$secure = $a | ConvertTo-SecureString -Key $b
-		$user = "inconsequential"
-		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
-		return ($credObject.GetNetworkCredential().Password)
-	}
-	else{
-		$secure = $a | ConvertTo-SecureString 
-		$user = "inconsequential"
-		$credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
-		return ($credObject.GetNetworkCredential().Password)
-	}
+    if ($b){
+        [byte[]]$b = $b.split(" ")
+        $secure = $a | ConvertTo-SecureString -Key $b
+        $user = "inconsequential"
+        $credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+        return ($credObject.GetNetworkCredential().Password)
+    }
+    else{
+        $secure = $a | ConvertTo-SecureString 
+        $user = "inconsequential"
+        $credObject = New-Object System.Management.Automation.PSCredential -ArgumentList $user, $secure
+        return ($credObject.GetNetworkCredential().Password)
+    }
 <#
     .SYNOPSIS
     Decrypt an encrypted secret.
@@ -712,9 +712,9 @@ function decrypt ($a, $b){
     .DESCRIPTION
      VDS
     $encrypt = 'Hello'
-	$b = $(encrypt $encrypt 'Aes')
-	$vals = $b.Split($(fieldsep))
-	info $(decrypt $vals[0] $vals[1])
+    $b = $(encrypt $encrypt 'Aes')
+    $vals = $b.Split($(fieldsep))
+    info $(decrypt $vals[0] $vals[1])
     
     .LINK
     https://dialogshell.com/vds/help/index.php/decrypt
@@ -772,12 +772,12 @@ function decrypt ($a, $b){
                              $split = $innersplit[0]
                              $item = new-object System.Windows.Forms.ToolStripMenuItem
                              if ($innersplit[2]) {
-								if ($(substr $innersplit[2] 0 2) -eq 'ht') {
-									$item.image = $(streamimage $innersplit[2])
-								}
-								else {
-								$item.image = $(fileimage $innersplit[2])
-								}
+                                if ($(substr $innersplit[2] 0 2) -eq 'ht') {
+                                    $item.image = $(streamimage $innersplit[2])
+                                }
+                                else {
+                                $item.image = $(fileimage $innersplit[2])
+                                }
                              }
                              if ($innersplit[1]) {
                                  $item.ShortCutKeys = $innersplit[1]
@@ -790,7 +790,7 @@ function decrypt ($a, $b){
                              })
                              $item.Add_MouseUp({
                                      &menuitemmouseup $this
-                             })								 
+                             })                              
                          } 
                          else {
                              $item = new-object System.Windows.Forms.ToolStripSeparator
@@ -808,12 +808,12 @@ function decrypt ($a, $b){
                              $item = new-object System.Windows.Forms.ToolStripButton
                              $isplit = $split.split("|")
                              $item.name = $isplit[0]
-							if ($(substr $isplit[1] 0 2) -eq 'ht') {
-								$item.image = $(streamimage $isplit[1])
-							}
-							else {
-								$item.image = $(fileimage $isplit[1])
-							}
+                            if ($(substr $isplit[1] 0 2) -eq 'ht') {
+                                $item.image = $(streamimage $isplit[1])
+                            }
+                            else {
+                                $item.image = $(fileimage $isplit[1])
+                            }
                              $item.text = $isplit[2]
                              $item.Add_Click({&toolstripitemclick $this})
                          }
@@ -830,20 +830,20 @@ function decrypt ($a, $b){
              }
          }
          image {
-				if ($(substr $c 0 2) -eq 'ht') {
-					$b.image = $(streamimage $c)
-				}
-				else {
-					$b.image = $(fileimage $c)
-				}
+                if ($(substr $c 0 2) -eq 'ht') {
+                    $b.image = $(streamimage $c)
+                }
+                else {
+                    $b.image = $(fileimage $c)
+                }
          } 
- 		backgroundimage { 
-				if ($(substr $c 0 2) -eq 'ht') {
-					$b.backgroundimage = $(streamimage $c)
-				}
-				else {
-					$b.backgroundimage = $(fileimage $c)
-				}
+        backgroundimage { 
+                if ($(substr $c 0 2) -eq 'ht') {
+                    $b.backgroundimage = $(streamimage $c)
+                }
+                else {
+                    $b.backgroundimage = $(fileimage $c)
+                }
          }
          clear {
              $b.Text = ""
@@ -854,9 +854,9 @@ function decrypt ($a, $b){
          close {
              $b.Close()
          }
-		 create {
-			 $Form = [vdsForm] @{
-			 ClientSize = New-Object System.Drawing.Point 0,0}
+         create {
+             $Form = [vdsForm] @{
+             ClientSize = New-Object System.Drawing.Point 0,0}
              $Form.Text = $b
              $Form.Top = $c
              $Form.Left = $d
@@ -890,20 +890,20 @@ function decrypt ($a, $b){
                          {   $item = new-object System.Windows.Forms.ToolStripMenuItem
                              $isplit = $split.split("|")
                              $item.name = $isplit[0] 
- 							if ($isplit[1])
- 							{
-								if ($(substr $isplit[1] 0 2) -eq 'ht') {
-									$item.image = $(streamimage $isplit[1])
-								}
-								else {
-									$item.image = $(fileimage $isplit[1])
-								}
-							}
+                            if ($isplit[1])
+                            {
+                                if ($(substr $isplit[1] 0 2) -eq 'ht') {
+                                    $item.image = $(streamimage $isplit[1])
+                                }
+                                else {
+                                    $item.image = $(fileimage $isplit[1])
+                                }
+                            }
                              $item.text = $isplit[0]
                              $item.Add_Click({&menuitemclick $this})
-							 $item.Add_MouseUp({
+                             $item.Add_MouseUp({
                                      &menuitemmouseup $this
-                             })	
+                             }) 
                          }
                          else {
                              $item = new-object System.Windows.Forms.ToolStripSeparator
@@ -919,28 +919,28 @@ function decrypt ($a, $b){
              return $b | Get-Member
          } #Remains for backwards compatibility. Please use dlgprops
          property {
-				
-				if ($d -notmatch "color"){
-					if ($($c -match "color")) {
-						$s = $d.split(",")
-						if ($s[1]){
-							$d = $(color rgb $s[0] $s[1] $s[2])
-						}
-						else {
-						$d = $(color name $d)
-						}
-					}
-				}
-				
-				if ($d -notmatch "font"){
-					if ($c.toLower() -eq 'font') {
-							$s = $d.split(",")
-							$d = $(font $s[0] ($s[1]/1))
-					}
-				}
-				
+                
+                if ($d -notmatch "color"){
+                    if ($($c -match "color")) {
+                        $s = $d.split(",")
+                        if ($s[1]){
+                            $d = $(color rgb $s[0] $s[1] $s[2])
+                        }
+                        else {
+                        $d = $(color name $d)
+                        }
+                    }
+                }
+                
+                if ($d -notmatch "font"){
+                    if ($c.toLower() -eq 'font') {
+                            $s = $d.split(",")
+                            $d = $(font $s[0] ($s[1]/1))
+                    }
+                }
+                
              $b.$c = $d
-			# write-host $d.GetType();
+            # write-host $d.GetType();
          }
          remove {    
              $b.dispose()
@@ -1095,7 +1095,7 @@ function directory($a,$b,$c) {
         change 
         {
             Set-Location $b
-			[Environment]::CurrentDirectory = $b
+            [Environment]::CurrentDirectory = $b
         }
         create 
         {
@@ -1218,17 +1218,17 @@ function dlgtext($a) {
 }
 
 function encrypt ($a,$b){
-	$SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
-	if ($b){
-			$AESKey = New-Object Byte[] 32
-			[Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey)
-			$encrypt = $SecureString | ConvertFrom-SecureString -Key $AESKey
-			return $encrypt+$fieldsep+$AESKey
-	}
-	else
-	{
-			return ($SecureString | ConvertFrom-SecureString)
-	}
+    $SecureString = $a | ConvertTo-SecureString -AsPlainText -Force
+    if ($b){
+            $AESKey = New-Object Byte[] 32
+            [Security.Cryptography.RNGCryptoServiceProvider]::Create().GetBytes($AESKey)
+            $encrypt = $SecureString | ConvertFrom-SecureString -Key $AESKey
+            return $encrypt+$fieldsep+$AESKey
+    }
+    else
+    {
+            return ($SecureString | ConvertFrom-SecureString)
+    }
 <#
     .SYNOPSIS
     Decrypt an encrypted secret.
@@ -1236,9 +1236,9 @@ function encrypt ($a,$b){
     .DESCRIPTION
      VDS
     $encrypt = 'Hello'
-	$b = $(encrypt $encrypt 'Aes')
-	$vals = $b.Split($(fieldsep))
-	info $(decrypt $vals[0] $vals[1])
+    $b = $(encrypt $encrypt 'Aes')
+    $vals = $b.Split($(fieldsep))
+    info $(decrypt $vals[0] $vals[1])
     
     .LINK
     https://dialogshell.com/vds/help/index.php/encrypt
@@ -1316,19 +1316,19 @@ function esc {
 
 function eternium($a,$b,$c,$d,$e){ 
 $global:errpref = $ErrorActionPreference
-	switch($a){
-		open {
-			$global:ie = new-object -ComObject "InternetExplorer.Application"
-			$global:ie.visible = $true
-			$global:ie.navigate($b)
+    switch($a){
+        open {
+            $global:ie = new-object -ComObject "InternetExplorer.Application"
+            $global:ie.visible = $true
+            $global:ie.navigate($b)
             eternium busy
-		}
-		hide {
-		$global:ie.visible = $false
-		}
-		show {
-		$global:ie.visible = $true
-		}
+        }
+        hide {
+        $global:ie.visible = $false
+        }
+        show {
+        $global:ie.visible = $true
+        }
         busy {while($global:ie.Busy) { Start-Sleep -s 1 }
         }
         navigate {
@@ -1338,10 +1338,10 @@ $global:errpref = $ErrorActionPreference
            return $global:ie.LocationURL
            }
            }
-		get {
+        get {
                 if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1354,7 +1354,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1367,7 +1367,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1380,7 +1380,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1393,16 +1393,16 @@ $global:errpref = $ErrorActionPreference
                 }
                 else {
                         $global:ie.document.getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						     return $_ 
-					    }
-				    }
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                             return $_ 
+                        }
+                    }
                 }
-		    }
+            }
             compatget {
                     if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1415,7 +1415,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1428,7 +1428,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1441,7 +1441,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1454,17 +1454,17 @@ $global:errpref = $ErrorActionPreference
                 }
                 else {
                         $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						     return $_ 
-					    }
-				    }
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                             return $_ 
+                        }
+                    }
                 }
             }
 
             set {
                 if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1477,7 +1477,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1490,7 +1490,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1503,7 +1503,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1516,16 +1516,16 @@ $global:errpref = $ErrorActionPreference
                 }
                 else {
                         $global:ie.document.getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						     $_.$d = $e
-					    }
-				    }
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                             $_.$d = $e
+                        }
+                    }
                 }
-		    }
+            }
             compatset {
                     if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1538,7 +1538,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1551,7 +1551,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1564,7 +1564,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1577,35 +1577,35 @@ $global:errpref = $ErrorActionPreference
                 }
                 else {
                         $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						     $_.$d = $e
-					    }
-				    }
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                             $_.$d = $e
+                        }
+                    }
                 }
             }
 
         
-		oldset {
-			try{
-				$global:ie.document.getElementsByTagName('*') | % {
-					if ($_.getAttributeNode($b).Value -eq $c) {
-						$_.$d = $e
-					}
-				}
-			}
-			catch{
-	            $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
-					if ($_.getAttributeNode($b).Value -eq $c) {
-						 $_.$d = $e
-					}
+        oldset {
+            try{
+                $global:ie.document.getElementsByTagName('*') | % {
+                    if ($_.getAttributeNode($b).Value -eq $c) {
+                        $_.$d = $e
+                    }
+                }
+            }
+            catch{
+                $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
+                    if ($_.getAttributeNode($b).Value -eq $c) {
+                         $_.$d = $e
+                    }
                 } 
-			}
+            }
         }
 
             click {
                 if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1619,7 +1619,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1633,7 +1633,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1647,7 +1647,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1662,18 +1662,18 @@ $global:errpref = $ErrorActionPreference
                 else {
                 $ErrorActionPreference = 'SilentlyContinue'
                         $global:ie.document.getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						     $_.click()
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                             $_.click()
                             eternium busy
-					    }
-				    }
+                        }
+                    }
                     $ErrorActionPreference = $global:errpref
                 }
-		    }
+            }
             compatclick {
                     if ($b.toLower() -eq "innertext") {
                     $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerText.toString())
                         if ($item -eq $c){
@@ -1687,7 +1687,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "innerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].innerhtml.toString())
                         if ($item -eq $c){
@@ -1701,7 +1701,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outerhtml") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outerhtml.toString())
                         if ($item -eq $c){
@@ -1715,7 +1715,7 @@ $global:errpref = $ErrorActionPreference
                 }
                 elseif($b.toLower() -eq "outertext") {
                 $ErrorActionPreference = 'SilentlyContinue'
-				    $i = 0
+                    $i = 0
                     while ($i -le $global:ie.document.IHTMLDocument3_getElementsByTagName('*').length()) {
                         $item = ($global:ie.document.IHTMLDocument3_getElementsByTagName('*')[$i].outertext.toString())
                         if ($item -eq $c){
@@ -1729,56 +1729,56 @@ $global:errpref = $ErrorActionPreference
                 }
                 else {
                         $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
-					    if ($_.getAttributeNode($b).Value -eq $c) {
-						    $_.click()
+                        if ($_.getAttributeNode($b).Value -eq $c) {
+                            $_.click()
                             eternium busy
-					    }
-				    }
+                        }
+                    }
                 }
             }
 
-		oldclick {
-			try{ 
-				$global:ie.document.getElementsByTagName('*') | % {
-					if ($_.getAttributeNode($b).Value -eq $c) {
-						$_.click()
+        oldclick {
+            try{ 
+                $global:ie.document.getElementsByTagName('*') | % {
+                    if ($_.getAttributeNode($b).Value -eq $c) {
+                        $_.click()
                         eternium busy
-					}
-				}
-			}
-			catch{
-				$global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
-					if ($_.getAttributeNode($b).Value -eq $c) {
-						 $_.click()
+                    }
+                }
+            }
+            catch{
+                $global:ie.document.IHTMLDocument3_getElementsByTagName('*') | % {
+                    if ($_.getAttributeNode($b).Value -eq $c) {
+                         $_.click()
                          eternium busy
-					}
-				}
-			}
-		}
-	}
+                    }
+                }
+            }
+        }
+    }
 <#
     .SYNOPSIS
     Automates Internet Explorer.
      
     .DESCRIPTION
      VDS
-	eternium open 'https://google.com'
-	eternium navigate 'https://dialogshell.com'
-	$currentpage = $(eternium navigate)
-	$value = $(eternium get 'id' 'Text1').value
-	$innertext = $(eternium get 'innerhtml' 'Hello<BR>There').innertext
-	eternium set 'class' 'Text1' 'value' 'new value'
-	eternium click 'name' 'button1'
-		$value = $(eternium compatget 'id' 'Text1').value
-		$innertext = $(eternium compatget 'innerhtml' 'Hello<BR>There').innertext
-		eternium compatset 'class' 'Text1' 'value' 'new value'
-		eternium compatclick 'name' 'button1'
-	eternium hide
-	eternium show
+    eternium open 'https://google.com'
+    eternium navigate 'https://dialogshell.com'
+    $currentpage = $(eternium navigate)
+    $value = $(eternium get 'id' 'Text1').value
+    $innertext = $(eternium get 'innerhtml' 'Hello<BR>There').innertext
+    eternium set 'class' 'Text1' 'value' 'new value'
+    eternium click 'name' 'button1'
+        $value = $(eternium compatget 'id' 'Text1').value
+        $innertext = $(eternium compatget 'innerhtml' 'Hello<BR>There').innertext
+        eternium compatset 'class' 'Text1' 'value' 'new value'
+        eternium compatclick 'name' 'button1'
+    eternium hide
+    eternium show
     
     .LINK
     https://dialogshell.com/vds/help/index.php/eternium
-#>	
+#>  
 }
 
 function event {
@@ -1798,120 +1798,120 @@ function event {
 
 function excel($a,$b,$c,$d)
 {
-	if ($global:excelinit -eq $false){
-		$global:excelinit = $true
-		$global:excelVDS = new-object -comobject excel.application
-	}
-	switch ($a,$b){
-		connect {
-			return $global:excelinit
-		}
-		new {
-			return $global:excelVDS.Workbooks.add()
-		}
-		show {
-			$global:excelVDS.visible = $true
-		}
-		hide {
-			$global:excelVDS.visible = $false
-		}
-		AddWorksheet {
-			$b.Worksheets.Add()
-		}
-		Open {
-			$global:excelVDS.Workbooks.Open($b)
-		}
-		Save {
-			$global:excelVDS.Workbooks.Save()
-		}
-		SaveAs {
-			$global:excelVDS.ActiveWorkbook.SaveAs($b)
-		}
-		SelectSheet {
-			$global:excelVDS.Worksheets.Item($b).Select()
-		}
-		SetCell {
-			$global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
-		}
-		GetCell {
-				return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
-		}
-		DeleteColumn {
-				$global:excelVDS.ActiveSheet.Columns[$b].Delete()
-		}
-		DeleteRow {
-				$global:excelVDS.ActiveSheet.Rows[$b].Delete()
-		}
-		InsertColumn {
-				$global:excelVDS.ActiveSheet.Columns[$b].Insert()
-		}
-		InsertRow {
-				$global:excelVDS.ActiveSheet.Rows[$b].Insert()
-		}
-		ColumnCount {
-				return $global:excelVDS.ActiveSheet.UsedRange.Columns.Count
-		}
-		RowCount {
-				return $global:excelVDS.ActiveSheet.UsedRange.Rows.Count
-		}
-	}
+    if ($global:excelinit -eq $false){
+        $global:excelinit = $true
+        $global:excelVDS = new-object -comobject excel.application
+    }
+    switch ($a,$b){
+        connect {
+            return $global:excelinit
+        }
+        new {
+            return $global:excelVDS.Workbooks.add()
+        }
+        show {
+            $global:excelVDS.visible = $true
+        }
+        hide {
+            $global:excelVDS.visible = $false
+        }
+        AddWorksheet {
+            $b.Worksheets.Add()
+        }
+        Open {
+            $global:excelVDS.Workbooks.Open($b)
+        }
+        Save {
+            $global:excelVDS.Workbooks.Save()
+        }
+        SaveAs {
+            $global:excelVDS.ActiveWorkbook.SaveAs($b)
+        }
+        SelectSheet {
+            $global:excelVDS.Worksheets.Item($b).Select()
+        }
+        SetCell {
+            $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
+        }
+        GetCell {
+                return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
+        }
+        DeleteColumn {
+                $global:excelVDS.ActiveSheet.Columns[$b].Delete()
+        }
+        DeleteRow {
+                $global:excelVDS.ActiveSheet.Rows[$b].Delete()
+        }
+        InsertColumn {
+                $global:excelVDS.ActiveSheet.Columns[$b].Insert()
+        }
+        InsertRow {
+                $global:excelVDS.ActiveSheet.Rows[$b].Insert()
+        }
+        ColumnCount {
+                return $global:excelVDS.ActiveSheet.UsedRange.Columns.Count
+        }
+        RowCount {
+                return $global:excelVDS.ActiveSheet.UsedRange.Rows.Count
+        }
+    }
 <#
     .SYNOPSIS
     Automates Microsoft Excel
      
     .DESCRIPTION
      VDS
-	 #begin automation
+     #begin automation
      $excel = excel connect
-	 
-	 #Create new workbook
-	 $excel = excel new
-	 
+     
+     #Create new workbook
+     $excel = excel new
+     
      #Show Excel
-	 excel show 
-	 
-	 #Hide Excel
-	 excel hide
-	 
-	 #Add worksheet
-	 excel AddWorksheet
-	 
-	 #Open Workbooks
-	 excel open c:\temp\excel.xlsx
-	 
-	 #Save workbook
-	 excel save
-	 
-	 #Workbook Save As
-	 excel saveas c:\temp\save-excel.xlsx
-	 
-	 #Select sheet	 
-	 excel SelectSheet Book2	 
-	 
-	 #Set cell value 'B2' 'value'
-	 excel SetCell 2 1 value
-	 
-	 #Get cell 'B2' value
-	 $cell = excel GetCell 2 1
-	 
-	 #Delete column 'C'
-	 excel DeleteColumn 3
-	 
-	 #Delete row 3
-	 excel DeleteRow 3
-	 
-	 #Insert Column before 'A'
-	 excel InsertColumn 1
-	 
-	 #Insert row between 1 and 2
-	 excel InsertRow 2
-	 
-	 #Get the used column count
-	 $cc = excel ColumnCount
-	 
-	 #Get the row count
-	 $rc = excel RowCount	 
-	 
+     excel show 
+     
+     #Hide Excel
+     excel hide
+     
+     #Add worksheet
+     excel AddWorksheet
+     
+     #Open Workbooks
+     excel open c:\temp\excel.xlsx
+     
+     #Save workbook
+     excel save
+     
+     #Workbook Save As
+     excel saveas c:\temp\save-excel.xlsx
+     
+     #Select sheet   
+     excel SelectSheet Book2     
+     
+     #Set cell value 'B2' 'value'
+     excel SetCell 2 1 value
+     
+     #Get cell 'B2' value
+     $cell = excel GetCell 2 1
+     
+     #Delete column 'C'
+     excel DeleteColumn 3
+     
+     #Delete row 3
+     excel DeleteRow 3
+     
+     #Insert Column before 'A'
+     excel InsertColumn 1
+     
+     #Insert row between 1 and 2
+     excel InsertRow 2
+     
+     #Get the used column count
+     $cc = excel ColumnCount
+     
+     #Get the row count
+     $rc = excel RowCount    
+     
     .LINK
     https://dialogshell.com/vds/help/index.php/excel
 #>
@@ -2100,14 +2100,17 @@ function fieldsep {
 function file($a,$b,$c,$d) {
     switch ($a) {
         copy {
-			if ((substr $b 0 4) -eq 'http'){
-				$file = New-Object System.Net.WebClient
-				$file.DownloadFile($b,$c)
-			}
-			else {
-				copy-item -path $b -destination $c -recurse
-			}
-		}
+            if ((substr $b 0 4) -eq 'http'){
+                $file = New-Object System.Net.WebClient
+                $file.DownloadFile($b,$c)
+            }
+            else {
+                copy-item -path $b -destination $c -recurse
+            }
+        }
+        move {
+            Move-Item -path $b -destination $c
+        }
         delete {
             Remove-Item -path $b -force
         }
@@ -2195,7 +2198,7 @@ return [System.Drawing.Image]::FromFile($a)
     
     .LINK
     https://dialogshell.com/vds/help/index.php/streamimage
-#>	
+#>  
 }
 
 function fint ($a) {
@@ -2458,17 +2461,17 @@ function hex($a){
 
 function hotkey($a,$b,$c,$d) {
 [vdsForm]::RegisterHotKey($a.handle,$b,$c,$d) | out-null
-	if ($global:hotkeyobject -ne $true) {
-		$hotkey = dialog add $a label 0 0 0 0
-		dialog name $hotkey hotkey
-		$hotkey.add_TextChanged({
-			if ($this.text -ne ""){
-				hotkeyEvent $this.text
-			}
-			$this.text = ""
-		})
-	$global:hotkeyobject = $true
-	}
+    if ($global:hotkeyobject -ne $true) {
+        $hotkey = dialog add $a label 0 0 0 0
+        dialog name $hotkey hotkey
+        $hotkey.add_TextChanged({
+            if ($this.text -ne ""){
+                hotkeyEvent $this.text
+            }
+            $this.text = ""
+        })
+    $global:hotkeyobject = $true
+    }
 <#
     .SYNOPSIS
     Adds a hotkey to the form
@@ -2476,14 +2479,14 @@ function hotkey($a,$b,$c,$d) {
     .DESCRIPTION
      VDS
     Registers a hotkey by ID to fire function hotkeyEvent by vkey function.
-	Example:
-	hotkey $FastTextForm 1 ((vkey alt)+(vkey control)) (vkey v)
-	function hotkeyEvent ($a) {
-	switch ($a){
-		1 {
-		$FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
-		}
-	}
+    Example:
+    hotkey $FastTextForm 1 ((vkey alt)+(vkey control)) (vkey v)
+    function hotkeyEvent ($a) {
+    switch ($a){
+        1 {
+        $FastTextForm.Text = "Visual DialogShell $(sysinfo dsver)"
+        }
+    }
 }
     
     .LINK
@@ -2631,22 +2634,22 @@ function info($a,$b) {
 }
  
  function innertext ($a,$b,$c,$d) {
-	$split1 = $a -Split $b
-	$split2 = ($split1[1] | out-string) -Split $c
-	if ($d){
-		return ($split1[0]+$b+$d+$c | out-string)
-	}
-	else{
-		return ($split2[0] | out-string).Trim()
-	}
+    $split1 = $a -Split $b
+    $split2 = ($split1[1] | out-string) -Split $c
+    if ($d){
+        return ($split1[0]+$b+$d+$c | out-string)
+    }
+    else{
+        return ($split2[0] | out-string).Trim()
+    }
  <#
     .SYNOPSIS
     Returns the inner text of a body of text split by start text, and end text. If a fourth parameter is specified, returns the text with innertext replaced.
      
     .DESCRIPTION
      VDS
-		$d = $(innertext 'abcdefg' 'bc' 'ef')
-		
+        $d = $(innertext 'abcdefg' 'bc' 'ef')
+        
     .LINK
     https://dialogshell.com/vds/help/innertext
  #>
@@ -2983,13 +2986,13 @@ function like ($a,$b) {
  }
  
  function loaddll ($a){
-	if ($(substr $a 0 2) -eq 'ht') {
-		$s = iwr $a
+    if ($(substr $a 0 2) -eq 'ht') {
+        $s = iwr $a
         return [Reflection.Assembly]::Load($s.content) | out-null
-	}
-	else {
-		[Reflection.Assembly]::LoadFile($a) | Out-Null
-	}
+    }
+    else {
+        [Reflection.Assembly]::LoadFile($a) | Out-Null
+    }
 <#
     .SYNOPSIS
      Loads a dynamic link library
@@ -2997,11 +3000,11 @@ function like ($a,$b) {
     .DESCRIPTION
      VDS
     loaddll c:\temp\dotnet.dll
-	loaddll https://mydomain.com/dotnet.dll
+    loaddll https://mydomain.com/dotnet.dll
     
     .LINK
     https://dialogshell.com/vds/help/index.php/loaddll
-#>			
+#>          
 }
  
 function lower($a) {
@@ -3027,8 +3030,8 @@ function match($a,$b,$c) {
         $c = $c
     }
     try{$return = $a.FindString($b,$c)}
-	catch{$return = $a.Items.IndexOf($b)}
-	    return $return
+    catch{$return = $a.Items.IndexOf($b)}
+        return $return
 <#
     .SYNOPSIS
     The index of the next match in a list, with an optional start point.
@@ -3093,26 +3096,26 @@ function mod($a,$b) {
  }
 
  function module ($a,$b,$c) {
-	switch ($a){
-		import {
-			$Content = (get-content $b)
-			$Content = resource asciidecode $Content
-			return (string $Content)
-		}
-		export {
-			$Content = (get-content $b)
-			$exportstring = resource asciiencode $Content
-			$exportstring | Out-File $c -enc ascii
-		}
-	}
+    switch ($a){
+        import {
+            $Content = (get-content $b)
+            $Content = resource asciidecode $Content
+            return (string $Content)
+        }
+        export {
+            $Content = (get-content $b)
+            $exportstring = resource asciiencode $Content
+            $exportstring | Out-File $c -enc ascii
+        }
+    }
  <#
     .SYNOPSIS
     Exports or imports  base64 encoded modules
      
     .DESCRIPTION
      VDS
-	module export c:\vds\trunk\sum.psm1 c:\vds\trunk\sum.dll
-	module import c:\vds\trunk\sum.dll | run
+    module export c:\vds\trunk\sum.psm1 c:\vds\trunk\sum.dll
+    module import c:\vds\trunk\sum.dll | run
     
     .LINK
     https://dialogshell.com/vds/help/index.php/module
@@ -3122,14 +3125,14 @@ function mod($a,$b) {
 function mousedown {
     return [System.Windows.Forms.UserControl]::MouseButtons | Out-String
 <#
-	.SYNOPSIS
-	Returns the mousebutton that is pressed.
-	 
-	.DESCRIPTION
-	$mousedown = $(mousedown)
-	
-	.LINK
-	https://dialogshell.com/vds/help/index.php/mousedown
+    .SYNOPSIS
+    Returns the mousebutton that is pressed.
+     
+    .DESCRIPTION
+    $mousedown = $(mousedown)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/mousedown
 #>
 } 
 
@@ -3431,142 +3434,142 @@ function pred($a) {
 }
 
 function presentation($a,$b,$c,$d,$e,$f,$g,$h,$i){
-	switch ($a){
-		create {
+    switch ($a){
+        create {
 
-		$xaml = @"
-			<Window
-					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-					Title="$b" Height="$g" Width="$f">
-					<Grid Name="$c">
-					</Grid>
-			</Window>
+        $xaml = @"
+            <Window
+                    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    Title="$b" Height="$g" Width="$f">
+                    <Grid Name="$c">
+                    </Grid>
+            </Window>
 "@
-			$MainWindow = (presentation $xaml)
-			return $MainWindow
-		}
-		add {
-			$control = new-object System.Windows.Controls.$c
-			$control.Content = "$h"
-			$b.Children.Insert($b.Children.Count, $control)
-			$control.VerticalAlignment = "Top"
-			$control.HorizontalAlignment = "Left"
-			$control.Margin = "$e,$d,0,0"
-			$control.Height = "$g"
-			$control.Width = "$f"
-			return $control
-		}
-		insert {
-		$control = new-object System.Windows.Controls.$c
-		$b.Children.Insert($b.Children.Count, $control)
-		return $control
-		}
-		findname {
-		return $b.FindName($c)
-		}
-		valign { $b.VerticalAlignment = $c
-		}
-		align { $b.HorizontalAlignment = $c
-		}
-		content { $b.Content = $c}
-		margin {$b.Margin = $c}
-		height {$b.Height = $c}
-		width {$b.Width = $c}
-		navigationwindow {
-		$Xaml = @"
-			<NavigationWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name = "NavWindow" Width = "600" Height = "400" WindowStartupLocation = "CenterScreen" ResizeMode = "CanMinimize" ></NavigationWindow>
+            $MainWindow = (presentation $xaml)
+            return $MainWindow
+        }
+        add {
+            $control = new-object System.Windows.Controls.$c
+            $control.Content = "$h"
+            $b.Children.Insert($b.Children.Count, $control)
+            $control.VerticalAlignment = "Top"
+            $control.HorizontalAlignment = "Left"
+            $control.Margin = "$e,$d,0,0"
+            $control.Height = "$g"
+            $control.Width = "$f"
+            return $control
+        }
+        insert {
+        $control = new-object System.Windows.Controls.$c
+        $b.Children.Insert($b.Children.Count, $control)
+        return $control
+        }
+        findname {
+        return $b.FindName($c)
+        }
+        valign { $b.VerticalAlignment = $c
+        }
+        align { $b.HorizontalAlignment = $c
+        }
+        content { $b.Content = $c}
+        margin {$b.Margin = $c}
+        height {$b.Height = $c}
+        width {$b.Width = $c}
+        navigationwindow {
+        $Xaml = @"
+            <NavigationWindow xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Name = "NavWindow" Width = "600" Height = "400" WindowStartupLocation = "CenterScreen" ResizeMode = "CanMinimize" ></NavigationWindow>
 "@
 $wind = presentation page $Xaml
 if ($b)
 {$wind.Content = (presentation page $b)}
 return $wind
-		}
-		page {
-			$b = $b -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
-			[xml]$b = $b
-			$presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $b))
-			$b.SelectNodes("//*[@Name]") | %{
-				Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
-			}
-		return $presentation
-		}
-		window {
-			$b = $b -replace "x:N", 'N' -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
-			[xml]$b = $b
-			$presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $b))
-			$b.SelectNodes("//*[@Name]") | %{
-				Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
-			}
-		return $presentation
-		}
-		explicit {
-		[xml]$a = $a
-			$presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
-			return $presentation
-		}
-		strict {
-			[xml]$a = $a
-			$presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
-			$a.SelectNodes("//*[@Name]") | %{
-				Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
-			}
-		return $presentation
-		}
-		default {
-			$a = $a -replace "x:N", 'N' -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
-			[xml]$a = $a
-			$presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
-			$a.SelectNodes("//*[@Name]") | %{
-				Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
-			}
-		return $presentation
-		}
-	}
+        }
+        page {
+            $b = $b -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
+            [xml]$b = $b
+            $presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $b))
+            $b.SelectNodes("//*[@Name]") | %{
+                Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
+            }
+        return $presentation
+        }
+        window {
+            $b = $b -replace "x:N", 'N' -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
+            [xml]$b = $b
+            $presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $b))
+            $b.SelectNodes("//*[@Name]") | %{
+                Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
+            }
+        return $presentation
+        }
+        explicit {
+        [xml]$a = $a
+            $presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
+            return $presentation
+        }
+        strict {
+            [xml]$a = $a
+            $presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
+            $a.SelectNodes("//*[@Name]") | %{
+                Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
+            }
+        return $presentation
+        }
+        default {
+            $a = $a -replace "x:N", 'N' -replace 'd:DesignHeight="\d*?"', '' -replace 'x:Class=".*?"', '' -replace 'mc:Ignorable="d"', '' -replace 'd:DesignWidth="\d*?"', '' 
+            [xml]$a = $a
+            $presentation = [Windows.Markup.XamlReader]::Load((new-object System.Xml.XmlNodeReader $a))
+            $a.SelectNodes("//*[@Name]") | %{
+                Set-Variable -Name $_.Name.ToString() -Value $presentation.FindName($_.Name) -Scope global
+            }
+        return $presentation
+        }
+    }
 <#
     .SYNOPSIS
     Creates a Windows Foundation Presentation window or page form and elements within.
      
     .DESCRIPTION
      VDS
-	 $presentation 	= presentation create "Admin Calculator" calc 0 0 148 229
-		#dynamically create window on the fly, like a winform
-	 $ButtonCE = presentation add $calc Button 30 5 30 30 "CE"  
-	 
-	 $ButtonCE = presentation insert $calc Button
-		#insert into existing grid
-		
-	$calc = presentation findname $presentation calc
-		#return the presentation object with the name specfied from the presentation object specfied
-	 
-	 presentation valign $button1 "Top"
-	 presentation align $button1 "center"
-	 
-	 presentation content $page2
-		#where page2 is a wpf page
-	
-	presentation margin $button1 10
-	presentation height $button1 40
-	presentation width $button1 120
-	
-	presentation navigationwindow $page2
-		#where page2 is a presentation page
-		#parses names and filters XAML.
-	
-	$pres = presentation page $page2
-	
-	$presentation = presentation window $page1
-		#parses names and filters XAML.
-	
-	$presentation = presentation explicit $page1
-		#Doesn't parse names, and XAML must be powershell ready.
-		
-	$presentation = presentation strict $page1
-		#Parses names, but assumes XAML is powershell ready.
-	
-	$presentation = presentation $page1
-		#see presentation window.
-	    
+     $presentation  = presentation create "Admin Calculator" calc 0 0 148 229
+        #dynamically create window on the fly, like a winform
+     $ButtonCE = presentation add $calc Button 30 5 30 30 "CE"  
+     
+     $ButtonCE = presentation insert $calc Button
+        #insert into existing grid
+        
+    $calc = presentation findname $presentation calc
+        #return the presentation object with the name specfied from the presentation object specfied
+     
+     presentation valign $button1 "Top"
+     presentation align $button1 "center"
+     
+     presentation content $page2
+        #where page2 is a wpf page
+    
+    presentation margin $button1 10
+    presentation height $button1 40
+    presentation width $button1 120
+    
+    presentation navigationwindow $page2
+        #where page2 is a presentation page
+        #parses names and filters XAML.
+    
+    $pres = presentation page $page2
+    
+    $presentation = presentation window $page1
+        #parses names and filters XAML.
+    
+    $presentation = presentation explicit $page1
+        #Doesn't parse names, and XAML must be powershell ready.
+        
+    $presentation = presentation strict $page1
+        #Parses names, but assumes XAML is powershell ready.
+    
+    $presentation = presentation $page1
+        #see presentation window.
+        
     .LINK
     https://dialogshell.com/vds/help/index.php/Presentation
 #>
@@ -3680,7 +3683,7 @@ function registry ($a, $b, $c, $d, $e) {
         renamekey {
             Rename-Item -Path $b -NewName $c
         }
-		newkey {
+        newkey {
             New-Item -Path $b -Name $c
         }
         newitem {
@@ -3784,32 +3787,32 @@ function rem {
 #>
 } #This is done.
 function resource ($a,$b,$c) {
-	switch ($a)
-	{
-		load {
-			return [Byte[]](resource decode (get-content $b))
-		}
-		import{
-			$import = [System.IO.File]::ReadAllBytes($b)
-			return [System.Convert]::ToBase64String($import)
-		}
-		export{
-			$export = [System.Convert]::FromBase64String($b)
-			[System.IO.File]::WriteAllBytes($c,$export)
-		}
-		asciiencode{
-			$enc = [system.Text.Encoding]::ASCII
-			return [System.Convert]::ToBase64String($enc.GetBytes($b))
-		}
-		asciidecode{
-			$decode = [System.Convert]::FromBase64String($b)
-			return [System.Text.Encoding]::ASCII.GetString($decode)
-		}
-		decode {
-		return [System.Convert]::FromBase64String($b)
-		#although this works, it returns a system object, which is not usable. We need raw. Not sure how to fix.
-		}
-	}
+    switch ($a)
+    {
+        load {
+            return [Byte[]](resource decode (get-content $b))
+        }
+        import{
+            $import = [System.IO.File]::ReadAllBytes($b)
+            return [System.Convert]::ToBase64String($import)
+        }
+        export{
+            $export = [System.Convert]::FromBase64String($b)
+            [System.IO.File]::WriteAllBytes($c,$export)
+        }
+        asciiencode{
+            $enc = [system.Text.Encoding]::ASCII
+            return [System.Convert]::ToBase64String($enc.GetBytes($b))
+        }
+        asciidecode{
+            $decode = [System.Convert]::FromBase64String($b)
+            return [System.Text.Encoding]::ASCII.GetString($decode)
+        }
+        decode {
+        return [System.Convert]::FromBase64String($b)
+        #although this works, it returns a system object, which is not usable. We need raw. Not sure how to fix.
+        }
+    }
 <#
     .SYNOPSIS
     Comment
@@ -3817,21 +3820,21 @@ function resource ($a,$b,$c) {
     .DESCRIPTION
      VDS
     
-	$resource = resource load .\resource.res
-		#imports and decodes a base64 encoded file
-	
-	$resource = resource import .\resource.ico
-		#import a resource directly from file, imports to base64
-	
-	resource export $resource .\resource.res
-		#Exports a resource to a base64 encoded file
-		
-	$encode = resource asciiencode "this string"
-	
-	$decode = resource asciidecode "dGhpcyBzdHJpbmc="
-	
-	$decode = resource decode $resrouce #not working yet I think
-	
+    $resource = resource load .\resource.res
+        #imports and decodes a base64 encoded file
+    
+    $resource = resource import .\resource.ico
+        #import a resource directly from file, imports to base64
+    
+    resource export $resource .\resource.res
+        #Exports a resource to a base64 encoded file
+        
+    $encode = resource asciiencode "this string"
+    
+    $decode = resource asciidecode "dGhpcyBzdHJpbmc="
+    
+    $decode = resource decode $resrouce #not working yet I think
+    
     .LINK
     https://dialogshell.com/vds/help/index.php/resource
 #>
@@ -3887,44 +3890,44 @@ function selected($a) {
 }
 
 function selenium ($a,$b,$c,$d) {
-	switch ($a){
-		reference {
-			$env:PATH += ";$b"
-			Add-Type -Path ($b + 'WebDriver.dll')
-			$ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
-			$ChromeOptions.AddAdditionalCapability("useAutomationExtension", $false)
-			$global:selenium = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
-		}
-		open {
-			$global:selenium.Navigate().GoToURL($b) 
-		}
-		get {
-			return $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]")
-		}
-		set {
-			$global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").SendKeys($d)
-		}
-		click {
-			$global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").Click()
-		}
-		stop {
-			$global:selenium.Close()
-			$global:selenium.Quit()
-			Get-Process -Name chromedriver -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
-		}
-	}
+    switch ($a){
+        reference {
+            $env:PATH += ";$b"
+            Add-Type -Path ($b + 'WebDriver.dll')
+            $ChromeOptions = New-Object OpenQA.Selenium.Chrome.ChromeOptions
+            $ChromeOptions.AddAdditionalCapability("useAutomationExtension", $false)
+            $global:selenium = New-Object OpenQA.Selenium.Chrome.ChromeDriver($ChromeOptions)
+        }
+        open {
+            $global:selenium.Navigate().GoToURL($b) 
+        }
+        get {
+            return $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]")
+        }
+        set {
+            $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").SendKeys($d)
+        }
+        click {
+            $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").Click()
+        }
+        stop {
+            $global:selenium.Close()
+            $global:selenium.Quit()
+            Get-Process -Name chromedriver -ErrorAction SilentlyContinue | Stop-Process -ErrorAction SilentlyContinue
+        }
+    }
 <#
     .SYNOPSIS
     Requires webdriver.dll and chromedriver.exe for qa of google chrome
      
     .DESCRIPTION
      VDS
-	selenium reference 'c:\temp\psl\'
-	selenium open 'http://google.com'
-	$value = $(selenium get 'id' 'Text1')
-	selenium set 'id' 'Text1' 'new value'
-	selenium click 'id' 'button1'
-	selenium stop
+    selenium reference 'c:\temp\psl\'
+    selenium open 'http://google.com'
+    $value = $(selenium get 'id' 'Text1')
+    selenium set 'id' 'Text1' 'new value'
+    selenium click 'id' 'button1'
+    selenium stop
     
     .LINK
     https://dialogshell.com/vds/help/index.php/selenium
@@ -3948,42 +3951,42 @@ function sendmsg($a,$b,$c,$d) {
 }
 
 function server ($a,$b,$c){
-	switch ($a) {
-		start {
-			$vdsServer = New-Object Net.HttpListener
-			$server = $b + ':' + $c + '/'
-			$vdsServer.Prefixes.Add($server)
-			$vdsServer.Start()
-			return $vdsServer
-		}
-		watch {
-			$event = $b.GetContext()
-			return $event
-		}
-		context {
-			return $b.Request.Url.LocalPath
-		}
-		return {
-			$buffer = [System.Text.Encoding]::ASCII.GetBytes($c)
-			$b.Response.ContentLength64 = (len $buffer)
-			$b.Response.OutputStream.Write($buffer, 0, (len $buffer))
-			$b.Response.Close()
-		}
-		stop {
-			$b.Stop()
-		}
-	}
+    switch ($a) {
+        start {
+            $vdsServer = New-Object Net.HttpListener
+            $server = $b + ':' + $c + '/'
+            $vdsServer.Prefixes.Add($server)
+            $vdsServer.Start()
+            return $vdsServer
+        }
+        watch {
+            $event = $b.GetContext()
+            return $event
+        }
+        context {
+            return $b.Request.Url.LocalPath
+        }
+        return {
+            $buffer = [System.Text.Encoding]::ASCII.GetBytes($c)
+            $b.Response.ContentLength64 = (len $buffer)
+            $b.Response.OutputStream.Write($buffer, 0, (len $buffer))
+            $b.Response.Close()
+        }
+        stop {
+            $b.Stop()
+        }
+    }
 <#
     .SYNOPSIS
     Controls web server transactions
      
     .DESCRIPTION
      VDS
-	$vdsServer = server start http://localhost:2323
-	$event = (server watch $vdsServer)
-	if(equal (server context $event) "/")
-	server return $event $return
-	server stop $vdsServer
+    $vdsServer = server start http://localhost:2323
+    $event = (server watch $vdsServer)
+    if(equal (server context $event) "/")
+    server return $event $return
+    server stop $vdsServer
     
     .LINK
     https://dialogshell.com/vds/help/index.php/server
@@ -4079,10 +4082,10 @@ function strdel($a,$b,$c) {
 }
 
 function streamimage ($a){
-	$s = iwr $a
-	$r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
-	$r.Write($s.content, 0, $s.content.Length)
-	return [System.Drawing.Image]::FromStream($r, $true)
+    $s = iwr $a
+    $r = New-Object IO.MemoryStream($s.content, 0, $s.content.Length)
+    $r.Write($s.content, 0, $s.content.Length)
+    return [System.Drawing.Image]::FromStream($r, $true)
 <#
     .SYNOPSIS
      Creates a image from a web url stream
@@ -4093,7 +4096,7 @@ function streamimage ($a){
     
     .LINK
     https://dialogshell.com/vds/help/index.php/streamimage
-#>			
+#>          
 }
 
 function string($a) {
@@ -4232,15 +4235,15 @@ function sysinfo($a) {
         }
     }
 <#
-	.SYNOPSIS
-	 Returns information about the system according to parameter.
-	 Available parameters: freemem, pixperin, screenwidth, winver, win32, psver, dsver, winboot, screenrect, language
-	 
-	.DESCRIPTION
-	$syinfo = $(sysinfo screenrect)
-	
-	.LINK
-	https://dialogshell.com/vds/help/index.php/sysinfo
+    .SYNOPSIS
+     Returns information about the system according to parameter.
+     Available parameters: freemem, pixperin, screenwidth, winver, win32, psver, dsver, winboot, screenrect, language
+     
+    .DESCRIPTION
+    $syinfo = $(sysinfo screenrect)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/sysinfo
 #>
 }
 
@@ -4410,7 +4413,7 @@ function unequal($a, $b) {
 
 function unzip($a,$b)
 {
-	Expand-Archive -LiteralPath $a -DestinationPath $b -force
+    Expand-Archive -LiteralPath $a -DestinationPath $b -force
 <#
     .SYNOPSIS
     Decompresses a folder to folder
@@ -4455,187 +4458,187 @@ function val($a) {
 } 
 
 function vkey($a){
-	switch($a)
-	{
-		None{return 0}
-		Alt{return 1}
-		Control{return 2}
-		Shift{return 4}
-		WinKey{return 8}
-		LBUTTON{return 0x01}
-		RBUTTON{return 0x02}
-		CANCEL{return 0x03}
-		MBUTTON{return 0x04}
-		XBUTTON1{return 0x05}
-		XBUTTON2{return 0x06}
-		BACK{return 0x08}
-		TAB{return 0x09}
-		CLEAR{return 0x0C}
-		RETURN{return 0x0D}
-		SHIFT{return 0x10}
-		CONTROL{return 0x11}
-		MENU{return 0x12}
-		PAUSE{return 0x13}
-		CAPITAL{return 0x14}
-		KANA{return 0x15}
-		HANGUEL{return 0x15}
-		HANGUL{return 0x15}
-		IME_ON{return 0x16}
-		JUNJA{return 0x17}
-		FINAL{return 0x18}
-		HANJA{return 0x19}
-		KANJI{return 0x19}
-		IME_OFF{return 0x1A}
-		ESCAPE{return 0x1B}
-		CONVERT{return 0x1C}
-		NONCONVERT{return 0x1D}
-		ACCEPT{return 0x1E}
-		MODECHANGE{return 0x1F}
-		SPACE{return 0x20}
-		PRIOR{return 0x21}
-		NEXT{return 0x22}
-		END{return 0x23}
-		HOME{return 0x24}
-		LEFT{return 0x25}
-		UP{return 0x26}
-		RIGHT{return 0x27}
-		DOWN{return 0x28}
-		SELECT{return 0x29}
-		PRINT{return 0x2A}
-		EXECUTE{return 0x2B}
-		SNAPSHOT{return 0x2C}
-		INSERT{return 0x2D}
-		DELETE{return 0x2E}
-		HELP{return 0x2F}
-		0{return 0x31}
-		1{return 0x32}
-		3{return 0x34}
-		4{return 0x35}
-		6{return 0x36}
-		7{return 0x37}
-		8{return 0x38}
-		9{return 0x39}
-		A{return 0x41}
-		B{return 0x42}
-		C{return 0x43}
-		D{return 0x44}
-		E{return 0x45}
-		F{return 0x46}
-		G{return 0x47}
-		H{return 0x48}
-		I{return 0x49}
-		J{return 0x4A}
-		K{return 0x4B}
-		L{return 0x4C}
-		M{return 0x4D}
-		N{return 0x4E}
-		O{return 0x4F}
-		P{return 0x50}
-		Q{return 0x51}
-		R{return 0x52}
-		S{return 0x53}
-		T{return 0x54}
-		U{return 0x55}
-		V{return 0x56}
-		W{return 0x57}
-		X{return 0x58}
-		Y{return 0x59}
-		Z{return 0x5A}
-		LWIN{return 0x5B}
-		RWIN{return 0x5C}
-		APPS{return 0x5D}
-		SLEEP{return 0x5F}
-		NUMPAD0{return 0x60}
-		NUMPAD1{return 0x61}
-		NUMPAD2{return 0x62}
-		NUMPAD3{return 0x63}
-		NUMPAD4{return 0x64}
-		NUMPAD5{return 0x65}
-		NUMPAD6{return 0x66}
-		NUMPAD7{return 0x67}
-		NUMPAD8{return 0x68}
-		NUMPAD9{return 0x69}
-		MULTIPLY{return 0x6A}
-		ADD{return 0x6B}
-		SEPARATOR{return 0x6C}
-		SUBTRACT{return 0x6D}
-		DECIMAL{return 0x6E}
-		DIVIDE{return 0x6F}
-		F1{return 0x70}
-		F2{return 0x71}
-		F3{return 0x72}
-		F4{return 0x73}
-		F5{return 0x74}
-		F6{return 0x75}
-		F7{return 0x76}
-		F8{return 0x77}
-		F9{return 0x78}
-		F10{return 0x79}
-		F11{return 0x7A}
-		F12{return 0x7B}
-		F13{return 0x7C}
-		F14{return 0x7D}
-		F15{return 0x7E}
-		F16{return 0x7F}
-		F17{return 0x80}
-		F18{return 0x81}
-		F19{return 0x82}
-		F20{return 0x83}
-		F21{return 0x84}
-		F22{return 0x85}
-		F23{return 0x86}
-		F24{return 0x87}
-		NUMLOCK{return 0x90}
-		SCROLL{return 0x91}
-		LSHIFT{return 0xA0}
-		RSHIFT{return 0xA1}
-		LCONTROL{return 0xA2}
-		RCONTROL{return 0xA3}
-		LMENU{return 0xA4}
-		RMENU{return 0xA5}
-		BROWSER_BACK{return 0xA6}
-		BROWSER_FORWARD{return 0xA7}
-		BROWSER_REFRESH{return 0xA8}
-		BROWSER_STOP{return 0xA9}
-		BROWSER_SEARCH{return 0xAA}
-		BROWSER_FAVORITES{return 0xAB}
-		BROWSER_HOME{return 0xAC}
-		VOLUME_MUTE{return 0xAD}
-		VOLUME_DOWN{return 0xAE}
-		VOLUME_UP{return 0xAF}
-		MEDIA_NEXT_TRACK{return 0xB0}
-		MEDIA_PREV_TRACK{return 0xB1}
-		MEDIA_STOP{return 0xB2}
-		MEDIA_PLAY_PAUSE{return 0xB3}
-		LAUNCH_MAIL{return 0xB4}
-		LAUNCH_MEDIA_SELECT{return 0xB5}
-		LAUNCH_APP1{return 0xB6}
-		LAUNCH_APP2{return 0xB7}
-		OEM_1{return 0xBA}
-		OEM_PLUS{return 0xBB}
-		OEM_COMMA{return 0xBC}
-		OEM_MINUS{return 0xBD}
-		OEM_PERIOD{return 0xBE}
-		OEM_2{return 0xBF}
-		OEM_3{return 0xC0}
-		OEM_4{return 0xDB}
-		OEM_5{return 0xDC}
-		OEM_6{return 0xDD}
-		OEM_7{return 0xDE}
-		OEM_8{return 0xDF}
-		OEM_102{return 0xE2}
-		PROCESSKEY{return 0xE5}
-		PACKET{return 0xE7}
-		ATTN{return 0xF6}
-		CRSEL{return 0xF7}
-		EXSEL{return 0xF8}
-		EREOF{return 0xF9}
-		PLAY{return 0xFA}
-		ZOOM{return 0xFB}
-		NONAME{return 0xFC}
-		PA1{return 0xFD}
-		OEM_CLEAR{return 0xFE}
-	}
+    switch($a)
+    {
+        None{return 0}
+        Alt{return 1}
+        Control{return 2}
+        Shift{return 4}
+        WinKey{return 8}
+        LBUTTON{return 0x01}
+        RBUTTON{return 0x02}
+        CANCEL{return 0x03}
+        MBUTTON{return 0x04}
+        XBUTTON1{return 0x05}
+        XBUTTON2{return 0x06}
+        BACK{return 0x08}
+        TAB{return 0x09}
+        CLEAR{return 0x0C}
+        RETURN{return 0x0D}
+        SHIFT{return 0x10}
+        CONTROL{return 0x11}
+        MENU{return 0x12}
+        PAUSE{return 0x13}
+        CAPITAL{return 0x14}
+        KANA{return 0x15}
+        HANGUEL{return 0x15}
+        HANGUL{return 0x15}
+        IME_ON{return 0x16}
+        JUNJA{return 0x17}
+        FINAL{return 0x18}
+        HANJA{return 0x19}
+        KANJI{return 0x19}
+        IME_OFF{return 0x1A}
+        ESCAPE{return 0x1B}
+        CONVERT{return 0x1C}
+        NONCONVERT{return 0x1D}
+        ACCEPT{return 0x1E}
+        MODECHANGE{return 0x1F}
+        SPACE{return 0x20}
+        PRIOR{return 0x21}
+        NEXT{return 0x22}
+        END{return 0x23}
+        HOME{return 0x24}
+        LEFT{return 0x25}
+        UP{return 0x26}
+        RIGHT{return 0x27}
+        DOWN{return 0x28}
+        SELECT{return 0x29}
+        PRINT{return 0x2A}
+        EXECUTE{return 0x2B}
+        SNAPSHOT{return 0x2C}
+        INSERT{return 0x2D}
+        DELETE{return 0x2E}
+        HELP{return 0x2F}
+        0{return 0x31}
+        1{return 0x32}
+        3{return 0x34}
+        4{return 0x35}
+        6{return 0x36}
+        7{return 0x37}
+        8{return 0x38}
+        9{return 0x39}
+        A{return 0x41}
+        B{return 0x42}
+        C{return 0x43}
+        D{return 0x44}
+        E{return 0x45}
+        F{return 0x46}
+        G{return 0x47}
+        H{return 0x48}
+        I{return 0x49}
+        J{return 0x4A}
+        K{return 0x4B}
+        L{return 0x4C}
+        M{return 0x4D}
+        N{return 0x4E}
+        O{return 0x4F}
+        P{return 0x50}
+        Q{return 0x51}
+        R{return 0x52}
+        S{return 0x53}
+        T{return 0x54}
+        U{return 0x55}
+        V{return 0x56}
+        W{return 0x57}
+        X{return 0x58}
+        Y{return 0x59}
+        Z{return 0x5A}
+        LWIN{return 0x5B}
+        RWIN{return 0x5C}
+        APPS{return 0x5D}
+        SLEEP{return 0x5F}
+        NUMPAD0{return 0x60}
+        NUMPAD1{return 0x61}
+        NUMPAD2{return 0x62}
+        NUMPAD3{return 0x63}
+        NUMPAD4{return 0x64}
+        NUMPAD5{return 0x65}
+        NUMPAD6{return 0x66}
+        NUMPAD7{return 0x67}
+        NUMPAD8{return 0x68}
+        NUMPAD9{return 0x69}
+        MULTIPLY{return 0x6A}
+        ADD{return 0x6B}
+        SEPARATOR{return 0x6C}
+        SUBTRACT{return 0x6D}
+        DECIMAL{return 0x6E}
+        DIVIDE{return 0x6F}
+        F1{return 0x70}
+        F2{return 0x71}
+        F3{return 0x72}
+        F4{return 0x73}
+        F5{return 0x74}
+        F6{return 0x75}
+        F7{return 0x76}
+        F8{return 0x77}
+        F9{return 0x78}
+        F10{return 0x79}
+        F11{return 0x7A}
+        F12{return 0x7B}
+        F13{return 0x7C}
+        F14{return 0x7D}
+        F15{return 0x7E}
+        F16{return 0x7F}
+        F17{return 0x80}
+        F18{return 0x81}
+        F19{return 0x82}
+        F20{return 0x83}
+        F21{return 0x84}
+        F22{return 0x85}
+        F23{return 0x86}
+        F24{return 0x87}
+        NUMLOCK{return 0x90}
+        SCROLL{return 0x91}
+        LSHIFT{return 0xA0}
+        RSHIFT{return 0xA1}
+        LCONTROL{return 0xA2}
+        RCONTROL{return 0xA3}
+        LMENU{return 0xA4}
+        RMENU{return 0xA5}
+        BROWSER_BACK{return 0xA6}
+        BROWSER_FORWARD{return 0xA7}
+        BROWSER_REFRESH{return 0xA8}
+        BROWSER_STOP{return 0xA9}
+        BROWSER_SEARCH{return 0xAA}
+        BROWSER_FAVORITES{return 0xAB}
+        BROWSER_HOME{return 0xAC}
+        VOLUME_MUTE{return 0xAD}
+        VOLUME_DOWN{return 0xAE}
+        VOLUME_UP{return 0xAF}
+        MEDIA_NEXT_TRACK{return 0xB0}
+        MEDIA_PREV_TRACK{return 0xB1}
+        MEDIA_STOP{return 0xB2}
+        MEDIA_PLAY_PAUSE{return 0xB3}
+        LAUNCH_MAIL{return 0xB4}
+        LAUNCH_MEDIA_SELECT{return 0xB5}
+        LAUNCH_APP1{return 0xB6}
+        LAUNCH_APP2{return 0xB7}
+        OEM_1{return 0xBA}
+        OEM_PLUS{return 0xBB}
+        OEM_COMMA{return 0xBC}
+        OEM_MINUS{return 0xBD}
+        OEM_PERIOD{return 0xBE}
+        OEM_2{return 0xBF}
+        OEM_3{return 0xC0}
+        OEM_4{return 0xDB}
+        OEM_5{return 0xDC}
+        OEM_6{return 0xDD}
+        OEM_7{return 0xDE}
+        OEM_8{return 0xDF}
+        OEM_102{return 0xE2}
+        PROCESSKEY{return 0xE5}
+        PACKET{return 0xE7}
+        ATTN{return 0xF6}
+        CRSEL{return 0xF7}
+        EXSEL{return 0xF8}
+        EREOF{return 0xF9}
+        PLAY{return 0xFA}
+        ZOOM{return 0xFB}
+        NONAME{return 0xFC}
+        PA1{return 0xFD}
+        OEM_CLEAR{return 0xFE}
+    }
 <#
     .SYNOPSIS
     Only useful with Hotkey function as a parameter.
@@ -4719,7 +4722,7 @@ function warn ($a,$b) {
 
 function webExec($a)
 {
-	invoke-expression (iwr -uri $a -UseDefaultCredentials)
+    invoke-expression (iwr -uri $a -UseDefaultCredentials)
 <#
     .SYNOPSIS
     CAUTION: Executes code directly from URI seemlessly. WARNING: Review code first. RISK: Be very careful. LIABILITY: I'm not.
@@ -4730,7 +4733,7 @@ function webExec($a)
     
     .LINK
     https://dialogshell.com/vds/help/index.php/webexec
-#> 	
+#>  
 }
 
 function winactive($a) {
@@ -4752,7 +4755,7 @@ function winatpoint($a,$b) {
     $p = new-object system.drawing.point($a,$b)
     $return = [vds]::WindowFromPoint($p)
     return $return;
-	#}
+    #}
 <#
     .SYNOPSIS
     Returns the window handle at x y
@@ -4857,13 +4860,13 @@ function window ($a,$b,$c,$d,$e,$f) {
         ontop {
             [vds]::SetWindowPos($b, -1, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
         }
-		notontop {
+        notontop {
             [vds]::SetWindowPos($b, -2, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
         }
         send {
             window activate $b
             $wshell = New-Object -ComObject wscript.shell
-            $wshell.SendKeys($c)
+            $wshell.SendKeys("$c")
         }
         settext {
             [vds]::SetWindowText($b,$c)
@@ -4986,11 +4989,11 @@ function winpos($a,$b) {
 
 function invertWindow($a) {
     $Rect = New-Object RECT
-	$Rect.Top = $(winpos $a T)
-	$Rect.Left = $(winpos $a L)
-	$Rect.Right = (($(winpos $a W)) + ($(winpos $a L)))
-	$Rect.Bottom = (($(winpos $a H)) + ($(winpos $a T)))
-	info "$($Rect.Top) $($Rect.Left) $($Rect.Right) $($Rect.Bottom)" 
+    $Rect.Top = $(winpos $a T)
+    $Rect.Left = $(winpos $a L)
+    $Rect.Right = (($(winpos $a W)) + ($(winpos $a L)))
+    $Rect.Bottom = (($(winpos $a H)) + ($(winpos $a T)))
+    info "$($Rect.Top) $($Rect.Left) $($Rect.Right) $($Rect.Bottom)" 
     [vds]::InvertRect($a, [ref]$Rect) | Out-Null
 
 <#
@@ -5213,14 +5216,14 @@ function zero($a) {
 
 function zip($a,$b,$c)
 {
-	switch ($a){
-		update{
-		compress-archive -path $b -update -destinationpath $c
-		}
-		default{
-		compress-archive -path $a -destinationpath $b
-		}
-	}
+    switch ($a){
+        update{
+        compress-archive -path $b -update -destinationpath $c
+        }
+        default{
+        compress-archive -path $a -destinationpath $b
+        }
+    }
 <#
     .SYNOPSIS
     Compresses a folder or updates a compressed folder.
@@ -5228,7 +5231,7 @@ function zip($a,$b,$c)
     .DESCRIPTION
      VDS
     zip c:\temp\window c:\temp\window.zip
-	zip update c:\temp\window c:\window.zip
+    zip update c:\temp\window c:\window.zip
     
     .LINK
     https://dialogshell.com/vds/help/index.php/zero

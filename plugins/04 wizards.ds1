@@ -1,10 +1,7 @@
-$sep = new-object System.Windows.Forms.ToolStripSeparator
-$build.DropDownItems.Add($sep) | Out-Null 
-
 $testmenu = new-object System.Windows.Forms.ToolStripMenuItem
 $testmenu.name = "Wizards"
 $testmenu.Text = "Wizards"
-$build.DropDownItems.Add($testmenu) | Out-Null
+$mPlugins.DropDownItems.Add($testmenu) | Out-Null
 
 $testmenu.add_Click({
     $curdir = $(curdir)
