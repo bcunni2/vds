@@ -1,9 +1,9 @@
 $lexiconpath = "$plugins\01 lexicon.ds1"
 if ($global:lexinit -eq $null) {
-$timerz = timer 1000
+$timerz = timer 2500
 $global:tickz = $false
 $global:ticky = $false
-$timery = timer 1000
+$timery = timer 2500
 $global:lexinit = $true
 $global:regtabs = 0..100
 }
@@ -39,119 +39,207 @@ if ($global:tickz -ne $true){
     $global:tickz = $true
     $timerz.add_Tick({
 
-    if ($FastTab.SelectedTab.Controls[0].selectionlength -eq 0)
-    {
-        $dang = $FastTab.SelectedTab.Controls[0]
-        $var = "if"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+        if ($FastTab.SelectedTab.Controls[0].selectionlength -eq 0)
+        {
+            $dang = $FastTab.SelectedTab.Controls[0]
+            $var = "ask"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                }
+            }
+            $var = "elseif"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                        window send $(winexists $(winactive)) "elseif {(}{)}{{}
+    
+{}}$(key up)$(key up)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)"  
+                }
+            }
+            $var = "if"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    window send $(winexists $(winactive)) "if {(}{)}{{}
+    
+{}}$(key up)$(key up)$(key right)$(key right)$(key right)"
+                }
+            }
+            $var = "else"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                        window send $(winexists $(winactive)) "else{{}
+    
+{}}$(key up)$(key end)"
+                }
+            }
+            $var = "color"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                     $popupr = dialog popup $FastTextForm ("AliceBlue,AntiqueWhite,Aqua,Aquamarine,Azure,Beige,Bisque,Black,BlanchedAlmond,Blue,BlueViolet,Brown,BurlyWood,CadetBlue,Chartreuse,Chocolate,Coral,CornflowerBlue,Cornsilk,Crimson,Cyan,DarkBlue,DarkCyan,DarkGoldenrod,DarkGray,DarkGreen,DarkKhaki,DarkMagenta,DarkOliveGreen,DarkOrange,DarkOrchid,DarkRed,DarkSalmon,DarkSeaGreen,DarkSlateBlue,DarkSlateGray,DarkTurquoise,DarkViolet,DeepPink,DeepSkyBlue,DimGray,DodgerBlue,Firebrick,FloralWhite,ForestGreen,Fuchsia,Gainsboro,GhostWhite,Gold,Goldenrod,Gray,Green,GreenYellow,Honeydew,HotPink,IndianRed,Indigo,IsEmpty,IsKnownColor,IsNamedColor,IsSystemColor,Ivory,Khaki,Lavender,LavenderBlush,LawnGreen,LemonChiffon,LightBlue,LightCoral,LightCyan,LightGoldenrodYellow,LightGray,LightGreen,LightPink,LightSalmon,LightSeaGreen,LightSkyBlue,LightSlateGray,LightSteelBlue,LightYellow,Lime,LimeGreen,Linen,Magenta,Maroon,MediumAquamarine,MediumBlue,MediumOrchid,MediumPurple,MediumSeaGreen,MediumSlateBlue,MediumSpringGreen,MediumTurquoise,MediumVioletRed,MidnightBlue,MintCream,MistyRose,Moccasin,Name,NavajoWhite,Navy,OldLace,Olive,OliveDrab,Orange,OrangeRed,Orchid,PaleGoldenrod,PaleGreen,PaleTurquoise,PaleVioletRed,PapayaWhip,PeachPuff,Peru,Pink,Plum,PowderBlue,Purple,Red,RosyBrown,RoyalBlue,SaddleBrown,Salmon,SandyBrown,SeaGreen,SeaShell,Sienna,Silver,SkyBlue,SlateBlue,SlateGray,Snow,SpringGreen,SteelBlue,Tan,Teal,Thistle,Tomato,Transparent,Turquoise,Violet,Wheat,White,WhiteSmoke,Yellow,YellowGreen")
+                     }
+            }
+            $var = "clipboard"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("clipboard set,clipboard append,clipboard clear")
+                }
+            }
+            $var = "dialog add"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("dialog add Button|$(curdir)\..\res\Button.ico,dialog add CheckBox|$(curdir)\..\res\CheckBox.ico,dialog add CheckedListBox|$(curdir)\..\res\CheckedListBox.ico,dialog add ComboBox|$(curdir)\..\res\ComboBox.ico,dialog add DataGrid|$(curdir)\..\res\DataGrid.ico,dialog add DataGridView|$(curdir)\..\res\DataGridView.ico,dialog add DateTimePicker|$(curdir)\..\res\DateTimePicker.ico,dialog add GroupBox|$(curdir)\..\res\GroupBox.ico,dialog add HScrollBar|$(curdir)\..\res\HScrollBar.ico,dialog add Label|$(curdir)\..\res\Label.ico,dialog add LinkLabel|$(curdir)\..\res\LinkLabel.ico,dialog add ListBox|$(curdir)\..\res\ListBox.ico,dialog add MaskedTextBox|$(curdir)\..\res\MaskedTextBox.ico,dialog add MenuStrip|$(curdir)\..\res\MenuStrip.ico,dialog add MonthCalendar|$(curdir)\..\res\MonthCalendar.ico,dialog add NumericUpDown|$(curdir)\..\res\NumericUpDown.ico,dialog add Panel|$(curdir)\..\res\Panel.ico,dialog add PictureBox|$(curdir)\..\res\PictureBox.ico,dialog add ProgressBar|$(curdir)\..\res\ProgressBar.ico,dialog add RadioButton|$(curdir)\..\res\RadioButton.ico,dialog add RichTextBox|$(curdir)\..\res\RichTextBox.ico,dialog add StatusStrip|$(curdir)\..\res\StatusStrip.ico,dialog add TextBox|$(curdir)\..\res\TextBox.ico,dialog add ToolStrip|$(curdir)\..\res\ToolStrip.ico,dialog add TrackBar|$(curdir)\..\res\TrackBar.ico,dialog add TreeView|$(curdir)\..\res\TreeView.ico,dialog add VScrollBar|$(curdir)\..\res\VScrollBar.ico,dialog add WebBrowser|$(curdir)\..\res\WebBrowser.ico")
+                }
+            }
+            $var = "dialog create"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                        $global:eleOK = "true"
+
+if ($global:dd -eq "false")
+{
+$global:dd = "true"
+DesignWindow
+elementswindow
+$mForm.Show()
+$mFormList.items.clear()
+$content = (get-content "$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).dsproj" | select-object -skip 1)
+$mFormList.items.AddRange($content)
+[vds]::SetWindowPos($mForm.handle, -1, $(winpos $mForm.handle L), $(winpos $mForm.handle T), $(winpos $mForm.handle W), $(winpos $mForm.handle H), 0x0040)
+[vds]::SetWindowPos($elements.handle, -1, $(winpos $elements.handle L), $(winpos $elements.handle T), $(winpos $elements.handle W), $(winpos $elements.handle H), 0x0040)
+[vds]::SetWindowPos($mFormGroupBox.handle, -1, $(winpos $mFormGroupBox.handle L), $(winpos $mFormGroupBox.handle T), $(winpos $mFormGroupBox.handle W), $(winpos $mFormGroupBox.handle H), 0x0040)
+    }
+
+                }
+            }
+            $var = "dialog cursor"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                     $popupr = dialog popup $FastTextForm ("Arrow,Cross,Default,Hand,Help,HSplit,IBeam,No,NoMove2D,NoMoveHoriz,NoMoveVert,PanEast,PanNE,PanNorth,PanNW,PanSE,PanSouth,PanSW,PanWest,SizeAll,SizeNESW,SizeNS,SizeNWSE,SizeWE,UpArrow,VSplit,WaitCursor")
+                }
+            }
+            $var = "add"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                      $popupr = dialog popup $FastTextForm ("Click,Closing,Closed,DragEnter,Tick,Resize,MouseDown,MouseMove,MouseUp,KeyUp,KeyDown,KeyPress")
+                }
+            }
+            $var = "add_"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                      $popupr = dialog popup $FastTextForm ("Click,Closing,Closed,DragEnter,Tick,Resize,MouseDown,MouseMove,MouseUp,KeyUp,KeyDown,KeyPress")
+                }
+            }
+            $var = "dialog"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("dialog add,dialog BackGroundImage,dialog clear,dialog clearsel,dialog close,dialog create,dialog cursor,dialog disable,dialog enable,dialog focus,dialog hide,dialog image,dialog name,dialog popup,dialog properties,dialog property,dialog remove,dialog run,dialog set,dialog setpos,dialog settip,dialog show,dialog showmodal,dialog snap,dialog title")
+                }
+            }
+            $var = "console"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("console read,console write")
+                }
+            }
+            $var = "database"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("database open,database close,database execute")
+                }
             }
         }
-        $var = "color"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
+    
+        if ($global:theme -eq "Light")
+        {$popupr.backcolor = $light
+        $popupr.forecolor = $dark}
+        if ($global:theme -eq "Dark")
+        {$popupr.backcolor = $dark
+        $popupr.forecolor = $light}
+
+        if ($popupr.handle){
+        $popupr.show($(mousepos x),$(mousepos y))
+        write-host "process"
+        write-host $popupr.handle
         }
-        $var = "clipboard"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "dialog add"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "dialog create"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "dialog cursor"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "add"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()               
-            }
-        }
-        $var = "add_"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "dialog"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "console"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-        $var = "database"
-        $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
-        switch ($gee.text) {
-            $var{    
-                $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
-                $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
-                $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
-            }
-        }
-    }})
+    })
 }
 
+
+
+
+<#
 switch ($FastTab.SelectedTab.Controls[0].Selection.text.toLower())
 {
     "if"{
     window send $(winexists $(winactive)) "if {(}{)}{{}
     
-{}}$(key up)$(key up)"
-    #$popupr = dialog popup $FastTextForm ("if,if else,if elseif,if elseif else,else,elseif,elseif else")
+{}}$(key up)$(key up)$(key right)$(key right)$(key right)"
     }
+    "else"{
+    window send $(winexists $(winactive)) "else{{}
+    
+{}}$(key up)$(key end)"
+    }
+    "elseif"{
+    window send $(winexists $(winactive)) "elseif {(}{)}{{}
+    
+{}}$(key up)$(key up)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)"   
+    } 
     "color"{
     $popupr = dialog popup $FastTextForm ("AliceBlue,AntiqueWhite,Aqua,Aquamarine,Azure,Beige,Bisque,Black,BlanchedAlmond,Blue,BlueViolet,Brown,BurlyWood,CadetBlue,Chartreuse,Chocolate,Coral,CornflowerBlue,Cornsilk,Crimson,Cyan,DarkBlue,DarkCyan,DarkGoldenrod,DarkGray,DarkGreen,DarkKhaki,DarkMagenta,DarkOliveGreen,DarkOrange,DarkOrchid,DarkRed,DarkSalmon,DarkSeaGreen,DarkSlateBlue,DarkSlateGray,DarkTurquoise,DarkViolet,DeepPink,DeepSkyBlue,DimGray,DodgerBlue,Firebrick,FloralWhite,ForestGreen,Fuchsia,Gainsboro,GhostWhite,Gold,Goldenrod,Gray,Green,GreenYellow,Honeydew,HotPink,IndianRed,Indigo,IsEmpty,IsKnownColor,IsNamedColor,IsSystemColor,Ivory,Khaki,Lavender,LavenderBlush,LawnGreen,LemonChiffon,LightBlue,LightCoral,LightCyan,LightGoldenrodYellow,LightGray,LightGreen,LightPink,LightSalmon,LightSeaGreen,LightSkyBlue,LightSlateGray,LightSteelBlue,LightYellow,Lime,LimeGreen,Linen,Magenta,Maroon,MediumAquamarine,MediumBlue,MediumOrchid,MediumPurple,MediumSeaGreen,MediumSlateBlue,MediumSpringGreen,MediumTurquoise,MediumVioletRed,MidnightBlue,MintCream,MistyRose,Moccasin,Name,NavajoWhite,Navy,OldLace,Olive,OliveDrab,Orange,OrangeRed,Orchid,PaleGoldenrod,PaleGreen,PaleTurquoise,PaleVioletRed,PapayaWhip,PeachPuff,Peru,Pink,Plum,PowderBlue,Purple,Red,RosyBrown,RoyalBlue,SaddleBrown,Salmon,SandyBrown,SeaGreen,SeaShell,Sienna,Silver,SkyBlue,SlateBlue,SlateGray,Snow,SpringGreen,SteelBlue,Tan,Teal,Thistle,Tomato,Transparent,Turquoise,Violet,Wheat,White,WhiteSmoke,Yellow,YellowGreen")
     }
@@ -164,7 +252,7 @@ switch ($FastTab.SelectedTab.Controls[0].Selection.text.toLower())
     "database"{
     $popupr = dialog popup $FastTextForm ("database open,database close,database execute")
     }
-    "add"{
+    "add" {
     $popupr = dialog popup $FastTextForm ("Click,Closing,Closed,DragEnter,Tick,Resize,MouseDown,MouseMove,MouseUp,KeyUp,KeyDown,KeyPress")
     }
     "add_"{
@@ -198,6 +286,7 @@ $mFormList.items.AddRange($content)
     }
 }
 
+
 if ($global:theme -eq "Light")
 {$popupr.backcolor = $light
 $popupr.forecolor = $dark}
@@ -213,7 +302,7 @@ $popupr.show($(mousepos x),$(mousepos y))
 #window send $FastTab.Handle $(key right)
 
 
-
+#>
 
 
 

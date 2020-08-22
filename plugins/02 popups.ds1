@@ -23,25 +23,25 @@ switch (dlgname $menu) {
 
 "Click"
 {window send $(winexists $(winactive)) "add_Click{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "Closing"
 {window send $(winexists $(winactive)) "add_Closing{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "Closed"
 {window send $(winexists $(winactive)) "add_Closed{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "DragEnter"
 {window send $(winexists $(winactive)) "add_DragEnter{(}{{}
 #.AllowDrop = $(chr 36)true
-	if {(}$(chr 36)_.Data.GetDataPresent{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)} {{}
-	foreach {(}$(chr 36)z in $(chr 36)_.Data.GetData{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)}  {{}
-	
+    if {(}$(chr 36)_.Data.GetDataPresent{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)} {{}
+    foreach {(}$(chr 36)z in $(chr 36)_.Data.GetData{(}{[}Windows.Forms.DataFormats]::FileDrop{)}{)}  {{}
+    
 {}}
 $(shift $(tab)){}}
 $(shift $(tab)){}}{)}$(key up)$(key up)$(key up)$(key end)"
@@ -55,40 +55,40 @@ $(shift $(tab)){}}{)}$(key up)$(key up)$(key up)$(key end)"
 
 "Resize"
 {window send $(winexists $(winactive)) "add_Resize{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "MouseDown"
 {window send $(winexists $(winactive)) "add_MouseDown{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "MouseMove"
 {window send $(winexists $(winactive)) "add_MouseMove{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "MouseUp"
 {window send $(winexists $(winactive)) "add_MouseUp{(}{{}
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "KeyUp"
 {window send $(winexists $(winactive)) "add_KeyUp{(}{{}
 #info ($(chr 36)_.KeyCode | out-string)
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "KeyDown"
 {window send $(winexists $(winactive)) "add_KeyDown{(}{{}
 #info ($(chr 36)_.KeyCode | out-string)
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "KeyPress"
 {window send $(winexists $(winactive)) "add_KeyPress{(}{{}
 #info ($(chr 36)_.KeyChar | out-string)
-	
+    
 {}}{)}$(key up)$(key end)"}
 
 "dialog add Panel"
