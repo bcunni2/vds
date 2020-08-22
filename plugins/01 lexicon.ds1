@@ -49,6 +49,25 @@ if ($global:tickz -ne $true){
                     $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
                     $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
                     $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    window send $(winexists $(winactive)) "if {(}$(chr 36){(}ask $(chr 34)$(chr 34) $(chr 34)$(chr 34){)} -eq $(chr 34)Yes$(chr 34){)}{{}
+    
+{}}
+else{{}
+    
+{}}$(key up)$(key up)$(key up)$(key up)$(key up)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)"
+                }
+            }
+            $var = "both"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    window send $(winexists $(winactive)) "if {(}$(chr 36){(}both {(}{)} {(}{)}{)}{)}{{}
+    
+{}}
+$(key up)$(key up)$(key up)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)$(key right)"
                 }
             }
             $var = "elseif"

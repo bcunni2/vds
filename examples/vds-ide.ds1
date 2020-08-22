@@ -395,10 +395,10 @@ $statusupdate.add_Tick({
             $toolstrip1.items[20].enabled = $false
             #disable debug
             #disable compile
-			
-			#enable save
-			$file.dropdownitems[2].enabled = $true
-			$toolstrip1.items[2].enabled = $true
+            
+            #enable save
+            $file.dropdownitems[2].enabled = $true
+            $toolstrip1.items[2].enabled = $true
         }
         else {
             $StatusStrip1.items[0].Text = $localezoom+": "+$FastTab.SelectedTab.Controls[0].zoom+"%"
@@ -433,9 +433,6 @@ $statusupdate.add_Tick({
         }
         if ($FastTab.SelectedTab.Controls[0].TextLength -eq 0)
         {
-            $edit.dropdownitems[6].enabled = $false
-            $edit.dropdownitems[7].enabled = $false
-            $edit.dropdownitems[8].enabled = $false
             $edit.dropdownitems[9].enabled = $false
             $toolstrip1.items[12].enabled = $false  
         #disable find
@@ -450,9 +447,6 @@ $statusupdate.add_Tick({
         #disable compile
         }
         else{
-            $edit.dropdownitems[6].enabled = $true
-            $edit.dropdownitems[7].enabled = $true
-            $edit.dropdownitems[8].enabled = $true
             $edit.dropdownitems[9].enabled = $true
             $toolstrip1.items[12].enabled = $true   
         }
@@ -831,7 +825,6 @@ $mForm.Show()
         [vds]::SetWindowPos($(winexists "Find"), -2, $(winpos $FastTab.handle W) - $(winpos $(winexists "Find") W) - 30, 0, $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H),0x0040)
         window fuse ($(winexists "Find")) $FastTab.SelectedTab.Handle
         }
-       $FastTab.SelectedTab.Controls[0] | get-member | out-file c:\temp\fasttextbox.txt
        
        }
         "$localereplace" {$FastTab.SelectedTab.Controls[0].ShowReplaceDialog()
