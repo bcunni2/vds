@@ -126,6 +126,16 @@ $(key up)$(key up)$(key up)$(key right)$(key right)$(key right)$(key right)$(key
                     $popupr = dialog popup $FastTextForm ("clipboard set,clipboard append,clipboard clear")
                 }
             }
+            $var = "csv"
+            $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
+            switch ($gee.text) {
+                $var{    
+                    $FastTab.SelectedTab.Controls[0].selectionstart = $FastTab.SelectedTab.Controls[0].selectionstart - $var.length
+                    $FastTab.SelectedTab.Controls[0].selectionlength = $var.length   
+                    $FastTab.SelectedTab.Controls[0].DoSelectionVisible()
+                    $popupr = dialog popup $FastTextForm ("csv read,csv write,csv count,csv save")
+                }
+            }
             $var = "dialog add"
             $gee = $dang.GetRange($dang.selectionstart - $var.length,$dang.Selectionstart)
             switch ($gee.text) {
@@ -232,8 +242,6 @@ $mFormList.items.AddRange($content)
 
         if ($popupr.handle){
         $popupr.show($(mousepos x),$(mousepos y))
-        write-host "process"
-        write-host $popupr.handle
         }
     })
 }
