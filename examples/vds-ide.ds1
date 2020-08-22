@@ -321,8 +321,8 @@ $closetab.add_Click({
         if($FastTab.TabPages.Count -gt 0){$FastTab.SelectedIndex = $FastTab.TabPages.Count -1}
     }
     $regtabs[$FastTab.TabPages.Count] = "false"
-	$findregtabs[$FastTab.TabPages.Count] = "false"
-	$replaceregtabs[$FastTab.TabPages.Count] = "false"
+    $findregtabs[$FastTab.TabPages.Count] = "false"
+    $replaceregtabs[$FastTab.TabPages.Count] = "false"
 })
                     
 $script:statusstripvisible = $true      
@@ -395,11 +395,14 @@ $statusupdate.add_Tick({
             $toolstrip1.items[20].enabled = $false
             #disable debug
             #disable compile
+			
+			#enable save
+			$file.dropdownitems[2].enabled = $true
+			$toolstrip1.items[2].enabled = $true
         }
         else {
             $StatusStrip1.items[0].Text = $localezoom+": "+$FastTab.SelectedTab.Controls[0].zoom+"%"
             $toolstrip1.items[2].enabled = $false
-            $toolstrip1.items[2].enabled = $true
             $file.dropdownitems[3].enabled = $true
             #disable save button
             $file.dropdownitems[2].enabled = $false
@@ -824,20 +827,20 @@ $mForm.Show()
         "$localepaste" {$FastTab.SelectedTab.Controls[0].Paste()}
         "$localefind" {$FastTab.SelectedTab.Controls[0].ShowFindDialog()
         if ($findregtabs[$FastTab.SelectedIndex] -ne "true") {
-		$findregtabs[$FastTab.SelectedIndex] = $true
-		[vds]::SetWindowPos($(winexists "Find"), -2, $(winpos $FastTab.handle W) - $(winpos $(winexists "Find") W) - 30, 0, $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H),0x0040)
-		window fuse ($(winexists "Find")) $FastTab.SelectedTab.Handle
-		}
+        $findregtabs[$FastTab.SelectedIndex] = $true
+        [vds]::SetWindowPos($(winexists "Find"), -2, $(winpos $FastTab.handle W) - $(winpos $(winexists "Find") W) - 30, 0, $(winpos $(winexists "Find") W), $(winpos $(winexists "Find") H),0x0040)
+        window fuse ($(winexists "Find")) $FastTab.SelectedTab.Handle
+        }
        $FastTab.SelectedTab.Controls[0] | get-member | out-file c:\temp\fasttextbox.txt
-	   
-	   }
+       
+       }
         "$localereplace" {$FastTab.SelectedTab.Controls[0].ShowReplaceDialog()
-		if ($replaceregtabs[$FastTab.SelectedIndex] -ne "true") {
-		$replaceregtabs[$FastTab.SelectedIndex] = $true
-		[vds]::SetWindowPos($(winexists "Find and replace"), -2, $(winpos $FastTab.handle W) - $(winpos $(winexists "Find and replace") W) - 30 , 135, $(winpos $(winexists "Find and replace") W), $(winpos $(winexists "Find and replace") H),0x0040)
-		window fuse ($(winexists "Find and replace")) $FastTab.SelectedTab.Handle
-	}
-		}
+        if ($replaceregtabs[$FastTab.SelectedIndex] -ne "true") {
+        $replaceregtabs[$FastTab.SelectedIndex] = $true
+        [vds]::SetWindowPos($(winexists "Find and replace"), -2, $(winpos $FastTab.handle W) - $(winpos $(winexists "Find and replace") W) - 30 , 135, $(winpos $(winexists "Find and replace") W), $(winpos $(winexists "Find and replace") H),0x0040)
+        window fuse ($(winexists "Find and replace")) $FastTab.SelectedTab.Handle
+    }
+        }
         "&Go To..." { $FastTab.SelectedTab.Controls[0].ShowGotoDialog()
     }
         "$localeselectall" {$FastTab.SelectedTab.Controls[0].SelectAll()}
