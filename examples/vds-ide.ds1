@@ -115,7 +115,12 @@ $localeplugins      = "&Plugins"
 $localedialogshell = "DialogShell"
 
 #lgplv3 - fork located at https://github.com/brandoncomputer/FastColoredTextBox
-[Reflection.Assembly]::LoadFile("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\FastColoredTextBox.dll") | Out-Null
+if ($(file("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\FastColoredTextBox.dll")))
+{[Reflection.Assembly]::LoadFile("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\FastColoredTextBox.dll") | Out-Null}
+else
+{[Reflection.Assembly]::LoadFile("$(curdir)\FastColoredTextBox.dll") | out-null
+}
+
 $script:lastfind = ""
 $script:curdoc = ""
 $FastTextForm       = dialog create "Visual DialogShell" 0 0 600 480
@@ -636,7 +641,13 @@ $mForm.Show()
                 {
                     directory change $(path $(string $FastTab.SelectedTab.Text))
                 }
-            $inv = "'start' '$curdir\..\compile\dialogshell.exe'"
+							
+				if ($(sysinfo win32) -eq 64)
+				{
+            $inv = "'start' '$curdir\..\compile\dialogshell.exe'"}
+			else
+			{$inv = "'start' '$curdir\..\compile\dialogshell32.exe'"
+			}
    #   info       "$curdir\..\compile\dialogshell.exe"
              run "& $inv"
              directory change $curdir
@@ -673,7 +684,13 @@ $mForm.Show()
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
-            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"       
+			
+			if ($(sysinfo win32) -eq 64) {			
+            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"    
+			}
+			else {
+			$inv = "'start' '$curdir\..\compile\dialogshell32.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"   
+			}
             $StatusStrip1.items[0].Text = "DEBUGGING...."
             run "& $inv"
             #shell open $(string $FastTab.SelectedTab.Text)

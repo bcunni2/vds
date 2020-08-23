@@ -582,10 +582,10 @@ function csv ($a,$b,$c,$d,$e,$f)
       $csv = $(csv read c:\temp\temp.csv 2 2)
       
       #There are 300 columns. Write to cell A1, return the whole CSV back.
-      $csv = $(csv read c:\temp\temp.csv 1 1 NotMyCow 300)
+      $csv = $(csv write c:\temp\temp.csv 1 1 NotMyCow 300)
       
       #There are less than 255 columns. Write cell B2, return the whole CSV back.
-      $csv = $(csv read c:\temp\temp.csv 2 2 Beans)
+      $csv = $(csv write c:\temp\temp.csv 2 2 Beans)
       
       #Get the row count of a CSV
       $csv = $(csv count c:\temp\temp.csv)
@@ -4206,7 +4206,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim()
         } 
         win32 {
-            return [Environment]::Is64BitProcess | Out-String
+            return ([IntPtr]::size * 8)
         } 
         psver {
             $major = $psversiontable.psversion.major | Out-String

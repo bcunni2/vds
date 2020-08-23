@@ -1,25 +1,13 @@
 function global:menuitemmouseup ($menu) {
 switch (dlgname $menu) {
-"if"
-{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
-
-"if else"
-{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)else {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
-
-"if elseif"
-{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)elseif {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
-
-"if elseif else"
-{window send $(winexists $(winactive)) "if {(} -eq {)}{{}$(cr)$(cr){}}$(cr)elseif {{}$(cr)$(cr){}}$(cr)else{{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)$(key up)"}
-
-"else"
-{window send $(winexists $(winactive)) "else {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
-
-"elseif"
-{window send $(winexists $(winactive)) "elseif {(} -eq {)}{{}$(cr)$(cr){}}$(key up)"}
-
-"elseif else"
-{window send $(winexists $(winactive)) "elseif {(} -eq {)}{{}$(cr)$(cr){}}$(cr)else {{}$(cr)$(cr){}}$(key up)$(key up)$(key up)$(key up)"}
+"csv read"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "$(chr 36)csv = $(chr 36)(csv read $(chr 36)file 2 2)"}
+"csv write"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "$(chr 36)csv = $(chr 36)(csv write $(chr 36)file 2 2 $(chr 34)new value$(chr 34))"}
+"csv count"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "$(chr 36)count = $(chr 36)(csv count $(chr 36)file)"}
+"csv save"
+{$FastTab.SelectedTab.Controls[0].SelectedText = "csv save $(chr 36)csv $(chr 36)file"}
 
 "Click"
 {window send $(winexists $(winactive)) "add_Click{(}{{}

@@ -8,7 +8,7 @@
 
 $dbq = ('Dbq='+($(curdir))+'\vds.mdb')
 
-Add-OdbcDsn -Name "VDS" -DriverName "Microsoft Access Driver (*.mdb, *.accdb)" -DsnType "User" -Platform "64-bit" -SetPropertyValue "$dbq"
+Add-OdbcDsn -Name "VDS" -DriverName "Microsoft Access Driver (*.mdb)" -DsnType "User" -Platform "32-bit" -SetPropertyValue "$dbq"
 
 database open vds
 
