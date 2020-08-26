@@ -1065,7 +1065,7 @@ function differ ($a,$b) {
 #>
 }
 
-function dirdlg($a,$b,$c) {
+function dirdlg($a,$b) {
 $dirdlg = New-Object System.Windows.Forms.FolderBrowserDialog
 $dirdlg.description = $a
 $dirdlg.rootfolder = $b
@@ -1865,7 +1865,7 @@ function excel($a,$b,$c,$d)
      $excel = excel connect
      
      #Create new workbook
-     $excel = excel new
+     $workbook = excel new
      
      #Show Excel
      excel show 
@@ -2802,15 +2802,11 @@ function like ($a,$b) {
  #>
  }
 
-
-
- 
-
  function list ($a,$b,$c,$d) {
     switch ($a) {
-        add {
-            $b.Items.Add($c) | Out-Null
-        }
+	    add {
+                $b.Items.Add($c) | Out-Null
+		}
         append {
             $b.Items.AddRange($c.Split())
         }
@@ -2820,6 +2816,9 @@ function like ($a,$b) {
         clear {
             $b.Items.Clear()
         }
+		create{
+		return New-Object System.Windows.Forms.listbox
+		}
         copy {
             Set-Clipboard $b.items
         } 
@@ -2930,6 +2929,7 @@ function like ($a,$b) {
     append
     assign
     clear
+	create
     copy
     delete
     insert
@@ -2958,6 +2958,7 @@ function like ($a,$b) {
     list append $list1 $string
     list assign $list1 $list2
     list clear $list1
+	$list1 = list create
     list copy $list1
     list delete $list1
     list insert $list1 $item

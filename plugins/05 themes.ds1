@@ -210,11 +210,11 @@ $popup.forecolor = $light}
 #write-host ($StatusStrip1.Visible | out-string)
     if ($StatusStrip1.Visible -eq $True) {
         dialog setpos $FastTab 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)
-		dialog setpos $FastCover 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 110)
+		dialog setpos $FastCover 51 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 109)
     }
     else {
         dialog setpos $FastTab 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 90)
-		dialog setpos $FastCover 50 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 90)
+		dialog setpos $FastCover 51 0 (differ (dlgpos $FastTextForm "W") 15) (differ (dlgpos $FastTextForm "H") 89)
     }
     if ($FastTab.TabPages.Count -lt 1) {
         dialog hide $closetab

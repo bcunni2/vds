@@ -34,7 +34,7 @@ if ($(not $(file "C:\Users\$env:username\Documents\DialogShell"))) {
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\*.mdb") ("c:\users\$env:username\documents\DialogShell\examples")
     file copy ("$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\examples\en-US\*") ("c:\users\$env:username\documents\DialogShell\examples\en-US")
     $items = Get-ChildItem -Path ("c:\users\$env:username\documents\DialogShell\examples")
-    foreach ($item in $items) {
+    foreach ($item in $items) { 
         if ($(trim $(ext $(string $item))) -eq 'ds1') {
            $item.FullName | Out-File "c:\users\$env:username\documents\DialogShell\$(name $item.FullName).dsproj" 
         }
@@ -158,8 +158,8 @@ dialog property $toolstrip1.Items["$localeplay"] tooltiptext "$localeplaytt"
 #dialog property $toolstrip1.Items["$localedebug"] tooltiptext "$localedebugtt"
 #dialog property $toolstrip1.Items["$localecompile"] tooltiptext "$localecompilett"
 
-$FastTextForm.AllowDrop = $true
-$FastTextForm.add_DragEnter({
+$FastTab.AllowDrop = $true
+$FastTab.add_DragEnter({
     if ($_.Data.GetDataPresent([Windows.Forms.DataFormats]::FileDrop)) {
         foreach ($filename in $_.Data.GetData([Windows.Forms.DataFormats]::FileDrop))  {
             switch(ext $filename) {
@@ -356,8 +356,8 @@ $statusupdate = timer 200
 $statusupdate.enabled = $true
 $statusupdate.add_Tick({
     if ($FastTab.TabPages.Count -gt 0) {
-			$toolstrip1.items[12].enabled = $true
-	        $edit.dropdownitems[6].enabled = $true
+            $toolstrip1.items[12].enabled = $true
+            $edit.dropdownitems[6].enabled = $true
             $edit.dropdownitems[7].enabled = $true
             $edit.dropdownitems[8].enabled = $true
             $view.dropdownitems[2].enabled = $true
@@ -641,13 +641,13 @@ $mForm.Show()
                 {
                     directory change $(path $(string $FastTab.SelectedTab.Text))
                 }
-							
-				if ($(sysinfo win32) -eq 64)
-				{
+                            
+                if ($(sysinfo win32) -eq 64)
+                {
             $inv = "'start' '$curdir\..\compile\dialogshell.exe'"}
-			else
-			{$inv = "'start' '$curdir\..\compile\dialogshell32.exe'"
-			}
+            else
+            {$inv = "'start' '$curdir\..\compile\dialogshell32.exe'"
+            }
    #   info       "$curdir\..\compile\dialogshell.exe"
              run "& $inv"
              directory change $curdir
@@ -684,13 +684,13 @@ $mForm.Show()
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
-			
-			if ($(sysinfo win32) -eq 64) {			
+            
+            if ($(sysinfo win32) -eq 64) {          
             $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"    
-			}
-			else {
-			$inv = "'start' '$curdir\..\compile\dialogshell32.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"   
-			}
+            }
+            else {
+            $inv = "'start' '$curdir\..\compile\dialogshell32.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"   
+            }
             $StatusStrip1.items[0].Text = "DEBUGGING...."
             run "& $inv"
             #shell open $(string $FastTab.SelectedTab.Text)
