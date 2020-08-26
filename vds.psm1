@@ -3903,13 +3903,13 @@ function selenium ($a,$b,$c,$d) {
             $global:selenium.Navigate().GoToURL($b) 
         }
         get {
-            return $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]")
+            return $global:selenium.FindElementsByXPath("//*[contains(@$b, '$c')]")
         }
         set {
-            $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").SendKeys($d)
+            $global:selenium.FindElementsByXPath("//*[contains(@$b, '$c')]").SendKeys($d)
         }
         click {
-            $global:selenium.FindElementByXPath("//*[contains(@$b, '$c')]").Click()
+            $global:selenium.FindElementsByXPath("//*[contains(@$b, '$c')]").Click()
         }
         stop {
             $global:selenium.Close()
