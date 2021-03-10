@@ -2480,6 +2480,7 @@ function hotkey($a,$b,$c,$d) {
      VDS
     Registers a hotkey by ID to fire function hotkeyEvent by vkey function.
     Example:
+    hotkey $Form 1 $null (vkey home)
     hotkey $FastTextForm 1 ((vkey alt)+(vkey control)) (vkey v)
     function hotkeyEvent ($a) {
     switch ($a){
