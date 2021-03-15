@@ -30,6 +30,12 @@ public class vds {
 public static extern bool InvertRect(IntPtr hDC, [In] ref RECT lprc);
 
 [DllImport("user32.dll")]
+public static extern IntPtr GetDC(IntPtr hWnd);
+
+[DllImport("user32.dll")]
+public static extern void keybd_event(byte bVk, byte bScan, uint dwFlags, UIntPtr dwExtraInfo);
+
+[DllImport("user32.dll")]
 public static extern IntPtr WindowFromPoint(System.Drawing.Point p);
 // Now working in pwsh 7 thanks to advice from seeminglyscience#2404 on Discord
 [DllImport("user32.dll")]
@@ -4218,7 +4224,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.6.7'
+        return '0.2.7.0'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -4989,26 +4995,41 @@ function winpos($a,$b) {
 #>
 }
 
-function invertWindow($a) {
-    $Rect = New-Object RECT
-    $Rect.Top = $(winpos $a T)
-    $Rect.Left = $(winpos $a L)
-    $Rect.Right = (($(winpos $a W)) + ($(winpos $a L)))
-    $Rect.Bottom = (($(winpos $a H)) + ($(winpos $a T)))
-    info "$($Rect.Top) $($Rect.Left) $($Rect.Right) $($Rect.Bottom)" 
-    [vds]::InvertRect($a, [ref]$Rect) | Out-Null
-
-<#
+function keyPress($a,$b){
+	[vds]::keybd_event($a,0,0,[UIntPtr]::new(0))
+	wait $b
+	[vds]::keybd_event($a,0,2,[UIntPtr]::new(0))
+	<#
     .SYNOPSIS
-    Returns a position element of a window by paramater
-    Available parameters: T, L, W, H (Top, Left, Width, Height)
+	Presses and holds a vkey for a set amount of time.
      
     .DESCRIPTION
      VDS
-    $wintop = $(winpos $(winactive) T)
+    keyPress vkey(Q) 5
     
     .LINK
-    https://dialogshell.com/vds/help/index.php/winpos
+    https://dialogshell.com/vds/help/index.php/Keypress
+#>
+}
+
+function invertWindow($a) {
+    $Rect = New-Object RECT
+    $Rect.Top = 0
+    $Rect.Left = 0
+    $Rect.Right = (($(winpos $a W)) + ($(winpos $a L)))
+    $Rect.Bottom = (($(winpos $a H)) + ($(winpos $a T)))
+    [vds]::InvertRect($x,[ref]$Rect)
+
+<#
+    .SYNOPSIS
+	Inverts the colors of a window until the next redraw.
+     
+    .DESCRIPTION
+     VDS
+    invertwindow $(winexists 'windows powershell')
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/InvertWindow
 #>
 }
 

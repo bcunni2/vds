@@ -2195,21 +2195,12 @@ $mFormXTextBox2 = '$Form'
 })
  
 $mCancelButton.add_Click({
-$ask = $(ask "Changes will be lost. Continue to close?")
-if (($ask | out-string).trim() -eq "Yes"){
-$FormPropertiesGrid.Rows.Clear()
-$Global:mFormObj = new-object PSCustomObject 
-$Global:mFormObj | Add-Member -Name 'Elements' -MemberType NoteProperty -Value @() 
-renewGrids
 $mFormGroupBox.Dispose()
 $eleOK = "false"
 $elements.Dispose()
 window close $(winexists "Dialog Elements")
-$mFormXTextBox = "Form"
-$mFormXTextBox2 = '$Form'
 $mForm.Hide()
 $global:dd = "false"
-}
 })
 
 $mExportButton.Add_Click({ExportForm}) 
