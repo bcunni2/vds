@@ -11,7 +11,7 @@ It's like jQuery, but for PowerShell.
 DialogShell is a best effort to preserve the DialogScript language, more importantly it's method of operation into a modern format, PowerShell.
 
 ### Yes, again, but what is DialogShell?
-DialogShell is a PowerShell module.
+DialogShell is this PowerShell module. https://github.com/brandoncomputer/vds/blob/master/vds.psm1
 
 ### Yes, but there's obviously more than that here, so what is DialogShell?
 Visual DialogShell is a visual programming language, a product of DialogShell, which is a PowerShell module. It contains a executable that encompasses the codebase 'compile.exe' that allows you to create new executables in the DialogShell language (derived from PowerShell and DialogScript) for end user applications. Alternately you can call to the codebase vds.psm1 (dialogshell!) and make the deliverable a PowerShell script although this method isn't included in the release it's easy enough to apply from the source code.
