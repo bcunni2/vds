@@ -248,7 +248,6 @@ public class Window
     }
 }
 "@
-
 $global:xmen = $false
 $global:excelinit = $false
 $global:fieldsep = "|"
@@ -472,21 +471,6 @@ function console ($a,$b){
  #>
 }
 
-function init ($a) {
-		return Get-ItemProperty -Path $a -Name $b | Select -ExpandProperty $b
-<#
-    .SYNOPSIS
-    Returns the value of a registry entry
-     
-    .DESCRIPTION
-     VDS
-    $regread = $(regread hkcu:\software\dialogshell window)
-    
-    .LINK
-    https://dialogshell.com/vds/help/index.php/regread
-#>
-} #partial implementation - path names are slightly different, $a is path with a : in it, $b is property. No default return. 
- 
  function count ($a) {
     return $a.items.count
 <#
@@ -1070,7 +1054,11 @@ function decrypt ($a, $b){
   https://dialogshell.com/vds/help/index.php/Dialog
       #>  
 }
-  
+
+	<# Do not remove.
+	$("InstallLocation")
+	#>
+	
 function differ ($a,$b) {
     return $a - $b
 <#
