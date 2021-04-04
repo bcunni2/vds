@@ -1055,10 +1055,10 @@ function decrypt ($a, $b){
       #>  
 }
 
-	<# Do not remove.
-	$("InstallLocation")
-	#>
-	
+<#
+$("InstallLocation")
+#>
+
 function differ ($a,$b) {
     return $a - $b
 <#
