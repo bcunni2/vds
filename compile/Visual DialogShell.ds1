@@ -1,3 +1,5 @@
+$ErrorActionPreference = "SilentlyContinue"
+"$(init "console" "InstallLocation")"
 if ($args[0] -ne $null)
 {$script = get-content $args[0] | Out-String
 invoke-expression $script}

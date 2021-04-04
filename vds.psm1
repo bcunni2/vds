@@ -471,6 +471,21 @@ function console ($a,$b){
      https://dialogshell.com/vds/help/index.php?title=Console
  #>
 }
+
+function init ($a) {
+		return Get-ItemProperty -Path $a -Name $b | Select -ExpandProperty $b
+<#
+    .SYNOPSIS
+    Returns the value of a registry entry
+     
+    .DESCRIPTION
+     VDS
+    $regread = $(regread hkcu:\software\dialogshell window)
+    
+    .LINK
+    https://dialogshell.com/vds/help/index.php/regread
+#>
+} #partial implementation - path names are slightly different, $a is path with a : in it, $b is property. No default return. 
  
  function count ($a) {
     return $a.items.count
@@ -1837,7 +1852,7 @@ function excel($a,$b,$c,$d)
             $global:excelVDS.Worksheets.Item($b).Select()
         }
         SetCell {
-            $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value = $d
+            $global:excelVDS.ActiveSheet.Cells.Item($b,$c) = $d
         }
         GetCell {
                 return $global:excelVDS.ActiveSheet.Cells.Item($b,$c).value
@@ -3320,7 +3335,7 @@ function option ($a, $b, $c, $d) {
         fieldsep {
             $global:fieldsep = $b
         }
-    }
+	}
 <#
     .SYNOPSIS
     Declares an application option, currently colordlg and fieldsep
@@ -4224,7 +4239,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.7.0'
+        return '0.2.7.6'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -4866,10 +4881,10 @@ function window ($a,$b,$c,$d,$e,$f) {
             [vds]::ShowWindow($b, "SW_SHOW_NORMAL")
         }
         ontop {
-            [vds]::SetWindowPos($b, -1, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
+            [vds]::SetWindowPos($b, -1, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040) | out-null
         }
         notontop {
-            [vds]::SetWindowPos($b, -2, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040)
+            [vds]::SetWindowPos($b, -2, $(winpos $b T), $(winpos $b L), $(winpos $b W), $(winpos $b H), 0x0040) | out-null
         }
         send {
             window activate $b
