@@ -38,5 +38,6 @@ copy .\wizards .\setup\wizards
 copy .\license.md .\setup\license.md
 copy .\vds.dll .\setup\compile
 copy .\vds.dll .\setup\examples
+copy .\vds.psm1 .\setup\res\7\vds.dll
 
 setup.exe

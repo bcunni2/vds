@@ -1,5 +1,5 @@
 $erpref = $ErrorActionPreference
-$ErrorActionPreference = 'SilentlyContinue'
+#$ErrorActionPreference = 'SilentlyContinue'
 $sp = Split-Path -Parent -Path ([Environment]::GetCommandLineArgs()[0])
 	if ((Get-AuthenticodeSignature $sp\vds.dll).SignerCertificate.Thumbprint -eq 'EDB87F69A00BF024D88DDF2E97B345CBF5879D35'){
 		import-module $sp\vds.dll
