@@ -1,5 +1,3 @@
-Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase, System.ComponentModel
-
 Add-Type @"
 //" closing above quote for editing c# syntax in another editor.
 using System;
@@ -1054,10 +1052,6 @@ function decrypt ($a, $b){
   https://dialogshell.com/vds/help/index.php/Dialog
       #>  
 }
-
-<#
-$("InstallLocation")
-#>
 
 function differ ($a,$b) {
     return $a - $b
@@ -4227,7 +4221,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.7.6'
+        return '0.2.7.7'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
