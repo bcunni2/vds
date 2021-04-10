@@ -2,6 +2,8 @@
 
 Visual DialogShell is a way forward for DialogScript syntax within Powershell ~ this project exists to provide a vehicle for the spirit of the DialogScript language to continue - providing a concise, powerful, straightforward language with seemingly untyped variables.
 
+##NOTICE - Compiling is now disabled.
+
 ## Further...
 
 ### What is DialogShell?
