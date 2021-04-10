@@ -4221,7 +4221,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.7.7'
+        return '0.2.7.8'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
@@ -5257,3 +5257,37 @@ function zip($a,$b,$c)
     https://dialogshell.com/vds/help/index.php/zero
 #>
 }
+
+# SIG # Begin signature block
+# MIIFuQYJKoZIhvcNAQcCoIIFqjCCBaYCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
+# gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUUezIT0BCRhC7hy5alz3LKYlA
+# N1CgggNIMIIDRDCCAiygAwIBAgIQMzP03pcLfL5DIfHEes68WDANBgkqhkiG9w0B
+# AQsFADAmMSQwIgYDVQQDDBticmFuZG9uY29tcHV0ZXJAaG90bWFpbC5jb20wHhcN
+# MjEwNDAzMTcwODU0WhcNMjIwNDAzMTcyODU0WjAmMSQwIgYDVQQDDBticmFuZG9u
+# Y29tcHV0ZXJAaG90bWFpbC5jb20wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
+# AoIBAQCy18i9OucXtaE8i7jTqTKdCFw4bGLpwQqdfvSWUzTyfnrvw8reN9HpqH3X
+# eyRbQYsNPlyrDDFmmnBuoO8hk15KNgXWXbCUSoKGZ/vxsPFMah4XNkeIj0a4RwWc
+# e8BE+hoi4RIo9gGgOqE1RpOlqnuT4tTtxZSxiLjwBkl1mj/EssFF5UnkhiHrgfxd
+# iw5OFiH1QwisMe1ejPxaIG4pmQ4ToFrZfnfNUDrdkCYhVN/BwY9kefYuVZBnpMun
+# zDdpaWbY77empGNrD6L8Jtkh1HJkBl7/2wEDDjOvJVUJmaaqZmlf+O4O1PQIeHe7
+# /41I+zNGgk7n8sJBbYMhNDw2/t2RAgMBAAGjbjBsMA4GA1UdDwEB/wQEAwIHgDAT
+# BgNVHSUEDDAKBggrBgEFBQcDAzAmBgNVHREEHzAdghticmFuZG9uY29tcHV0ZXJA
+# aG90bWFpbC5jb20wHQYDVR0OBBYEFLaPE1bUySR9ImQ/3fR2OKX3t9XeMA0GCSqG
+# SIb3DQEBCwUAA4IBAQA7egk/qjLXSPYcIbR+WohJCylmdTHgKxUJNkDtRrnaw9JY
+# jhY3J7EdqHMd/MoeqbNj4rwByfBYS8f+h27gCjuR0kHuHzE3ABklTRDPQfgxuJFS
+# /0nvr73nqY2nYfimc2ppqpVV7fRSIduoJRSP5e1HHRyw5slJkTsRA7EFlwPcYrEH
+# svZv5hmFvJYAghBPokbXwG57dFrtMSoTmHgP1K4qlvJvRsTi8I4bzP++F9lylvjD
+# arrvFbhxp+t34KABzf3cFGRXRbePHqCOIotJDTtuwjqjJsDBVfgo08v1Gq4laIRu
+# Ig5wY2dq828YQHBeI4p7lMenZpDJHSaT54i1szH4MYIB2zCCAdcCAQEwOjAmMSQw
+# IgYDVQQDDBticmFuZG9uY29tcHV0ZXJAaG90bWFpbC5jb20CEDMz9N6XC3y+QyHx
+# xHrOvFgwCQYFKw4DAhoFAKB4MBgGCisGAQQBgjcCAQwxCjAIoAKAAKECgAAwGQYJ
+# KoZIhvcNAQkDMQwGCisGAQQBgjcCAQQwHAYKKwYBBAGCNwIBCzEOMAwGCisGAQQB
+# gjcCARUwIwYJKoZIhvcNAQkEMRYEFDuL9MO2VjAjAZLOV42xKOWUHhWhMA0GCSqG
+# SIb3DQEBAQUABIIBAJfed90LzyPsURGPETK+paTaBEV01RXBPrm2YF/Yy+ZM0r5r
+# N94emCAbIV0iyRiTGqDcaLofEgzboZU2c/amZCMPH+taGEExCjhR1upKRdAydZ/f
+# C7lHdwzbQSEoyDGDcYByL/wNhbRT03okvnh5dEvnOJteYfM6V4IhwoPQ51sWkddW
+# KcGmP6rAbfed1KOsLfpvzzW24y32ILQznHHbmoXON8ET+yuqap0yr22oDaKsjw07
+# 7AjQWfjttZwqgKxzGQ9S/VGaJcYvkHHu8O/tBoIxrcrkZMD7SftV/vR1g1RvCxqr
+# E1An4H3VJyt8niCon1UuiNz9JmZ7A37NXLmTI/Y=
+# SIG # End signature block
