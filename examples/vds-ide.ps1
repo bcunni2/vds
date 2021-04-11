@@ -1,5 +1,9 @@
-$ErrorActionPreference = "SilentlyContinue"
+$path = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $path
+[Environment]::CurrentDirectory = $path
+import-module ..\vds.psm1
 
+$ErrorActionPreference = "SilentlyContinue"
 $global:findregtabs = 0..100
 $global:replaceregtabs = 0..100
 
@@ -599,31 +603,8 @@ $mForm.Show()
 }
         }
         "$localecompile" {
-            if (file ((path $FastTab.SelectedTab.Text)+'\'+$(name $FastTab.SelectedTab.Text)+'.pil'))
-            {
-                $inv = "'$(curdir)\..\compile\compile-gui.exe' '$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).pil' '$(curdir)\..\compile'"
-                 run "& $inv"
-            }
-            else {
-                if ($FastTab.SelectedTab.Text -ne "[$localenewtt]") {
-                    if ($FastTab.TabPages.Count -gt 0) {
-                        inifile open ((path $FastTab.SelectedTab.Text)+'\'+(name $FastTab.SelectedTab.Text)+'.pil')
-                        inifile write compile inputfile $FastTab.SelectedTab.Text
-                        inifile write compile outputfile ((path $FastTab.SelectedTab.Text)+'\'+(name $FastTab.SelectedTab.Text)+'.exe')
-                        $inv = "'$(curdir)\..\compile\compile-gui.exe' '$(path $FastTab.SelectedTab.Text)\$(name $FastTab.SelectedTab.Text).pil' '$(curdir)\..\compile'"
-                        run "& $inv"
-                    }
-                    else { 
-                        $inv = "'$(curdir)\..\compile\compile-gui.exe'"
-                        run "& $inv"
-                    }
-                }
-                else {
-                    $inv = "'$(curdir)\..\compile\compile-gui.exe'"
-                     run "& $inv"
-                }
-            }    
-        }
+					info "Shortcut creator coming soon. For now use the link command based on the program launcher shortcuts."
+		}
         "100%" {
             $FastTab.SelectedTab.Controls[0].Zoom = 100
         }
@@ -642,13 +623,7 @@ $mForm.Show()
                     directory change $(path $(string $FastTab.SelectedTab.Text))
                 }
                             
-                if ($(sysinfo win32) -eq 64)
-                {
-            $inv = "'start' '$curdir\..\compile\dialogshell.exe'"}
-            else
-            {$inv = "'start' '$curdir\..\compile\dialogshell32.exe'"
-            }
-   #   info       "$curdir\..\compile\dialogshell.exe"
+ $inv = "'start' 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' '-ep bypass -sta -file $(chr 34)$curdir\..\compile\dialogshell.ps1$(chr 34)'"            
              run "& $inv"
              directory change $curdir
     }
@@ -684,13 +659,9 @@ $mForm.Show()
             }
             $curdir = $(curdir)
             directory change $(path $(string $FastTab.SelectedTab.Text))
-            
-            if ($(sysinfo win32) -eq 64) {          
-            $inv = "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"    
-            }
-            else {
-            $inv = "'start' '$curdir\..\compile\dialogshell32.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"   
-            }
+             $inv = "'start' 'C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe' '-ep bypass -sta -file $(chr 34)$curdir\..\compile\dialogshell.ps1$(chr 34) $(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34) -cpath'"            
+      #     "'start' '$curdir\..\compile\dialogshell.exe' '$(chr 34)$(string $FastTab.SelectedTab.Text)$(chr 34)'"    
+     
             $StatusStrip1.items[0].Text = "DEBUGGING...."
             run "& $inv"
             #shell open $(string $FastTab.SelectedTab.Text)

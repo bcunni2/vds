@@ -1,3 +1,5 @@
+Add-Type -AssemblyName System.Windows.Forms,Microsoft.VisualBasic,System.Drawing, presentationframework, presentationcore, WindowsBase, System.ComponentModel
+
 Add-Type @"
 //" closing above quote for editing c# syntax in another editor.
 using System;

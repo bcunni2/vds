@@ -1,5 +1,8 @@
-$ErrorActionPreference = "SilentlyContinue"
-
+$path = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $path
+[Environment]::CurrentDirectory = $path
+import-module .\vds.psm1
+#$ErrorActionPreference = "SilentlyContinue"
 $MyForm = dialog create "Setup Visual DialogShell" 0 0 676 366
   if ($(string $(curdir)) -ne 'c:\windows\system32'){
 $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
@@ -33,7 +36,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
         dialog property $Label3 font "Segoe UI Black, 16"
         dialog disable $Button1
         
-        if ($(string $(curdir)) -eq 'c:\windows\system32')
+        if ($args[0] -ne 'install')
         {
             $Label3.text = "Uninstall Visual DialogShell"
         dialog enable $Button1
@@ -62,19 +65,19 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     {
                          directory delete $(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")
                          directory delete "c:\programdata\microsoft\windows\start menu\programs\Visual DialogShell"
-                        New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+                      #  New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
                     #   See comments on these entries in the install section.
                     #   registry deleteitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(regread HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\ InstallLocation)\examples\vds-ide.exe"
                     #   registry deleteitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(regread HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\ InstallLocation)\compile-gue.exe"                       
                         registry deletekey "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"
-                        registry deletekey "HKCR:\.ds1"
-                        registry deletekey "HKCR:\DialogShell.Script"
-                        registry deletekey "HKCR:\.dsproj"
-                        registry deletekey "HKCR:\DialogShell.Project"
-                        registry deletekey "HKCR:\.dsform"
-                        registry deletekey "HKCR:\DialogShell.Form"
-                        registry deletekey "HKCR:\.pil"
-                        registry deletekey "HKCR:\DialogShell.Compile" 
+                        registry deletekey "HKLM:\Software\Classes\.ds1"
+                        registry deletekey "HKLM:\Software\Classes\DialogShell.Script"
+                        registry deletekey "HKLM:\Software\Classes\.dsproj"
+                        registry deletekey "HKLM:\Software\Classes\DialogShell.Project"
+                        registry deletekey "HKLM:\Software\Classes\.dsform"
+                        registry deletekey "HKLM:\Software\Classes\DialogShell.Form"
+                        registry deletekey "HKLM:\Software\Classes\.pil"
+                        registry deletekey "HKLM:\Software\Classes\DialogShell.Compile" 
                         info "Uninstall Complete"
                     dialog close $MyForm
                     }
@@ -86,7 +89,8 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     Get-ChildItem -Path .\setup\* -Recurse | Unblock-File
                     file copy .\setup\* $Label2.Text
                     # file copy .\setup\* $Label2.Text
-                    file copy setup.exe "c:\windows\installer\dialogshell"
+                    file copy setup.ps1 "c:\windows\installer\dialogshell"
+					file copy vds.psm1 "c:\windows\installer\dialogshell"
                				
                     directory create ([Environment]::GetFolderPath("MyDocuments")+"\DialogShell")
                     directory create ([Environment]::GetFolderPath("MyDocuments")+"\DialogShell\examples")
@@ -106,11 +110,12 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                         }
                     }
                     
-                    New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+                 #   New-PSDrive -PSProvider registry -Root HKEY_CLASSES_ROOT -Name HKCR
+					
                     registry newkey "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\" "DialogShell"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayName" String "Visual DialogShell"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation" String "$(string $Label2.Text)"
-                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "c:\windows\installer\dialogshell\setup.exe -uninstall"
+                    registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "UninstallString" String "cmd /c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file c:\windows\installer\dialogshell\setup.ps1"
                     registry newitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "Publisher" String "vds/pwsh community"
                 if ($(regexists "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\"))
                    {registry modifyitem "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "DisplayVersion" "0.2.7.8"
@@ -126,36 +131,48 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                   #  See future.txt for a 'fun' project ~ which may or may not work. ~make sure to use it as a switch, and to update compile-gui accordingly.
                   #  registry newitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(string $Label2.Text)\examples\vds-ide.exe" String "~ HIGHDPIAWARE"
                   #  registry newitem "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\AppCompatFlags\Layers" "$(string $Label2.Text)\compile-gue.exe" String "~ HIGHDPIAWARE"
-                    registry newkey  "HKCR:\" .ds1
-                    registry newitem "HKCR:\.ds1\" "(Default)" String "DialogShell.Script"
-                    registry newkey "HKCR:\" "DialogShell.Script"
-                    registry newkey "HKCR:\DialogShell.Script\" "Shell"
-                    registry newkey "HKCR:\DialogShell.Script\Shell\" "Open"
-                    registry newkey "HKCR:\DialogShell.Script\Shell\Open\" "Command"
-                    registry newitem "HKCR:\DialogShell.Script\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\compile\dialogshell.exe $(chr 34)%1$(chr 34)"
-                    registry newkey "HKCR:\" .dsproj
-                    registry newitem "HKCR:\.dsproj\" "(Default)" String "DialogShell.Project"
-                    registry newkey "HKCR:\" "DialogShell.Project"
-                    registry newkey "HKCR:\DialogShell.Project\" "Shell"
-                    registry newkey "HKCR:\DialogShell.Project\Shell\" "Open"
-                    registry newkey "HKCR:\DialogShell.Project\Shell\Open\" "Command"
-                    registry newitem "HKCR:\DialogShell.Project\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\examples\vds-ide.exe $(chr 34)%1$(chr 34)"
-                    registry newkey "HKCR:\" .dsform
-                    registry newitem "HKCR:\.dsform\" "(Default)" String "DialogShell.Form"
-                    registry newkey "HKCR:\" "DialogShell.Form"
-                    registry newkey "HKCR:\DialogShell.Form\" "Shell"
-                    registry newkey "HKCR:\DialogShell.Form\" "DefaultIcon"
-                    registry newitem "HKCR:\DialogShell.Form\DefaultIcon" "(Default)" String "$(string $Label2.Text)\res\application.ico"
-                    registry newkey "HKCR:\DialogShell.Form\Shell\" "Open"
-                    registry newkey "HKCR:\DialogShell.Form\Shell\Open\" "Command"
-                    registry newitem "HKCR:\DialogShell.Form\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\examples\vds-ide.exe $(chr 34)%1$(chr 34)"
-                    registry newkey "HKCR:\" .pil
-                    registry newitem "HKCR:\.pil\" "(Default)" String "DialogShell.Compile"
-                    registry newkey "HKCR:\" "DialogShell.Compile"
-                    registry newkey "HKCR:\DialogShell.Compile\" "Shell"
-                    registry newkey "HKCR:\DialogShell.Compile\Shell\" "Open"
-                    registry newkey "HKCR:\DialogShell.Compile\Shell\Open\" "Command"
-                    registry newitem "HKCR:\DialogShell.Compile\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\compile\compile-gui.exe $(chr 34)%1$(chr 34)"
+                    registry newkey  "HKLM:\Software\Classes\" .ds1
+                    registry newitem "HKLM:\Software\Classes\.ds1\" "(Default)" String "DialogShell.Script"
+                    registry newkey "HKLM:\Software\Classes\" "DialogShell.Script"
+					registry newkey "HKLM:\Software\Classes\DialogShell.Script\" "DefaultIcon"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Script\DefaultIcon" "(Default)" String "$(chr 34)$(string $Label2.Text)\res\terminal.ico$(chr 34)"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Script\" "Shell"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\" "Open"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\Open\" "Command"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Script\Shell\Open\Command" "(Default)" String "cmd /c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\compile\dialogshell.ps1$(chr 34) $(chr 34)%1$(chr 34) -cpath"
+					registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\" "Edit"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\Edit\" "Command"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Script\Shell\Edit\Command" "(Default)" String "cmd /c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\examples\vds-ide.ps1$(chr 34) $(chr 34)%1$(chr 34)"
+					registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\" "Debug"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\Debug\" "Command"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Script\Shell\Debug\Command" "(Default)" String "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\compile\dialogshell.ps1$(chr 34) $(chr 34)%1$(chr 34) -cpath"
+					#																					"$(string $Label2.Text)\compile\dialogshell.exe $(chr 34)%1$(chr 34)"
+					info check
+                    registry newkey "HKLM:\Software\Classes\" .dsproj
+                    registry newitem "HKLM:\Software\Classes\.dsproj\" "(Default)" String "DialogShell.Project"
+                    registry newkey "HKLM:\Software\Classes\" "DialogShell.Project"
+					registry newkey "HKLM:\Software\Classes\DialogShell.Project\" "DefaultIcon"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Project\DefaultIcon" "(Default)" String "$(string $Label2.Text)\res\icon.ico"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Project\" "Shell"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Project\Shell\" "Open"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Project\Shell\Open\" "Command"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Project\Shell\Open\Command" "(Default)" String "cmd /c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\examples\vds-ide.ps1$(chr 34) $(chr 34)%1$(chr 34)"
+                    registry newkey "HKLM:\Software\Classes\" .dsform
+                    registry newitem "HKLM:\Software\Classes\.dsform\" "(Default)" String "DialogShell.Form"
+                    registry newkey "HKLM:\Software\Classes\" "DialogShell.Form"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Form\" "Shell"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Form\" "DefaultIcon"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Form\DefaultIcon" "(Default)" String "$(string $Label2.Text)\res\application.ico"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Form\Shell\" "Open"
+                    registry newkey "HKLM:\Software\Classes\DialogShell.Form\Shell\Open\" "Command"
+                    registry newitem "HKLM:\Software\Classes\DialogShell.Form\Shell\Open\Command" "(Default)" String "cmd /c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\examples\vds-ide.ps1$(chr 34) $(chr 34)%1$(chr 34)"
+                   # registry newkey "HKLM:\Software\Classes\" .pil
+                   # registry newitem "HKLM:\Software\Classes\.pil\" "(Default)" String "DialogShell.Compile"
+                   # registry newkey "HKLM:\Software\Classes\" "DialogShell.Compile"
+                   # registry newkey "HKLM:\Software\Classes\DialogShell.Compile\" "Shell"
+                   # registry newkey "HKLM:\Software\Classes\DialogShell.Compile\Shell\" "Open"
+                   # registry newkey "HKLM:\Software\Classes\DialogShell.Compile\Shell\Open\" "Command"
+                   # registry newitem "HKLM:\Software\Classes\DialogShell.Compile\Shell\Open\Command" "(Default)" String "$(string $Label2.Text)\compile\compile-gui.exe $(chr 34)%1$(chr 34)"
                     
                     $buttonout          = "Text=Button$(cr)[InternetShortcut]$(cr)IDList=$(cr)URL=https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.button?view=netframework-4.7.2$(cr)IconFile=$(string $Label2.Text)\res\Button.ico$(cr)IconIndex=0$(cr)HotKey=0"
                     $checkboxout        = "Text=$(cr)Appearance=Normal$(cr)Threestate=$(cr)[InternetShortcut]$(cr)IDList=$(cr)URL=https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.checkbox?view=netframework-4.7.2$(cr)IconFile=$(string $Label2.Text)\res\CheckBox.ico$(cr)IconIndex=0$(cr)HotKey=0"
@@ -216,8 +233,11 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     $webbrowserout      | Out-File "$(string $Label2.Text)\elements\WebBrowser.url"
                     
                     directory create "c:\programdata\microsoft\windows\start menu\programs\Visual DialogShell"
-                    link ("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual DialogShell\Visual DialogShell IDE.lnk") ("$(string $Label2.Text)\examples\vds-ide.exe") ("$(string $Label2.Text)\examples") ("$(string $Label2.Text)\res\icon.ico,0")
-                    link ("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual DialogShell\DialogShell Console.lnk") ("$(string $Label2.Text)\compile\dialogshell.exe") ("$(string $Label2.Text)\compile") ("$(string $Label2.Text)\res\terminal.ico,0")
+					#cmd /c start /min "" C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file c:\vds\trunk\examples\vds-ide.ps1
+                    link ("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual DialogShell\Visual DialogShell IDE.lnk") ("cmd") ("$(string $Label2.Text)\examples") ("$(string $Label2.Text)\res\icon.ico,0") ("/c start /min $(chr 34)$(chr 34) C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\examples\vds-ide.ps1$(chr 34)")
+                    link ("C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Visual DialogShell\DialogShell Console.lnk") ("powershell") ("$(string $Label2.Text)\compile") ("$(string $Label2.Text)\res\terminal.ico,0") ("-ep bypass -sta -file $(chr 34)$(string $Label2.Text)\compile\dialogshell.ps1$(chr 34)")
+					
+
                     info "Install Complete"
                     
                     dialog close $MyForm

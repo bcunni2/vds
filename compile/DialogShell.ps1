@@ -1,3 +1,7 @@
+$path = Split-Path -Parent $MyInvocation.MyCommand.Path
+Set-Location $path
+[Environment]::CurrentDirectory = $path
+import-module ..\vds.psm1
 $host.ui.RawUI.Backgroundcolor = 1
 cls
 console "DialogShell $(sysinfo dsver)"
@@ -9,9 +13,8 @@ if ($args[0] -ne $null) {
 	}
 	invoke-expression $(get-content $args[0] | Out-String)
 }
-else {
-	while (1){
-	Write-Host 'DS' $(curdir)'>' -NoNewLine
-	invoke-expression $Host.UI.ReadLine()
-	}
-}
+else
+{while (1){
+Write-Host 'DS' $(curdir)'>' -NoNewLine
+invoke-expression $Host.UI.ReadLine()
+}}
