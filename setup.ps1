@@ -147,8 +147,7 @@ $MyForm.icon = "$(curdir)\setup\res\cog_go.ico"}
                     registry newkey "HKLM:\Software\Classes\DialogShell.Script\Shell\Debug\" "Command"
                     registry newitem "HKLM:\Software\Classes\DialogShell.Script\Shell\Debug\Command" "(Default)" String "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -ep bypass -sta -file $(chr 34)$(string $Label2.Text)\compile\dialogshell.ps1$(chr 34) $(chr 34)%1$(chr 34) -cpath"
 					#																					"$(string $Label2.Text)\compile\dialogshell.exe $(chr 34)%1$(chr 34)"
-					info check
-                    registry newkey "HKLM:\Software\Classes\" .dsproj
+					registry newkey "HKLM:\Software\Classes\" .dsproj
                     registry newitem "HKLM:\Software\Classes\.dsproj\" "(Default)" String "DialogShell.Project"
                     registry newkey "HKLM:\Software\Classes\" "DialogShell.Project"
 					registry newkey "HKLM:\Software\Classes\DialogShell.Project\" "DefaultIcon"
