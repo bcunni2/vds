@@ -132,7 +132,7 @@ if ($args[1])
         $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1')
         dialog set $textbox1 $in
         })
-        $button2.add_Click({$in = $(savedlg 'Dyanmic Link Library|*.dll')
+        $button2.add_Click({$in = $(savedlg 'DialogShell Module|*.dsm1|PowerShell Script|*.ps1|PowerShell Module|*.psm1|Dyanmic Link Library|*.dll')
         dialog set $textbox2 $in
         })
         $button3.add_Click({$in = $(filedlg 'Icon|*.ico')
@@ -191,7 +191,7 @@ $ctf2 = Get-Content -Path $textbox1.text -Encoding UTF8 -ErrorAction SilentlyCon
 Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
-"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass iex(out-string -inputobject (get-content $(name $($textbox2.text)).dll))" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
+"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass iex(out-string -inputobject (get-content $(chr 39)$(name $($textbox2.text)).$(ext $textbox2.text)$(chr 39)))" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
        })
         
         dialog show $MyForm
