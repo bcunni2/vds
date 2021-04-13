@@ -129,10 +129,10 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
 if ($args[1])
 {directory change $args[1]}
         
-        $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1|PowerShell|*.ps1')
+        $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1')
         dialog set $textbox1 $in
         })
-        $button2.add_Click({$in = $(savedlg 'ps1|*.ps1')
+        $button2.add_Click({$in = $(savedlg 'PowerShell|*.ps1')
         dialog set $textbox2 $in
         })
         $button3.add_Click({$in = $(filedlg 'Icon|*.ico')
@@ -191,9 +191,7 @@ $ctf2 = Get-Content -Path $textbox1.text -Encoding UTF8 -ErrorAction SilentlyCon
 Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
-
-link "$($textbox2.text).lnk" powershell "" $textbox3.text "-windowstyle hidden -ep bypass -file $($textbox2.text)" $checkbox6.checked 7
-
+link "$(path $($textbox2.text))\$(name $($textbox2.text)).exe.lnk" powershell "" $textbox3.text "-windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" $checkbox6.checked 7
        })
         
         dialog show $MyForm
