@@ -132,7 +132,7 @@ if ($args[1])
         $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1|PowerShell|*.ps1')
         dialog set $textbox1 $in
         })
-        $button2.add_Click({$in = $(savedlg 'DS2PS|*.ps1')
+        $button2.add_Click({$in = $(savedlg 'ps1|*.ps1')
         dialog set $textbox2 $in
         })
         $button3.add_Click({$in = $(filedlg 'Icon|*.ico')
@@ -192,11 +192,8 @@ Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
 
-link "$($textbox2.text).lnk" powershell "" $textbox3.text "-windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" $checkbox6.checked 7
+link "$($textbox2.text).lnk" powershell "" $textbox3.text "-windowstyle hidden -ep bypass -file $($textbox2.text)" $checkbox6.checked 7
 
-#C:\WINDOWS\system32\cmd.exe /c start "" /min System.Windows.Forms.TextBox, Text: C:\Users\brand\OneDrive\Desktop\rancoh.d....text
-
-        })
+       })
         
         dialog show $MyForm
-    #    C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -file C:\Users\brand\OneDrive\Desktop\rancoh\new.ps1
