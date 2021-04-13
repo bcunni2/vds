@@ -4232,7 +4232,7 @@ function sysinfo($a) {
             return $major.Trim()+'.'+$minor.Trim()+'.'+$build.Trim()+'.'+$revision.Trim() 
         } 
         dsver {
-        return '0.2.7.8'
+        return '0.3.0.8'
         }
         winboot {
             $return = Get-CimInstance -ClassName win32_operatingsystem | fl lastbootuptime | Out-String
