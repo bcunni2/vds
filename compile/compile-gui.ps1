@@ -191,7 +191,7 @@ $ctf2 = Get-Content -Path $textbox1.text -Encoding UTF8 -ErrorAction SilentlyCon
 Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
-link "$(path $($textbox2.text))\$(name $($textbox2.text)).exe.lnk" powershell "" $textbox3.text "-windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" $checkbox6.checked 7
+"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
        })
         
         dialog show $MyForm
