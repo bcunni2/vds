@@ -1,5 +1,5 @@
 directory change "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\compile"
-$MyForm = dialog create "Script Packager" 0 0 389 245
+$MyForm = dialog create "Script Packager" 0 0 389 195
 $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\DialogShell\" "InstallLocation")\res\compile.ico"
     $TextBox1 = dialog add $MyForm TextBox 25 20 250 20 
     dialog settip $textbox1 "Inputfile" 
@@ -19,7 +19,7 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
                 dialog property $TextBox2 Scrollbars "none" 
                 dialog property $TextBox2 acceptstab "" 
                 dialog property $TextBox2 acceptsreturn ""  
-        $TextBox3 = dialog add $MyForm TextBox 75 20 250 20 
+  <#        $TextBox3 = dialog add $MyForm TextBox 75 20 250 20 
         dialog settip $textbox3 "Iconfile"
         $Button3 = dialog add $MyForm Button 75 275 75 20 "Browse"          
                 dialog property $TextBox3 Multiline "" 
@@ -28,7 +28,7 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
                 dialog property $TextBox3 Scrollbars "none" 
                 dialog property $TextBox3 acceptstab "" 
                 dialog property $TextBox3 acceptsreturn ""  
- <#       $TextBox4 = dialog add $MyForm TextBox 100 20 100 20 
+      $TextBox4 = dialog add $MyForm TextBox 100 20 100 20 
         dialog settip $textbox4 "Title" 
                 dialog property $TextBox4 Multiline "" 
                 dialog property $TextBox4 Maxlength "0" 
@@ -98,11 +98,11 @@ $MyForm.icon = "$(regread "HKLM:\Software\Microsoft\Windows\CurrentVersion\Unins
                 dialog property $CheckBox4 Threestate ""  
         $CheckBox5 = dialog add $MyForm CheckBox 175 250 100 20 "No Console" 
                 dialog property $CheckBox5 Appearance "Normal" 
-                dialog property $CheckBox5 Threestate ""  #>
-        $CheckBox6 = dialog add $MyForm CheckBox 100 16 335 20 "Require Admin"
-                $Button4 = dialog add $MyForm Button 125 16 335 20 "Load .pil"
-                $Button5 = dialog add $MyForm Button 150 16 335 20 "Save .pil"      
-                $Button6 = dialog add $MyForm Button 175 16 335 20 "Create Link" 
+                dialog property $CheckBox5 Threestate ""  
+        $CheckBox6 = dialog add $MyForm CheckBox 100 16 335 20 "Require Admin"#>
+                $Button4 = dialog add $MyForm Button 75 16 335 20 "Load .pil"
+                $Button5 = dialog add $MyForm Button 100 16 335 20 "Save .pil"      
+                $Button6 = dialog add $MyForm Button 125 16 335 20 "Create Package" 
         dialog property $CheckBox6 appearance "Button"
         dialog property $CheckBox6 textalign "MiddleCenter"
         if ($args[0])
@@ -132,7 +132,7 @@ if ($args[1])
         $button1.add_Click({$in = $(filedlg 'DialogShell|*.ds1')
         dialog set $textbox1 $in
         })
-        $button2.add_Click({$in = $(savedlg 'PowerShell|*.ps1')
+        $button2.add_Click({$in = $(savedlg 'Dyanmic Link Library|*.dll')
         dialog set $textbox2 $in
         })
         $button3.add_Click({$in = $(filedlg 'Icon|*.ico')
@@ -191,8 +191,7 @@ $ctf2 = Get-Content -Path $textbox1.text -Encoding UTF8 -ErrorAction SilentlyCon
 Remove-Item -path $textbox2.text -force
 Add-Content $textbox2.text $ctf1
 Add-Content $textbox2.text $ctf2
-"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass -file $(name $($textbox2.text)).ps1" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
-link "$(path $($textbox2.text))\$(name $($textbox2.text)).exe.lnk" "cmd /c $(name $($textbox2.text)).cmd" "" $textbox3.text "" $checkbox6.checked 7
+"C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -windowstyle hidden -ep bypass iex(out-string -inputobject (get-content $(name $($textbox2.text)).dll))" | out-file "$(path $($textbox2.text))\$(name $($textbox2.text)).cmd" -encoding ascii
        })
         
         dialog show $MyForm
