@@ -3,6 +3,8 @@
 Visual DialogShell is a way forward for DialogScript syntax within Powershell ~ this project exists to provide a vehicle for the spirit of the DialogScript language to continue - providing a concise, powerful, straightforward language with seemingly untyped variables.
 
 ## Does not compile executables, but does create packages that run on endpoints. The installer also contains no executables, you'll hardly notice.
+I have found a number of ways to compile executables that do not trip up windows defender. 
+Unfortunately, the more I should share these methods the less viable they will become, I would suggest devising a protocol for your company and making certain your netinfosec group adds an exception for that particular delivery method.
 
 ## Further...
 
